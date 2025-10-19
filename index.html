@@ -1,0 +1,2595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#121212">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>MB Solar Power | Professional Solar Energy Solutions</title>
+    <style>
+        /* Base Styles */
+        :root {
+            --primary: #FFA500;
+            --secondary: #4A90E2;
+            --accent: #FFD700;
+            --dark-bg: #121212;
+            --dark-surface: #1E1E1E;
+            --dark-card: #252525;
+            --text-light: #E0E0E0;
+            --text-muted: #AAAAAA;
+            --border: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-light);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header & Navigation */
+        header {
+            background-color: rgba(18, 18, 18, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 102;
+            transition: all 0.3s ease;
+        }
+        
+        header.scrolled {
+            background-color: var(--dark-surface);
+            backdrop-filter: none;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-image {
+            height: 90px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 3px 10px rgba(201, 169, 97, 0.4));
+            transition: transform 0.3s ease;
+        }
+        
+        .logo-image:hover {
+            transform: scale(1.05);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 25px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary);
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s;
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu {
+            display: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 101;
+        }
+        
+        .mobile-menu:hover {
+            color: var(--primary);
+            transform: scale(1.1);
+        }
+        
+        .mobile-menu.active {
+            color: var(--primary);
+        }
+        
+        /* Hero Slider Section */
+        .hero-slider {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+            margin-top: 0;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            opacity: 1;
+        }
+        
+        /* Background image layer - separate from content */
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: -5%;
+            left: -5%;
+            width: 110%;
+            height: 110%;
+            background-image: var(--bg-image);
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+        }
+        
+        /* Different animations for each slide background */
+        .slide-1::before {
+            animation: zoomEffect 20s infinite;
+        }
+        
+        .slide-2::before {
+            animation: slideFromRight 20s infinite;
+        }
+        
+        .slide-3::before {
+            animation: slideFromLeft 20s infinite;
+        }
+        
+        @keyframes zoomEffect {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+        
+        @keyframes slideFromRight {
+            0%, 100% {
+                transform: translateX(0) scale(1.05);
+            }
+            50% {
+                transform: translateX(-3%) scale(1.05);
+            }
+        }
+        
+        @keyframes slideFromLeft {
+            0%, 100% {
+                transform: translateX(0) scale(1.05);
+            }
+            50% {
+                transform: translateX(3%) scale(1.05);
+            }
+        }
+        
+        .slide-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(18, 18, 18, 0.7), rgba(18, 18, 18, 0.8));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+        
+        /* Enhanced overlay for mobile */
+        @media (max-width: 768px) {
+            .slide-overlay {
+                background: linear-gradient(rgba(18, 18, 18, 0.75), rgba(18, 18, 18, 0.85));
+            }
+        }
+        
+        .slide-content {
+            text-align: center;
+            max-width: 800px;
+            padding: 0 20px;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .slide-content h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            position: relative;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .slide-content p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            color: var(--text-muted);
+            animation: fadeInUp 1.2s ease-out;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #FFA500, #FFD700, #FF8C00);
+            color: #1a1d29;
+            padding: 14px 36px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(255, 165, 0, 0.35);
+            position: relative;
+            animation: fadeInUp 1.4s ease-out;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            overflow: hidden;
+            border: 2px solid transparent;
+            letter-spacing: 0.3px;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            transition: left 0.4s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 35px rgba(255, 165, 0, 0.5);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+        
+        .btn:hover::before {
+            left: 0;
+        }
+        
+        .btn:active {
+            transform: translateY(-2px) scale(0.98);
+            box-shadow: 0 6px 20px rgba(255, 165, 0, 0.4);
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .slider-nav {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+        
+        .slider-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .slider-dot.active {
+            background-color: var(--primary);
+            transform: scale(1.2);
+        }
+        
+        
+        /* About Section */
+        .about {
+            padding: 80px 0;
+            background-color: var(--dark-surface);
+            scroll-margin-top: 120px;
+        }
+        
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+        
+        .about-text h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: var(--text-light);
+            position: relative;
+        }
+        
+        .about-text h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+        
+        .about-text p {
+            margin-bottom: 20px;
+            color: var(--text-muted);
+        }
+        
+        .about-features {
+            margin-top: 30px;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .feature-icon {
+            background: var(--dark-card);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: var(--primary);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        
+        .feature-text h4 {
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+        
+        .feature-text p {
+            color: var(--text-muted);
+            margin: 0;
+        }
+        
+        .about-image {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Products Section - Individual Layout */
+        .products {
+            padding: 80px 0;
+            background-color: var(--dark-bg);
+            scroll-margin-top: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Grid Pattern Background */
+        .products::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(255, 165, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 165, 0, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: 0;
+        }
+        
+        /* Subtle Gradient Overlay on Grid */
+        .products::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(255, 165, 0, 0.02) 0%, transparent 50%),
+                radial-gradient(circle at 70% 80%, rgba(255, 215, 0, 0.015) 0%, transparent 50%);
+            z-index: 0;
+        }
+        
+        /* Ensure content is above background */
+        .products .container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Floating Particles */
+        .floating-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, rgba(255, 165, 0, 0.8), rgba(255, 215, 0, 0.4));
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(255, 165, 0, 0.6);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            animation: floatUp var(--duration) ease-in infinite;
+            animation-delay: var(--delay);
+        }
+        
+        @keyframes floatUp {
+            0% {
+                opacity: 0;
+                transform: translateY(0) translateX(0) scale(0.5);
+            }
+            10% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.2;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-120vh) translateX(var(--drift)) scale(1);
+            }
+        }
+        
+        /* Falling Particles */
+        .falling-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.9), rgba(255, 165, 0, 0.5));
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            animation: fallDown var(--duration) ease-in infinite;
+            animation-delay: var(--delay);
+        }
+        
+        @keyframes fallDown {
+            0% {
+                opacity: 0;
+                transform: translateY(0) translateX(0) scale(0.3);
+            }
+            10% {
+                opacity: 0.9;
+            }
+            50% {
+                opacity: 0.7;
+            }
+            90% {
+                opacity: 0.2;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(120vh) translateX(var(--drift)) scale(1);
+            }
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-title h2 {
+            font-size: 36px;
+            color: var(--text-light);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+        }
+        
+        .section-title p {
+            max-width: 700px;
+            margin: 20px auto 0;
+            color: var(--text-muted);
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            direction: ltr;
+        }
+        
+        /* Gradient Text Effect */
+        .gradient-text {
+            background: linear-gradient(135deg, #FFA500, #FFD700, #FF8C00, #FFD700);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: gradientShift 3s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% {
+                background-position: 0% center;
+            }
+            50% {
+                background-position: 100% center;
+            }
+        }
+        
+        /* Category Brands */
+        .category-brands {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            align-items: center;
+        }
+        
+        .category-brands-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-right: 5px;
+        }
+        
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .brand-logo-text {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-light);
+            text-align: center;
+            line-height: 1.1;
+            padding: 2px;
+        }
+        
+        .brand-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+        
+        /* Product Categories - Horizontal Layout */
+        .categories-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+            margin-top: 50px;
+        }
+        
+        .category-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            transition: all 0.3s ease;
+            padding-bottom: 60px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .category-card:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        
+        /* Alternate image position for visual variety */
+        .category-card:nth-child(even) .category-image {
+            order: 2;
+        }
+        
+        .category-card:nth-child(even) .category-content {
+            order: 1;
+        }
+        
+        .category-image {
+            height: 350px;
+            position: relative;
+            transition: transform 0.3s ease;
+            border-radius: 12px;
+            background-size: cover;
+            background-position: center;
+            overflow: visible;
+            
+        }
+        
+        /* Inner lighter border (7px - larger) */
+        .category-image::before {
+            content: '';
+            position: absolute;
+            top: -7px;
+            left: -7px;
+            right: -7px;
+            bottom: -7px;
+            background: #2a2a2a;
+            border-radius: 17px;
+            z-index: -1;
+            transition: background 0.3s ease;
+            pointer-events: none;
+        }
+        
+        /* Outer gradient border (3px) */
+        .category-image::after {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            right: -12px;
+            bottom: -12px;
+            background: linear-gradient(135deg, #FFA500, #FFD700, #FFA500, #FF8C00, #FFD700);
+            border-radius: 20px;
+            z-index: -2;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: box-shadow 0.3s ease;
+            pointer-events: none;
+        }
+        
+
+
+        
+        .category-card:hover .category-image::after {
+            box-shadow: 0 15px 40px rgba(255, 165, 0, 0.4);
+        }
+        
+        .category-content {
+            padding: 20px;
+            direction: ltr;
+            text-align: left;
+        }
+        
+        .category-content h3 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: var(--text-light);
+            font-weight: 700;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        /* Category Icons */
+        .category-icon {
+            font-size: 42px;
+            flex-shrink: 0;
+            line-height: 1;
+            font-weight: bold;
+        }
+        
+        .icon-solar {
+            color: #FFD700;
+            filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.7));
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+        
+        .icon-inverter {
+            color: #4A90E2;
+            filter: drop-shadow(0 0 12px rgba(74, 144, 226, 0.7));
+            text-shadow: 0 0 20px rgba(74, 144, 226, 0.5);
+        }
+        
+        .icon-battery {
+            color: #00D084;
+            filter: drop-shadow(0 0 12px rgba(0, 208, 132, 0.7));
+            text-shadow: 0 0 20px rgba(0, 208, 132, 0.5);
+        }
+        
+        .category-content p {
+            font-size: 18px;
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin-bottom: 30px;
+            font-family: 'Segoe UI', 'Arial', sans-serif;
+        }
+        
+        .category-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #FFA500, #FFD700, #FF8C00);
+            color: #1a1d29;
+            padding: 14px 38px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(255, 165, 0, 0.35);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+            letter-spacing: 0.3px;
+            margin-top: 20px;
+        }
+        
+        .category-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            transition: left 0.4s ease;
+            z-index: -1;
+        }
+        
+        .category-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(255, 165, 0, 0.5);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+        
+        .category-btn:hover::before {
+            left: 0;
+        }
+        
+        .category-btn:active {
+            transform: translateY(-1px) scale(0.98);
+            box-shadow: 0 5px 15px rgba(255, 165, 0, 0.4);
+        }
+        
+        /* ========================================
+           DETAILED PRODUCT LAYOUT - SAVED FOR FUTURE USE
+           This detailed product display will be used when 
+           showing individual products with full specifications.
+           DO NOT DELETE - Reserved for product detail pages.
+           ======================================== */
+        
+        .product-section {
+            margin-bottom: 100px;
+            scroll-margin-top: 120px;
+        }
+        
+        .product-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .product-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            background: var(--dark-card);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 1px solid var(--border);
+            transition: transform 0.3s;
+        }
+        
+        .product-container:hover {
+            transform: translateY(-5px);
+        }
+        
+        .product-image {
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: var(--dark-bg);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        .product-content {
+            padding: 40px;
+        }
+        
+        .product-content h3 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: var(--text-light);
+        }
+        
+        .product-content .product-description {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        
+        .product-features {
+            margin-bottom: 30px;
+        }
+        
+        .product-features h4 {
+            color: var(--text-light);
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .product-features ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .product-features li {
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 25px;
+            font-size: 16px;
+        }
+        
+        .product-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .product-specs {
+            background: var(--dark-surface);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .product-specs h4 {
+            color: var(--text-light);
+            margin-bottom: 10px;
+        }
+        
+        .specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .spec-name {
+            color: var(--text-muted);
+        }
+        
+        .spec-value {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .product-action {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .product-price {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        /* ======================================== */
+        
+        /* Projects Section */
+        .projects {
+            padding: 80px 0;
+            background-color: var(--dark-bg);
+            scroll-margin-top: 120px;
+        }
+        
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 30px;
+        }
+        
+        .project-card {
+            background-color: #1a1d29;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        .project-image {
+            height: 240px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: visible;
+        }
+        
+        /* Project capacity badge */
+        .project-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #00D084, #00b870);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0, 208, 132, 0.4);
+            z-index: 2;
+        }
+        
+        /* Image borders like categories */
+        .project-image::before {
+            content: '';
+            position: absolute;
+            top: -7px;
+            left: -7px;
+            right: -7px;
+            bottom: -7px;
+            background: #2a2a2a;
+            border-radius: 17px;
+            z-index: -1;
+            transition: background 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .project-image::after {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: -12px;
+            right: -12px;
+            bottom: -12px;
+            background: linear-gradient(135deg, #FFA500, #FFD700, #FFA500, #FF8C00, #FFD700);
+            border-radius: 20px;
+            z-index: -2;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transition: box-shadow 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .project-content {
+            padding: 25px;
+        }
+        
+        .project-content h3 {
+            font-size: 22px;
+            margin-bottom: 12px;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        
+        .project-content p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        /* Project details with icons */
+        .project-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .project-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+        
+        .project-icon {
+            font-size: 20px;
+            width: 24px;
+            flex-shrink: 0;
+            font-weight: bold;
+            line-height: 1;
+        }
+        
+        .project-icon.location {
+            color: #00D084;
+            filter: drop-shadow(0 0 8px rgba(0, 208, 132, 0.6));
+            text-shadow: 0 0 10px rgba(0, 208, 132, 0.4);
+        }
+        
+        .project-icon.date {
+            color: #4A90E2;
+            filter: drop-shadow(0 0 8px rgba(74, 144, 226, 0.6));
+            text-shadow: 0 0 10px rgba(74, 144, 226, 0.4);
+        }
+        
+        .project-icon.capacity {
+            color: #FFD700;
+            filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+        }
+        
+        /* Why Choose Us Section */
+        .why-choose {
+            padding: 80px 0;
+            background-color: var(--dark-surface);
+            scroll-margin-top: 120px;
+        }
+        
+        .why-choose-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .why-choose-header h2 {
+            font-size: 42px;
+            color: var(--text-light);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .why-choose-header p {
+            max-width: 900px;
+            margin: 0 auto;
+            font-size: 18px;
+            color: var(--text-muted);
+            line-height: 1.8;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+        }
+        
+        .stat-card {
+            background-color: #0a0a0a;
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 165, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .stat-card:nth-child(1) .stat-number {
+            color: #00D084;
+        }
+        
+        .stat-card:nth-child(2) .stat-number {
+            color: #4A90E2;
+        }
+        
+        .stat-card:nth-child(3) .stat-number {
+            color: #00D084;
+        }
+        
+        .stat-card:nth-child(4) .stat-number {
+            color: #4A90E2;
+        }
+        
+        .stat-label {
+            font-size: 18px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: 80px 0;
+            background: linear-gradient(135deg, var(--dark-surface), var(--dark-card));
+            color: var(--text-light);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            scroll-margin-top: 120px;
+        }
+        
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,165,0,0.1) 0%, transparent 70%);
+        }
+        
+        .cta h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .cta p {
+            max-width: 700px;
+            margin: 0 auto 30px;
+            font-size: 18px;
+            color: var(--text-muted);
+            position: relative;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark-card);
+            color: var(--text-light);
+            padding: 50px 0 20px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+        
+        .footer-column p {
+            color: var(--text-muted);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column ul li a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-column ul li a:hover {
+            color: var(--primary);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            /* Projects Section - Tablet */
+            .projects-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 25px;
+            }
+            
+            .project-image {
+                height: 200px;
+            }
+            
+            .project-content {
+                padding: 20px;
+            }
+            
+            .project-content h3 {
+                font-size: 18px;
+            }
+            
+            .project-content p {
+                font-size: 14px;
+            }
+            
+            .project-icon {
+                font-size: 18px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            /* Header */
+            .header-container {
+                padding: 10px 0;
+            }
+            
+            .logo-image {
+                height: 65px;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            nav {
+                position: relative;
+            }
+            
+            nav ul {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: linear-gradient(180deg, rgba(30, 30, 30, 0.98) 0%, rgba(18, 18, 18, 0.98) 100%);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                box-shadow: 0 0 50px rgba(0,0,0,0.7);
+                z-index: 100;
+                opacity: 0;
+                transform: translateY(-20px);
+                transition: opacity 0.3s ease, transform 0.3s ease;
+            }
+            
+            nav ul.show {
+                display: flex;
+                opacity: 1;
+                transform: translateY(0);
+            }
+            
+            nav ul li {
+                margin: 0;
+                text-align: center;
+                padding: 18px 0;
+                width: 85%;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                transform: translateX(-30px);
+                opacity: 0;
+                animation: slideInMenu 0.4s ease forwards;
+            }
+            
+            nav ul.show li:nth-child(1) { animation-delay: 0.1s; }
+            nav ul.show li:nth-child(2) { animation-delay: 0.2s; }
+            nav ul.show li:nth-child(3) { animation-delay: 0.3s; }
+            nav ul.show li:nth-child(4) { animation-delay: 0.4s; }
+            nav ul.show li:nth-child(5) { animation-delay: 0.5s; }
+            
+            @keyframes slideInMenu {
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            nav ul li:last-child {
+                border-bottom: none;
+            }
+            
+            nav ul li a {
+                font-size: 20px;
+                font-weight: 600;
+                display: block;
+                padding: 10px 0;
+                transition: all 0.3s ease;
+            }
+            
+            nav ul li a:hover {
+                color: var(--primary);
+                transform: scale(1.05);
+                letter-spacing: 2px;
+            }
+            
+            nav ul li a::after {
+                display: none;
+            }
+            
+            /* Hero Section */
+            .hero-slider {
+                height: 80vh;
+                min-height: 550px;
+            }
+            
+            .slide-content {
+                padding: 0 30px;
+                max-width: 100%;
+            }
+            
+            .slide-content h1 {
+                font-size: 36px;
+                line-height: 1.25;
+                margin-bottom: 18px;
+                font-weight: 700;
+            }
+            
+            .slide-content p {
+                font-size: 17px;
+                line-height: 1.7;
+                margin-bottom: 28px;
+                color: rgba(224, 224, 224, 0.95);
+            }
+            
+            .btn {
+                padding: 13px 32px;
+                font-size: 15px;
+            }
+            
+            .slider-nav {
+                bottom: 25px;
+                gap: 12px;
+            }
+            
+            .slider-dot {
+                width: 12px;
+                height: 12px;
+                padding: 10px;
+                -webkit-tap-highlight-color: transparent;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            }
+            
+            /* General Sections */
+            .about,
+            .products,
+            .projects,
+            .cta {
+                padding: 50px 0;
+            }
+            
+            .section-title h2,
+            .about-text h2,
+            .cta h2 {
+                font-size: 28px;
+                margin-bottom: 15px;
+            }
+            
+            .section-title p,
+            .about-text p,
+            .cta p {
+                font-size: 15px;
+                line-height: 1.7;
+            }
+            
+            /* About Section */
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .about-image {
+                order: -1;
+                border-radius: 8px;
+            }
+            
+            .feature {
+                margin-bottom: 15px;
+            }
+            
+            .feature-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+            
+            .feature-text h4 {
+                font-size: 16px;
+            }
+            
+            .feature-text p {
+                font-size: 14px;
+            }
+            
+            /* Reduce particles on mobile */
+            .floating-particle,
+            .falling-particle {
+                width: 3px;
+                height: 3px;
+            }
+            
+            .floating-particle:nth-child(even),
+            .falling-particle:nth-child(even) {
+                display: none;
+            }
+            
+            /* Category Brands - Mobile */
+            .category-brands {
+                gap: 6px;
+                margin-top: 15px;
+            }
+            
+            .category-brands-label {
+                font-size: 12px;
+            }
+            
+            .brand-logo {
+                width: 35px;
+                height: 35px;
+            }
+            
+            /* Categories Section - Mobile Vertical Layout */
+            .categories-grid {
+                gap: 50px;
+            }
+            
+            .category-card {
+                grid-template-columns: 1fr;
+                gap: 25px;
+                padding-bottom: 50px;
+            }
+            
+            .category-card:last-child {
+                padding-bottom: 0;
+            }
+            
+            /* Reset order for mobile - image always on top */
+            .category-card:nth-child(even) .category-image {
+                order: 0;
+            }
+            
+            .category-card:nth-child(even) .category-content {
+                order: 0;
+            }
+            
+            .category-image {
+                height: 250px;
+            }
+            
+            .category-image::before {
+                inset: -5px;
+                border-radius: 15px;
+            }
+            
+            .category-image::after {
+                inset: -7px;
+                border-radius: 17px;
+                box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            }
+            
+            .category-content {
+                padding: 0 10px;
+                text-align: center;
+            }
+            
+            .category-content h3 {
+                font-size: 26px;
+                margin-bottom: 15px;
+                gap: 12px;
+                justify-content: center;
+            }
+            
+            .category-icon {
+                font-size: 34px;
+            }
+            
+            .category-content p {
+                font-size: 16px;
+                margin-bottom: 25px;
+            }
+            
+            .category-btn {
+                padding: 13px 32px;
+                font-size: 15px;
+                width: 100%;
+                text-align: center;
+                max-width: 280px;
+                margin-top: 20px;
+            }
+            
+            /* Products Section - KEEP FOR FUTURE USE */
+            .product-section {
+                margin-bottom: 60px;
+            }
+            
+            .product-container {
+                grid-template-columns: 1fr;
+                border-radius: 12px;
+            }
+            
+            .product-image {
+                height: 220px;
+                order: -1;
+            }
+            
+            .product-content {
+                padding: 25px 20px;
+            }
+            
+            .product-content h3 {
+                font-size: 24px;
+                margin-bottom: 12px;
+            }
+            
+            .product-content .product-description {
+                font-size: 15px;
+                line-height: 1.6;
+            }
+            
+            .product-features h4,
+            .product-specs h4 {
+                font-size: 18px;
+                margin-bottom: 12px;
+            }
+            
+            .product-features li {
+                font-size: 14px;
+                margin-bottom: 8px;
+                padding-left: 22px;
+            }
+            
+            .product-features li::before {
+                font-size: 16px;
+            }
+            
+            .product-specs {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .specs-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .spec-item {
+                padding: 6px 0;
+                font-size: 14px;
+            }
+            
+            .product-price {
+                font-size: 24px;
+            }
+            
+            .product-action {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .product-action .btn {
+                width: 100%;
+                text-align: center;
+            }
+            
+            /* Projects Section */
+            .projects-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            
+            .project-card {
+                border-radius: 12px;
+            }
+            
+            .project-image {
+                height: 220px;
+            }
+            
+            .project-image::before {
+                top: -5px;
+                left: -5px;
+                right: -5px;
+                bottom: -5px;
+                border-radius: 15px;
+            }
+            
+            .project-image::after {
+                top: -7px;
+                left: -7px;
+                right: -7px;
+                bottom: -7px;
+                border-radius: 17px;
+            }
+            
+            .project-badge {
+                font-size: 14px;
+                padding: 6px 16px;
+            }
+            
+            .project-content {
+                padding: 20px;
+            }
+            
+            .project-content h3 {
+                font-size: 19px;
+                margin-bottom: 10px;
+            }
+            
+            .project-content p {
+                font-size: 15px;
+                line-height: 1.6;
+                margin-bottom: 15px;
+            }
+            
+            .project-detail-item {
+                font-size: 14px;
+                gap: 10px;
+            }
+            
+            .project-icon {
+                font-size: 18px;
+                width: 22px;
+            }
+            
+            /* Why Choose Section */
+            .why-choose {
+                padding: 60px 0;
+            }
+            
+            .why-choose-header h2 {
+                font-size: 32px;
+            }
+            
+            .why-choose-header p {
+                font-size: 16px;
+                padding: 0 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+            
+            .stat-card {
+                padding: 30px 20px;
+            }
+            
+            .stat-number {
+                font-size: 40px;
+            }
+            
+            .stat-label {
+                font-size: 16px;
+            }
+            
+            /* CTA Section */
+            .cta h2 {
+                font-size: 26px;
+            }
+            
+            .cta p {
+                font-size: 15px;
+                padding: 0 10px;
+            }
+            
+            /* Footer */
+            footer {
+                padding: 40px 0 15px;
+            }
+            
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+                margin-bottom: 30px;
+            }
+            
+            .footer-column h3 {
+                font-size: 18px;
+                margin-bottom: 15px;
+            }
+            
+            .footer-column p,
+            .footer-column ul li {
+                font-size: 14px;
+            }
+            
+            .copyright {
+                font-size: 13px;
+                padding-top: 15px;
+            }
+        }
+        
+        /* Extra Small Screens */
+        @media (max-width: 480px) {
+            .container {
+                width: 95%;
+            }
+            
+            .header-container {
+                padding: 8px 0;
+            }
+            
+            .logo-image {
+                height: 52px;
+            }
+            
+            .hero-slider {
+                min-height: 500px;
+                height: 85vh;
+            }
+            
+            .slide-content {
+                padding: 0 25px;
+                max-width: 100%;
+            }
+            
+            .slide-content h1 {
+                font-size: 28px;
+                line-height: 1.3;
+                margin-bottom: 16px;
+                font-weight: 700;
+            }
+            
+            .slide-content p {
+                font-size: 15px;
+                margin-bottom: 24px;
+                line-height: 1.6;
+                color: rgba(224, 224, 224, 0.9);
+            }
+            
+            .btn {
+                padding: 12px 28px;
+                font-size: 14px;
+            }
+            
+            .slider-dot {
+                width: 11px;
+                height: 11px;
+            }
+            
+            .about,
+            .products,
+            .projects,
+            .cta {
+                padding: 40px 0;
+            }
+            
+            .section-title h2,
+            .about-text h2 {
+                font-size: 22px;
+            }
+            
+            .section-title p {
+                font-size: 14px;
+            }
+            
+            /* Further reduce particles on small screens */
+            .floating-particle,
+            .falling-particle {
+                width: 2px;
+                height: 2px;
+            }
+            
+            /* Category Brands - Small Mobile */
+            .category-brands {
+                gap: 5px;
+                margin-top: 12px;
+            }
+            
+            .category-brands-label {
+                font-size: 11px;
+                margin-right: 3px;
+            }
+            
+            .brand-logo {
+                width: 32px;
+                height: 32px;
+            }
+            
+            /* Categories Section - Small Mobile */
+            .categories-grid {
+                gap: 40px;
+            }
+            
+            .category-card {
+                gap: 20px;
+                padding-bottom: 40px;
+            }
+            
+            .category-image {
+                height: 220px;
+            }
+            
+            .category-image::before {
+                inset: -4px;
+                border-radius: 14px;
+            }
+            
+            .category-image::after {
+                inset: -6px;
+                border-radius: 16px;
+                box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            }
+            
+            .category-content {
+                padding: 0 5px;
+            }
+            
+            .category-content h3 {
+                font-size: 24px;
+                margin-bottom: 12px;
+                gap: 10px;
+                justify-content: center;
+            }
+            
+            .category-icon {
+                font-size: 30px;
+            }
+            
+            .category-content p {
+                font-size: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .category-btn {
+                padding: 11px 26px;
+                font-size: 14px;
+                width: 100%;
+                max-width: 260px;
+                margin-top: 18px;
+            }
+            
+            /* Projects Section - Small Mobile */
+            .project-image {
+                height: 200px;
+            }
+            
+            .project-badge {
+                font-size: 13px;
+                padding: 5px 14px;
+            }
+            
+            .project-content h3 {
+                font-size: 18px;
+            }
+            
+            .project-content p {
+                font-size: 14px;
+            }
+            
+            .project-detail-item {
+                font-size: 13px;
+            }
+            
+            .project-icon {
+                font-size: 16px;
+                width: 20px;
+            }
+            
+            /* Products Section - KEEP FOR FUTURE USE */
+            .product-section {
+                margin-bottom: 50px;
+            }
+            
+            .product-content {
+                padding: 20px 18px;
+            }
+            
+            .product-content h3 {
+                font-size: 20px;
+            }
+            
+            .product-content .product-description {
+                font-size: 14px;
+            }
+            
+            .product-features h4,
+            .product-specs h4 {
+                font-size: 17px;
+            }
+            
+            .product-features li {
+                font-size: 13px;
+            }
+            
+            .product-price {
+                font-size: 22px;
+            }
+            
+            .project-content {
+                padding: 15px;
+            }
+            
+            .project-content h3 {
+                font-size: 17px;
+            }
+            
+            .project-content p {
+                font-size: 13px;
+            }
+            
+            /* Why Choose Section */
+            .why-choose {
+                padding: 50px 0;
+            }
+            
+            .why-choose-header h2 {
+                font-size: 28px;
+            }
+            
+            .why-choose-header p {
+                font-size: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .stat-card {
+                padding: 25px 15px;
+            }
+            
+            .stat-number {
+                font-size: 36px;
+            }
+            
+            .stat-label {
+                font-size: 15px;
+            }
+            
+            .cta h2 {
+                font-size: 24px;
+            }
+            
+            .cta p {
+                font-size: 14px;
+            }
+            
+            nav ul li a {
+                font-size: 18px;
+            }
+            
+            .footer-column h3 {
+                font-size: 17px;
+            }
+        }
+        
+        /* Landscape Mode for Mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .hero-slider {
+                height: 100vh;
+                min-height: 450px;
+            }
+            
+            .slide-content {
+                padding: 0 40px;
+            }
+            
+            .slide-content h1 {
+                font-size: 32px;
+                line-height: 1.3;
+                margin-bottom: 14px;
+            }
+            
+            .slide-content p {
+                font-size: 16px;
+                line-height: 1.6;
+                margin-bottom: 22px;
+            }
+            
+            .btn {
+                padding: 11px 26px;
+                font-size: 14px;
+            }
+            
+            .slider-nav {
+                bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <img src="mb-solar-logo.png" alt="MB Solar Power Logo" class="logo-image">
+            </div>
+            <div class="mobile-menu">☰</div>
+            <nav>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#products">Products</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Slider Section -->
+    <section class="hero-slider" id="home">
+        <!-- Slide 1: Solar Panels -->
+        <div class="slide slide-1 active" style="--bg-image: url('https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+            <div class="slide-overlay">
+                <div class="slide-content">
+                    <h1>Premium Solar Panels</h1>
+                    <p>High-efficiency solar panels that convert sunlight into electricity, reducing your energy bills and environmental impact.</p>
+                    <a href="#solar-panels" class="btn">Learn More</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Inverters -->
+        <div class="slide slide-2" style="--bg-image: url('baa2.jpg');">
+            <div class="slide-overlay">
+                <div class="slide-content">
+                    <h1>Advanced Inverters</h1>
+                    <p>Smart inverters that convert DC power from solar panels into usable AC power for your home or business.</p>
+                    <a href="#inverters" class="btn">Discover Inverters</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Batteries -->
+        <div class="slide slide-3" style="--bg-image: url('Solar\ Energy.jpg');">
+            <div class="slide-overlay">
+                <div class="slide-content">
+                    <h1>Solar Batteries</h1>
+                    <p>Energy storage solutions that allow you to store excess solar power for use during nighttime or power outages.</p>
+                    <a href="#batteries" class="btn">Explore Batteries</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slider Navigation -->
+        <div class="slider-nav">
+            <div class="slider-dot active" data-slide="0"></div>
+            <div class="slider-dot" data-slide="1"></div>
+            <div class="slider-dot" data-slide="2"></div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about" id="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 >About MB<span class="gradient-text"> Solar Power</span></h2>
+                    <p>With over 10 years of experience in the renewable energy industry, MB Solar Power has established itself as a leading provider of solar energy solutions. Our commitment to quality, innovation, and customer satisfaction sets us apart.</p>
+                    <p>We specialize in designing and installing customized solar systems that maximize energy production and return on investment for our clients.</p>
+                    
+                    <div class="about-features">
+                        <div class="feature">
+                            <div class="feature-icon">✓</div>
+                            <div class="feature-text">
+                                <h4>Expert Team</h4>
+                                <p>Certified professionals with extensive solar industry experience</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">☀️</div>
+                            <div class="feature-text">
+                                <h4>Quality Products</h4>
+                                <p>We use only premium components from trusted manufacturers</p>
+                            </div>
+                        </div>
+                        <div class="feature">
+                            <div class="feature-icon">🔧</div>
+                            <div class="feature-text">
+                                <h4>Full Service</h4>
+                                <p>From consultation to installation and maintenance</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <img src="Solar Energy.jpg" alt="Solar Installation">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section - Categories -->
+    <section class="products" id="products">
+        <!-- Floating Particles -->
+        <div class="floating-particle" style="--duration: 15s; --delay: 0s; --drift: 20px; left: 10%; bottom: 0;"></div>
+        <div class="floating-particle" style="--duration: 18s; --delay: 2s; --drift: -15px; left: 25%; bottom: 0;"></div>
+        <div class="floating-particle" style="--duration: 20s; --delay: 4s; --drift: 25px; left: 40%; bottom: 0;"></div>
+        <div class="floating-particle" style="--duration: 16s; --delay: 1s; --drift: -20px; left: 55%; bottom: 0;"></div>
+        <div class="floating-particle" style="--duration: 19s; --delay: 3s; --drift: 15px; left: 70%; bottom: 0;"></div>
+        <div class="floating-particle" style="--duration: 17s; --delay: 5s; --drift: -25px; left: 85%; bottom: 0;"></div>
+        <div class="floating-particle" style="--duration: 21s; --delay: 2.5s; --drift: 18px; left: 15%; bottom: 0;"></div>
+        <div class="floating-particle" style="--duration: 16s; --delay: 4.5s; --drift: -18px; left: 50%; bottom: 0;"></div>
+        <div class="floating-particle" style="--duration: 18s; --delay: 1.5s; --drift: 22px; left: 75%; bottom: 0;"></div>
+        <div class="floating-particle" style="--duration: 20s; --delay: 3.5s; --drift: -22px; left: 35%; bottom: 0;"></div>
+        <div class="floating-particle" style="--duration: 19s; --delay: 0.5s; --drift: 12px; left: 60%; bottom: 0;"></div>
+        <div class="floating-particle" style="--duration: 17s; --delay: 5.5s; --drift: -12px; left: 90%; bottom: 0;"></div>
+        
+        <!-- Falling Particles from Top -->
+        <div class="falling-particle" style="--duration: 14s; --delay: 0s; --drift: -18px; left: 12%; top: 0;"></div>
+        <div class="falling-particle" style="--duration: 17s; --delay: 1.5s; --drift: 22px; left: 28%; top: 0;"></div>
+        <div class="falling-particle" style="--duration: 19s; --delay: 3s; --drift: -15px; left: 45%; top: 0;"></div>
+        <div class="falling-particle" style="--duration: 15s; --delay: 2s; --drift: 20px; left: 58%; top: 0;"></div>
+        <div class="falling-particle" style="--duration: 18s; --delay: 4s; --drift: -25px; left: 72%; top: 0;"></div>
+        <div class="falling-particle" style="--duration: 16s; --delay: 0.5s; --drift: 16px; left: 88%; top: 0;"></div>
+        <div class="falling-particle" style="--duration: 20s; --delay: 3.5s; --drift: -20px; left: 20%; top: 0;"></div>
+        <div class="falling-particle" style="--duration: 15s; --delay: 5s; --drift: 18px; left: 38%; top: 0;"></div>
+        <div class="falling-particle" style="--duration: 17s; --delay: 1s; --drift: -22px; left: 65%; top: 0;"></div>
+        <div class="falling-particle" style="--duration: 19s; --delay: 2.5s; --drift: 14px; left: 80%; top: 0;"></div>
+        
+        <div class="container">
+            <div class="section-title">
+                
+                <h2>
+                    Our
+                    <span class="gradient-text"> Products</span>
+                </h2>
+                <p>Discover a wide range of high-quality solar energy products</p>
+            </div>
+            
+            <div class="categories-grid">
+                <!-- Solar Panels Category -->
+                <div class="category-card" id="solar-panels">
+                    <div class="category-image" style="background-image: url('https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                    </div>
+                    <div class="category-content">
+                        <h3>
+                            <span class="category-icon icon-solar">☀</span>
+                            <span>Solar Panels</span>
+                        </h3>
+                        <p>High-efficiency solar panels with a 25-year warranty, perfect for residential and commercial use</p>
+                        
+                        <div class="category-brands">
+                            <span class="category-brands-label">Available from:</span>
+                            <div class="brand-logo">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxSnUnztmtcobBAqB-wMTbL6A8L8igM6VQoA&s" alt="Canadian Solar">
+                            </div>
+                            <div class="brand-logo">
+                                <img src="https://lirp.cdn-website.com/46830114/dms3rep/multi/opt/favicon4-1920w.png" alt="JA Solar">
+                            </div>
+                            <div class="brand-logo">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJHIuMM-NiQzORXQ3pOkqkhsPIv_KYaTQo0w&s" alt="Longi">
+                            </div>
+                            <div class="brand-logo">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBU_5kHbqGvQQJVVZ9K5v0LXKCVqhLZPqKkQ&s" alt="Trina Solar">
+                            </div>
+                        </div>
+                        
+                        <a href="solar-panels.html" class="category-btn">Browse Products</a>
+                    </div>
+                </div>
+                
+                <!-- Inverters Category -->
+                <div class="category-card" id="inverters">
+                    <div class="category-image" style="background-image: url('inverter3.png');">
+                    </div>
+                    <div class="category-content">
+                        <h3>
+                            <span class="category-icon icon-inverter">⚡︎</span>
+                            <span>Inverters</span>
+                        </h3>
+                        <p>Smart hybrid inverters with MPPT technology for maximum efficiency and exceptional performance</p>
+                        
+                        <div class="category-brands">
+                            <span class="category-brands-label">Available from:</span>
+                            <div class="brand-logo">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxSnUnztmtcobBAqB-wMTbL6A8L8igM6VQoA&s" alt="Canadian Solar">
+                            </div>
+                            <div class="brand-logo">
+                                <img src="https://lirp.cdn-website.com/46830114/dms3rep/multi/opt/favicon4-1920w.png" alt="JA Solar">
+                            </div>
+                            <div class="brand-logo">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJHIuMM-NiQzORXQ3pOkqkhsPIv_KYaTQo0w&s" alt="Longi">
+                            </div>
+                            <div class="brand-logo">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBU_5kHbqGvQQJVVZ9K5v0LXKCVqhLZPqKkQ&s" alt="Trina Solar">
+                            </div>
+                        </div>
+                        
+                        <a href="#inverters-products" class="category-btn">Browse Products</a>
+                    </div>
+                </div>
+                
+                <!-- Batteries Category -->
+                <div class="category-card" id="batteries">
+                    <div class="category-image" style="background-image: url('batter.png');">
+                    </div>
+                    <div class="category-content">
+                        <h3>
+                            <span class="category-icon icon-battery">🔋︎</span>
+                            <span>Batteries</span>
+                        </h3>
+                        <p>Lithium-ion batteries for energy storage with a lifespan of over 10 years</p>
+                        
+                        <div class="category-brands">
+                            <span class="category-brands-label">Available from:</span>
+                            <div class="brand-logo">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxSnUnztmtcobBAqB-wMTbL6A8L8igM6VQoA&s" alt="Canadian Solar">
+                            </div>
+                            <div class="brand-logo">
+                                <img src="https://lirp.cdn-website.com/46830114/dms3rep/multi/opt/favicon4-1920w.png" alt="JA Solar">
+                            </div>
+                            <div class="brand-logo">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJHIuMM-NiQzORXQ3pOkqkhsPIv_KYaTQo0w&s" alt="Longi">
+                            </div>
+                            <div class="brand-logo">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBU_5kHbqGvQQJVVZ9K5v0LXKCVqhLZPqKkQ&s" alt="Trina Solar">
+                            </div>
+                        </div>
+                        
+                        <a href="#batteries-products" class="category-btn">Browse Products</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="projects" id="projects">
+        <div class="container">
+            <div class="section-title">
+                <h2>
+                    Completed
+                    <span class="gradient-text"> Projects</span>
+                </h2>
+                <p>Explore some of our successful solar installations for residential and commercial clients</p>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image" style="background-image: url('https://images.unsplash.com/photo-1548611635-b6e7827d7d4a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                        <div class="project-badge">12 kW</div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Residential Rooftop Installation</h3>
+                        <p>Complete solar panel installation with battery storage for a modern family home.</p>
+                        <div class="project-details">
+                            <div class="project-detail-item">
+                                <span class="project-icon location">◉</span>
+                                <span>San Diego, CA</span>
+                            </div>
+                            <div class="project-detail-item">
+                                <span class="project-icon date">◷</span>
+                                <span>March 2024</span>
+                            </div>
+                            <div class="project-detail-item">
+                                <span class="project-icon capacity">⚡︎</span>
+                                <span>System Capacity: 12 kW</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image" style="background-image: url('https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                        <div class="project-badge">50 kW</div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Commercial Office Building</h3>
+                        <p>Large-scale commercial installation reducing operational energy costs by 65%.</p>
+                        <div class="project-details">
+                            <div class="project-detail-item">
+                                <span class="project-icon location">◉</span>
+                                <span>Austin, TX</span>
+                            </div>
+                            <div class="project-detail-item">
+                                <span class="project-icon date">◷</span>
+                                <span>February 2024</span>
+                            </div>
+                            <div class="project-detail-item">
+                                <span class="project-icon capacity">⚡︎</span>
+                                <span>System Capacity: 50 kW</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-image" style="background-image: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');">
+                        <div class="project-badge">200 kW</div>
+                    </div>
+                    <div class="project-content">
+                        <h3>Industrial Warehouse Complex</h3>
+                        <p>Massive solar array powering an entire warehouse facility with green energy.</p>
+                        <div class="project-details">
+                            <div class="project-detail-item">
+                                <span class="project-icon location">◉</span>
+                                <span>Phoenix, AZ</span>
+                            </div>
+                            <div class="project-detail-item">
+                                <span class="project-icon date">◷</span>
+                                <span>January 2024</span>
+                            </div>
+                            <div class="project-detail-item">
+                                <span class="project-icon capacity">⚡︎</span>
+                                <span>System Capacity: 200 kW</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="why-choose">
+        <div class="container">
+            <div class="why-choose-header">
+                <h2 >Why Choose <span class="gradient-text">MB Solar?</span></h2>
+                <p>With decades of combined experience, industry-leading technology, and a commitment to customer satisfaction, we deliver solar solutions that exceed expectations. Our end-to-end service ensures a seamless transition to clean energy.</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Satisfaction</span>
+                </div>
+                
+                <div class="stat-card">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Support</span>
+                </div>
+                
+                <div class="stat-card">
+                    <span class="stat-number">25yr</span>
+                    <span class="stat-label">Warranty</span>
+                </div>
+                
+                <div class="stat-card">
+                    <span class="stat-number">A+</span>
+                    <span class="stat-label">Rated</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta" id="contact">
+        <div class="container">
+            <h2>Ready to Go Solar?</h2>
+            <p>Contact us today for a free consultation and quote. Our experts will help you design the perfect solar solution for your needs.</p>
+            <a href="#" class="btn">Contact Us Now</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+   <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <h3>MB Solar Power</h3>
+                    <p>Professional solar energy solutions for a sustainable future.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Our Products</h3>
+                    <ul>
+                        <li><a href="#solar-panels">Solar Panels</a></li>
+                        <li><a href="#inverters">Inverters</a></li>
+                        <li><a href="#batteries">Batteries</a></li>
+                        <li><a href="#projects">Projects</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li>Phone: (555) 123-4567</li>
+                        <li>Email: info@mbsolarpower.com</li>
+                        <li>Address: 123 Solar Street, Energy City</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 MB Solar Power. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Header scroll effect
+        const header = document.querySelector('header');
+        const heroSection = document.querySelector('.hero-slider');
+        
+        window.addEventListener('scroll', function() {
+            const heroHeight = heroSection.offsetHeight;
+            if (window.scrollY > heroHeight - 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+        
+        // Mobile menu toggle
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const navMenu = document.querySelector('nav ul');
+        
+        mobileMenu.addEventListener('click', function() {
+            navMenu.classList.toggle('show');
+            this.classList.toggle('active');
+            
+            // Change icon
+            if (navMenu.classList.contains('show')) {
+                this.innerHTML = '✕';
+                document.body.style.overflow = 'hidden';
+            } else {
+                this.innerHTML = '☰';
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Close menu when clicking outside
+        navMenu.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('show');
+                mobileMenu.classList.remove('active');
+                mobileMenu.innerHTML = '☰';
+                document.body.style.overflow = '';
+            }
+        });
+        
+        // Hero Slider Functionality with Auto-play
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.slider-dot');
+        const totalSlides = slides.length;
+        let autoPlayInterval;
+        
+        // Function to show specific slide
+        function showSlide(index) {
+            // Remove active class from all slides and dots
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            // Add active class to current slide and dot
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+            
+            currentSlide = index;
+        }
+        
+        // Function to go to next slide
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % totalSlides;
+            showSlide(currentSlide);
+        }
+        
+        // Function to go to previous slide
+        function prevSlide() {
+            currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+            showSlide(currentSlide);
+        }
+        
+        // Start auto-play
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(nextSlide, 5000); // Change slide every 5 seconds
+        }
+        
+        // Stop auto-play
+        function stopAutoPlay() {
+            clearInterval(autoPlayInterval);
+        }
+        
+        // Dot click handlers
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', function() {
+                showSlide(index);
+                stopAutoPlay();
+                startAutoPlay(); // Restart auto-play after manual navigation
+            });
+        });
+        
+        // Pause auto-play when user hovers over slider
+        document.querySelector('.hero-slider').addEventListener('mouseenter', stopAutoPlay);
+        document.querySelector('.hero-slider').addEventListener('mouseleave', startAutoPlay);
+        
+        // Start auto-play on page load
+        startAutoPlay();
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 120,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (navMenu.classList.contains('show')) {
+                        navMenu.classList.remove('show');
+                        mobileMenu.classList.remove('active');
+                        mobileMenu.innerHTML = '☰';
+                        document.body.style.overflow = '';
+                    }
+                }
+            });
+        });
+        
+    </script>
+</body>
+</html>
