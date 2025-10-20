@@ -1292,7 +1292,11 @@ footer {
     }
     
     .logo-image {
+        position: relative;
+        left: 15px;
+        transform: scale(1.6);
         height: 65px;
+        background-color: #00b87200;
     }
     
     .mobile-menu {

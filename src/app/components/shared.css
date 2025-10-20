@@ -168,9 +168,12 @@ nav ul li a:hover::after {
     }
     
     .logo-image {
-        height: 70px;
+        position: relative;
+        left: 15px;
+        transform: scale(1.6);
+        height: 65px;
+        background-color: #00b87200;
     }
-    
     .footer-content {
         grid-template-columns: 1fr;
         gap: 30px;
