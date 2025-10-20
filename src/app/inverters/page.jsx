@@ -3,6 +3,8 @@ import './style.css';
 import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
+import "@fortawesome/fontawesome-free/css/solid.min.css";
 
 // Page Header Component
 const PageHeader = () => {
@@ -67,7 +69,7 @@ const BrandSection = ({ brand }) => {
         <div className="brand-info">
           <h2>{brand.name}</h2>
           <div className="brand-country">
-            <span>🌍</span>
+            <span><i className="fa-solid fa-globe" style={{color:"#74C0FC", scale:"1.1"}}></i></span>
             <span>{brand.country}</span>
           </div>
         </div>

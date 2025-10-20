@@ -3,6 +3,8 @@ import './style.css';
 import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
+import "@fortawesome/fontawesome-free/css/solid.min.css";
 
 // Page Header Component
 const PageHeader = () => {
@@ -10,7 +12,7 @@ const PageHeader = () => {
     <section className="page-header">
       <div className="container">
         <div className="page-header-content">
-          <h1>🔋 Solar Batteries</h1>
+      <h1> <i className="fa-solid fa-battery-full" style={{}}></i> Solar Batteries</h1>
           <p>Discover our premium energy storage solutions designed for maximum capacity, reliability, and long-lasting performance.</p>
           <div className="breadcrumb">
             <Link href="/">Home</Link>
