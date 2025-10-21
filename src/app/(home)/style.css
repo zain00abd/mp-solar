@@ -167,6 +167,7 @@ header.scrolled {
     margin-bottom: 30px;
     color: var(--text-muted);
     animation: fadeInUp 1.2s ease-out;
+    text-align: center;
 }
 
 .btn {
@@ -508,6 +509,7 @@ header.scrolled {
     color: var(--text-muted);
     font-family: 'Segoe UI', 'Arial', sans-serif;
     direction: ltr;
+    text-align: center;
 }
 
 /* Gradient Text Effect */
@@ -699,6 +701,7 @@ header.scrolled {
     line-height: 1.8;
     margin-bottom: 30px;
     font-family: 'Segoe UI', 'Arial', sans-serif;
+    text-align: center;
 }
 
 .category-btn {
@@ -1143,6 +1146,7 @@ header.scrolled {
     font-size: 18px;
     color: var(--text-muted);
     position: relative;
+    text-align: center;
 }
 
 /* Footer */
