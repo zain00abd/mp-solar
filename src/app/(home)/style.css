@@ -237,6 +237,7 @@ header.scrolled {
     z-index: 10;
 }
 
+/* Fix slider dot block and cleanup media insertion */
 .slider-dot {
     width: 12px;
     height: 12px;
@@ -249,6 +250,34 @@ header.scrolled {
 .slider-dot.active {
     background-color: var(--primary);
     transform: scale(1.2);
+}
+
+/* Desktop alignment improvements for hero */
+@media (min-width: 1024px) {
+    /* Align content to the left and widen usable area */
+    .slide {
+        justify-content: flex-start;
+    }
+    .slide-overlay {
+        justify-content: flex-start;
+        padding: 0 80px;
+    }
+    .slide-content {
+        text-align: left;
+        max-width: 1100px;
+        margin-left: 0;
+    }
+    /* Add subtle visual presence on the right side */
+    .slide-overlay::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 38%;
+        height: 100%;
+        pointer-events: none;
+        background: radial-gradient(ellipse at 80% 50%, rgba(255,165,0,0.12) 0%, rgba(255,165,0,0.06) 40%, rgba(18,18,18,0) 70%);
+    }
 }
 
 
@@ -1882,16 +1911,17 @@ footer {
 }
 
 /* ===============================================
-   Modern Hero Section - New Design
+   Modern Hero Section - Redesigned for Better Centering
    =============================================== */
 .modern-hero {
     position: relative;
     min-height: 100vh;
     display: flex;
     align-items: center;
-    padding-top: 120px;
-    padding-bottom: 80px;
+    justify-content: center;
+    padding: 120px 20px 80px;
     overflow: hidden;
+    text-align: center;
 }
 
 .hero-background {
@@ -1908,64 +1938,64 @@ footer {
     position: absolute;
     border-radius: 50%;
     filter: blur(80px);
-    opacity: 0.6;
+    opacity: 0.4;
     animation: float 20s ease-in-out infinite;
 }
 
 .orb-1 {
-    width: 500px;
-    height: 500px;
+    width: 400px;
+    height: 400px;
     background: radial-gradient(circle, #FFA500 0%, transparent 70%);
-    top: -10%;
-    left: -10%;
+    top: -15%;
+    left: -15%;
     animation-delay: 0s;
 }
 
 .orb-2 {
-    width: 400px;
-    height: 400px;
+    width: 350px;
+    height: 350px;
     background: radial-gradient(circle, #4A90E2 0%, transparent 70%);
-    top: 50%;
-    right: -5%;
+    top: 60%;
+    right: -10%;
     animation-delay: 7s;
 }
 
 .orb-3 {
-    width: 350px;
-    height: 350px;
+    width: 300px;
+    height: 300px;
     background: radial-gradient(circle, #10B981 0%, transparent 70%);
-    bottom: -10%;
-    left: 30%;
+    bottom: -15%;
+    left: 50%;
+    transform: translateX(-50%);
     animation-delay: 14s;
 }
 
 @keyframes float {
     0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(30px, -30px) scale(1.1); }
-    66% { transform: translate(-20px, 20px) scale(0.9); }
+    33% { transform: translate(20px, -20px) scale(1.05); }
+    66% { transform: translate(-15px, 15px) scale(0.95); }
 }
 
 .hero-container {
     position: relative;
     z-index: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
 }
 
 .hero-content {
-    animation: slideInLeft 1s ease;
+    animation: fadeInUp 1s ease;
 }
 
-@keyframes slideInLeft {
+@keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateX(-50px);
+        transform: translateY(30px);
     }
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
     }
 }
 
@@ -2187,6 +2217,8 @@ footer {
     border-radius: 30px;
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    max-width: 650px;
+    margin: 0 auto 40px;
 }
 
 .hero-image {
@@ -2194,6 +2226,7 @@ footer {
     height: auto;
     display: block;
     animation: zoomIn 1.5s ease;
+    transform: scale(1.05);
 }
 
 @keyframes zoomIn {
@@ -2354,5 +2387,45 @@ footer {
     .hero-stats {
         grid-template-columns: 1fr;
         gap: 15px;
+    }
+}
+
+/* Desktop Styles for Modern Hero */
+@media (min-width: 1024px) {
+    .modern-hero {
+        padding: 140px 40px 100px;
+    }
+    
+    .hero-container {
+        max-width: 1100px;
+    }
+    
+    .hero-content h1 {
+        font-size: 4rem;
+        line-height: 1.1;
+        margin-bottom: 1.5rem;
+    }
+    
+    .hero-content p {
+        font-size: 1.3rem;
+        line-height: 1.6;
+        margin-bottom: 2.5rem;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .btn {
+        padding: 16px 40px;
+        font-size: 1.1rem;
+    }
+    
+    .hero-image-wrapper {
+        max-width: 800px;
+        margin: 0 auto 50px;
+    }
+    
+    .hero-image {
+        transform: scale(1.1);
     }
 }

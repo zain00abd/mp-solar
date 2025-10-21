@@ -82,7 +82,8 @@ nav ul li a {
     padding: 5px 0;
 }
 
-nav ul li a:hover {
+nav ul li a:hover,
+nav ul li a.active {
     color: var(--primary);
 }
 
@@ -97,7 +98,8 @@ nav ul li a::after {
     transition: width 0.3s ease;
 }
 
-nav ul li a:hover::after {
+nav ul li a:hover::after,
+nav ul li a.active::after {
     width: 100%;
 }
 

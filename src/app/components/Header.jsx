@@ -7,12 +7,46 @@ import './shared.css';
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
   const pathname = usePathname();
   const router = useRouter();
 
   // Close menu when route changes
   useEffect(() => {
     setMenuOpen(false);
+  }, [pathname]);
+
+  // Track active section based on scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (pathname === '/') {
+        const sections = ['home', 'about', 'products', 'projects', 'contact'];
+        const scrollPosition = window.scrollY + 100; // Add offset for better detection
+        
+        let currentSection = 'home';
+        
+        for (const section of sections) {
+          const element = document.getElementById(section);
+          if (element) {
+            const offsetTop = element.offsetTop;
+            if (scrollPosition >= offsetTop) {
+              currentSection = section;
+            }
+          }
+        }
+        
+        setActiveSection(currentSection);
+      }
+    };
+
+    if (pathname === '/') {
+      window.addEventListener('scroll', handleScroll);
+      handleScroll(); // Call once to set initial state
+    }
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [pathname]);
 
   // Smooth scroll on homepage, navigate otherwise
@@ -32,6 +66,7 @@ const Header = () => {
         if (target) {
           window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
           setMenuOpen(false);
+          setActiveSection(hash);
         }
       } else {
         // Navigate to homepage with hash
@@ -41,6 +76,9 @@ const Header = () => {
     } else {
       // Non-anchor links: just close menu
       setMenuOpen(false);
+      if (href === '/') {
+        setActiveSection('home');
+      }
     }
   };
 
@@ -60,6 +98,10 @@ const Header = () => {
     };
   }, [menuOpen]);
 
+  const getNavItemClass = (section) => {
+    return activeSection === section ? 'active' : '';
+  };
+
   return (
     <header className="shared-header">
       <div className="container header-container">
@@ -70,11 +112,11 @@ const Header = () => {
         </div>
         <nav className={menuOpen ? 'menu-open' : ''}>
           <ul>
-            <li><Link href="/" onClick={handleNavClick}>Home</Link></li>
-            <li><Link href="/#about" onClick={handleNavClick}>About</Link></li>
-            <li><Link href="/#products" onClick={handleNavClick}>Products</Link></li>
-            <li><Link href="/#projects" onClick={handleNavClick}>Projects</Link></li>
-            <li><Link href="/#contact" onClick={handleNavClick}>Contact</Link></li>
+            <li><Link href="/" onClick={handleNavClick} className={getNavItemClass('home')}>Home</Link></li>
+            <li><Link href="/#about" onClick={handleNavClick} className={getNavItemClass('about')}>About</Link></li>
+            <li><Link href="/#products" onClick={handleNavClick} className={getNavItemClass('products')}>Products</Link></li>
+            <li><Link href="/#projects" onClick={handleNavClick} className={getNavItemClass('projects')}>Projects</Link></li>
+            <li><Link href="/#contact" onClick={handleNavClick} className={getNavItemClass('contact')}>Contact</Link></li>
           </ul>
         </nav>
         <button
