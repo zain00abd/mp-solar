@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import './style.css';
+import Header from '@/app/components/Header';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 // Slider data
 const slidesData = [
@@ -122,37 +123,16 @@ const statsData = [
 ];
 
 // Header Component
-const Header = ({ mobileMenuOpen, setMobileMenuOpen, scrolled }) => {
-  const handleMenuClick = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-    document.body.style.overflow = !mobileMenuOpen ? 'hidden' : '';
-  };
+// const Header = ({ mobileMenuOpen, setMobileMenuOpen, scrolled }) => {
+//   const handleMenuClick = () => {
+//     setMobileMenuOpen(!mobileMenuOpen);
+//     document.body.style.overflow = !mobileMenuOpen ? 'hidden' : '';
+//   };
 
-  return (
-    <header className={scrolled ? 'scrolled' : ''}>
-      <div className="container header-container">
-        <div className="logo">
-          <img src="/logo22.png" alt="MB Solar Power Logo" className="logo-image" />
-        </div>
-        <div 
-          className={`mobile-menu ${mobileMenuOpen ? 'active' : ''}`}
-          onClick={handleMenuClick}
-        >
-          {mobileMenuOpen ? '✕' : '☰'}
-        </div>
-        <nav>
-          <ul className={mobileMenuOpen ? 'show' : ''}>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#products">Products</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </nav>
-      </div>
-    </header>
-  );
-};
+//   return (
+// <Header />
+//   );
+// };
 
 // Modern Hero Component
 const ModernHero = () => {
@@ -582,9 +562,7 @@ const MainPage = () => {
   return (
     <div className="main-page">
       <Header 
-        mobileMenuOpen={mobileMenuOpen} 
-        setMobileMenuOpen={setMobileMenuOpen}
-        scrolled={scrolled}
+
       />
       <ModernHero />
       <AboutSection />
