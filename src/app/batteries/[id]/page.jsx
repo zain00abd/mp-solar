@@ -87,7 +87,6 @@ const ProductDetail = () => {
 
           <div className="product-card">
             <div className="product-image" style={{ backgroundImage: `url('${product.image}')`, height: '400px' }}>
-              <div className="product-badge">{product.badge}</div>
             </div>
             <div className="product-content">
               <div className="product-header">
