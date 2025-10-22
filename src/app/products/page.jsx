@@ -1,9 +1,10 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import './style.css';
 import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-
 // Page Header Component
 const PageHeader = () => {
   return (
@@ -23,30 +24,61 @@ const PageHeader = () => {
   );
 };
 
-// Simple Product Card Component
-const ProductCard = ({ product, brandId }) => {
-  const productId = `${brandId}-${product.name.toLowerCase().replace(/\s+/g, '-')}`;
-  
+// Enhanced Product Card Component
+const ProductCard = ({ product }) => {
+
   return (
-    <div className="product-card-simple">
-      <div className="product-image" style={{ backgroundImage: `url('${product.image}')` }}>
-        <div className="product-badge">{product.badge}</div>
+    <div className="product-card-enhanced">
+      <div className="product-image-container">
+        <img className="product-image" src={product.image} alt={product.name} />
       </div>
-      <div className="product-content-simple">
-        <div className="product-brand-logo">
-          <img src={product.brandLogo} alt={product.brand} />
+
+      <div className="product-content-enhanced">
+        <div className="product-header">
+          <h3 className="product-title">{product.name}</h3>
+          <div className="brand-name-row">
+            <div className="brand-logo-circle">
+              <img src={product.brandLogo} alt={product.brand} />
+            </div>
+            <div className="product-brand-name">{product.brand}</div>
+          </div>
         </div>
-        <h3>{product.name}</h3>
-        <div className="product-quick-specs">
-          <span className="spec-highlight">{product.specs[0].value}</span>
-          <span className="spec-divider">•</span>
-          <span className="spec-highlight">{product.specs[1].value}</span>
+
+        <div className="product-specs-section">
+          <h4 className="specs-title">Key Specifications</h4>
+          <div className="product-specs-grid">
+            <div className="spec-item">
+              <span className="spec-value">{product.specs[0].value}</span>
+              <span className="spec-label">{product.specs[0].label}</span>
+            </div>
+            <div className="spec-divider-vertical"></div>
+            <div className="spec-item">
+              <span className="spec-value">{product.specs[1].value}</span>
+              <span className="spec-label">{product.specs[1].label}</span>
+            </div>
+          </div>
+          <div className="product-specs-grid">
+            <div className="spec-item">
+              <span className="spec-value">{product.specs[2].value}</span>
+              <span className="spec-label">{product.specs[2].label}</span>
+            </div>
+            <div className="spec-divider-vertical"></div>
+            <div className="spec-item">
+              <span className="spec-value">{product.specs[3].value}</span>
+              <span className="spec-label">{product.specs[3].label}</span>
+            </div>
+          </div>
         </div>
-        <div className="product-price-simple">
-          <span className="price-label">Starting from</span>
-          <span className="price-value">${product.price}</span>
+
+        <div className="product-pricing-section">
+          <h4 className="pricing-title">Price</h4>
+          <div className="product-price-enhanced">
+            <span className="price-label">Starting from</span>
+            <span className="price-value">${product.price}</span>
+          </div>
         </div>
-        <Link href={`/products/${productId}`} className="btn-simple">
+
+        <Link href={`/products/${product._id}`} className="btn-enhanced">
           View Details
         </Link>
       </div>
@@ -55,29 +87,31 @@ const ProductCard = ({ product, brandId }) => {
 };
 
 // Brand Section Component
-const BrandSection = ({ brand }) => {
-  const brandId = brand.name.toLowerCase().replace(/\s+/g, '-');
-  
+const BrandSection = ({ company, products }) => {
   return (
-    <div className="brand-section">
-      <div className="brand-header">
-        <div className="brand-logo-section">
-          <img src={brand.logo} alt={brand.name} />
-        </div>
-        <div className="brand-info">
-          <h2>{brand.name}</h2>
-          <div className="brand-country">
-            <span>🌍</span>
-            <span>{brand.country}</span>
+    <section className="brand-section">
+      <div className="container">
+        <div className="brand-header">
+          <div className="brand-info">
+            <div className="brand-details">
+              <div className="brand-name-row">
+                <div className="brand-logo-circle">
+                  <img src={company.logo} alt={company.name} />
+                </div>
+                <h2>{company.name}</h2>
+              </div>
+              <p className="brand-country">📍 {company.country}</p>
+              {company.description && <p className="brand-description">{company.description}</p>}
+            </div>
           </div>
         </div>
+        <div className="products-grid">
+          {products.map((product) => (
+            <ProductCard key={product._id} product={product} />
+          ))}
+        </div>
       </div>
-      <div className="products-grid">
-        {brand.products.map((product, index) => (
-          <ProductCard key={index} product={product} brandId={brandId} />
-        ))}
-      </div>
-    </div>
+    </section>
   );
 };
 
@@ -241,17 +275,105 @@ const productsData = [
 
 // Main Component
 const SolarPanels = () => {
+  const [products, setProducts] = useState([]);
+  const [companies, setCompanies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    loadLocalData();
+  }, []);
+
+  const loadLocalData = () => {
+    try {
+      setLoading(true);
+      
+      // استخدام البيانات المحلية
+      const allProducts = [];
+      const allCompanies = [];
+      
+      productsData.forEach(company => {
+        allCompanies.push({
+          _id: company.name.toLowerCase().replace(/\s+/g, '-'),
+          name: company.name,
+          country: company.country,
+          logo: company.logo
+        });
+        
+        company.products.forEach(product => {
+          allProducts.push({
+            ...product,
+            _id: `${company.name.toLowerCase().replace(/\s+/g, '-')}-${product.name.toLowerCase().replace(/\s+/g, '-')}`,
+            company: {
+              _id: company.name.toLowerCase().replace(/\s+/g, '-'),
+              name: company.name,
+              country: company.country,
+              logo: company.logo
+            },
+            availability: 'in-stock',
+            category: 'products'
+          });
+        });
+      });
+      
+      setProducts(allProducts);
+      setCompanies(allCompanies);
+    } catch (err) {
+      console.error('Error loading data:', err);
+      setError('Failed to load data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // تجميع المنتجات حسب الشركة
+  const groupedProducts = companies.map(company => ({
+    company,
+    products: products.filter(product => product.company?._id === company._id)
+  })).filter(group => group.products.length > 0);
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <div className="loading-spinner"></div>
+        <p>Loading solar panels...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+        return (
+          <div className="error-container">
+            <p>Error: {error}</p>
+            <button onClick={loadLocalData}>Try Again</button>
+          </div>
+        );
+      }
+
   return (
     <div className="solar-panels-page">
       <Header />
       <PageHeader />
-      <section className="products-section">
-        <div className="container">
-          {productsData.map((brand, index) => (
-            <BrandSection key={index} brand={brand} />
-          ))}
-        </div>
-      </section>
+      
+      <main className="main-content">
+        {groupedProducts.length > 0 ? (
+          groupedProducts.map((group) => (
+            <BrandSection 
+              key={group.company._id} 
+              company={group.company} 
+              products={group.products} 
+            />
+          ))
+        ) : (
+          <div className="no-products">
+            <p>No solar panels available at the moment.</p>
+            <Link href="/admin/add-product" className="add-product-link">
+              Add New Product
+            </Link>
+          </div>
+        )}
+      </main>
+      
       <Footer />
     </div>
   );

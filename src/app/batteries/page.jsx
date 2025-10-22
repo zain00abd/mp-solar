@@ -25,30 +25,62 @@ const PageHeader = () => {
   );
 };
 
-// Simple Product Card Component
+// Enhanced Product Card Component
 const ProductCard = ({ product, brandId }) => {
   const productId = `${brandId}-${product.name.toLowerCase().replace(/\s+/g, '-')}`;
   
   return (
-    <div className="product-card-simple">
-      <div className="product-image" style={{ backgroundImage: `url('${product.image}')` }}>
-        <div className="product-badge">{product.badge}</div>
+    <div className="product-card-enhanced">
+      <div className="product-image-container">
+        <img className="product-image" src={product.image} alt={product.name} />
       </div>
-      <div className="product-content-simple">
-        <div className="product-brand-logo">
-          <img src={product.brandLogo} alt={product.brand} />
+      
+      <div className="product-content-enhanced">
+        <div className="product-header">
+          <h3 className="product-title">{product.name}</h3>
+          <div className="brand-name-row">
+            <div className="brand-logo-circle">
+              <img src={product.brandLogo} alt={product.brand} />
+            </div>
+            <div className="product-brand-name">{product.brand}</div>
+          </div>
         </div>
-        <h3>{product.name}</h3>
-        <div className="product-quick-specs">
-          <span className="spec-highlight">{product.specs[0].value}</span>
-          <span className="spec-divider">•</span>
-          <span className="spec-highlight">{product.specs[1].value}</span>
+        
+        <div className="product-specs-section">
+          <h4 className="specs-title">Key Specifications</h4>
+          <div className="product-specs-grid">
+            <div className="spec-item">
+              <span className="spec-value">{product.specs[0].value}</span>
+              <span className="spec-label">{product.specs[0].label}</span>
+            </div>
+            <div className="spec-divider-vertical"></div>
+            <div className="spec-item">
+              <span className="spec-value">{product.specs[1].value}</span>
+              <span className="spec-label">{product.specs[1].label}</span>
+            </div>
+          </div>
+          <div className="product-specs-grid">
+            <div className="spec-item">
+              <span className="spec-value">{product.specs[2].value}</span>
+              <span className="spec-label">{product.specs[2].label}</span>
+            </div>
+            <div className="spec-divider-vertical"></div>
+            <div className="spec-item">
+              <span className="spec-value">{product.specs[3].value}</span>
+              <span className="spec-label">{product.specs[3].label}</span>
+            </div>
+          </div>
         </div>
-        <div className="product-price-simple">
-          <span className="price-label">Starting from</span>
-          <span className="price-value">${product.price}</span>
+        
+        <div className="product-pricing-section">
+          <h4 className="pricing-title">Price</h4>
+          <div className="product-price-enhanced">
+            <span className="price-label">Starting from</span>
+            <span className="price-value">${product.price}</span>
+          </div>
         </div>
-        <Link href={`/batteries/${productId}`} className="btn-simple">
+        
+        <Link href={`/batteries/${productId}`} className="btn-enhanced">
           View Details
         </Link>
       </div>
