@@ -213,14 +213,15 @@ const ProductDetail = () => {
 
           <div className="product-card">
             <div className="product-image" style={{ backgroundImage: `url('${product.image}')`, height: '400px' }}>
-              <div className="product-badge">{product.badge}</div>
             </div>
             <div className="product-content">
               <div className="product-header">
                 <h3>{product.name}</h3>
-                <div className="product-brand">
-                  <img src={product.brandLogo} alt={product.brand} />
-                  <span>{product.brand} • {brand.country}</span>
+                <div className="brand-name-row">
+                  <div className="brand-logo-circle">
+                    <img src={product.brandLogo} alt={product.brand} />
+                  </div>
+                  <div className="product-brand-name">{product.brand} • {brand.country}</div>
                 </div>
               </div>
               <p className="product-description">{product.description}</p>
@@ -248,7 +249,7 @@ const ProductDetail = () => {
                   <span className="price-label">Starting from</span>
                   <span className="price-value">${product.price}</span>
                 </div>
-                <a href="#contact" className="btn">Request Quote</a>
+                <a href="#contact" className="btn-enhanced">Request Quote</a>
               </div>
             </div>
           </div>
