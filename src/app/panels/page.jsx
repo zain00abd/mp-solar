@@ -6,7 +6,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import './style.css';
 
-const Inverters = () => {
+const SolarPanels = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('All Products');
@@ -17,19 +17,19 @@ const Inverters = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('/api/inverters?limit=100');
+      const response = await fetch('/api/products-panels?isActive=true');
       if (response.ok) {
         const data = await response.json();
         setProducts(data?.data || []);
       }
     } catch (error) {
-      console.error('Failed to fetch inverters:', error);
+      console.error('Failed to fetch solar panels:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const filters = ['All Products', 'Residential', 'Commercial', 'Industrial', 'High Power'];
+  const filters = ['All Products', 'Monocrystalline', 'Polycrystalline', 'Thin Film', 'High Efficiency'];
 
   const ProductCard = ({ product }) => {
     const specs = Array.isArray(product?.specs) ? product.specs : [];
@@ -43,38 +43,38 @@ const Inverters = () => {
       <div className="product-card">
         <div className="product-image-container">
           <img 
-            src={product?.image || '/inverter3.png'} 
-            alt={product?.name || 'Inverter'} 
+            src={product?.image || '/Solar Energy.jpg'} 
+            alt={product?.name || 'Solar Panel'} 
             className="product-image"
           />
-          <div className="product-badge">High Efficiency</div>
+          <div className="product-badge">Premium Quality</div>
         </div>
         
         <div className="product-content">
-          <h3 className="product-title">{product?.name || 'Solar Inverter'}</h3>
+          <h3 className="product-title">{product?.name || 'Solar Panel'}</h3>
           <p className="product-description">
-            {product?.description || 'High-efficiency inverter for converting DC solar power to AC for your home.'}
+            {product?.description || 'High-efficiency solar panel designed for maximum energy production and durability.'}
           </p>
           
           <div className="specs-container">
             <div className="spec-column">
               <div className="spec-item">
-                <span className="spec-label">{s0?.label || 'Power Rating'}</span>
-                <span className="spec-value">{s0?.value || '5 kW'}</span>
+                <span className="spec-label">{s0?.label || 'Power'}</span>
+                <span className="spec-value">{s0?.value || '400W'}</span>
               </div>
               <div className="spec-item">
                 <span className="spec-label">{s1?.label || 'Efficiency'}</span>
-                <span className="spec-value">{s1?.value || '98%'}</span>
+                <span className="spec-value">{s1?.value || '22%'}</span>
               </div>
             </div>
             <div className="spec-column">
               <div className="spec-item">
                 <span className="spec-label">{s2?.label || 'Warranty'}</span>
-                <span className="spec-value">{s2?.value || '10 Years'}</span>
+                <span className="spec-value">{s2?.value || '25 Years'}</span>
               </div>
               <div className="spec-item">
                 <span className="spec-label">{s3?.label || 'Type'}</span>
-                <span className="spec-value">{s3?.value || 'String'}</span>
+                <span className="spec-value">{s3?.value || 'Mono'}</span>
               </div>
             </div>
           </div>
@@ -84,11 +84,7 @@ const Inverters = () => {
             <div className="features-grid">
               <div className="feature-item">
                 <span className="feature-icon">✓</span>
-                <span>MPPT Technology</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">✓</span>
-                <span>Wi-Fi Monitoring</span>
+                <span>High Efficiency</span>
               </div>
               <div className="feature-item">
                 <span className="feature-icon">✓</span>
@@ -98,11 +94,15 @@ const Inverters = () => {
                 <span className="feature-icon">✓</span>
                 <span>Easy Installation</span>
               </div>
+              <div className="feature-item">
+                <span className="feature-icon">✓</span>
+                <span>Long Warranty</span>
+              </div>
             </div>
           </div>
           
           <div className="product-actions">
-            <Link href={`/inverters/${product?._id}`} className="btn">
+            <Link href={`/products/${product?._id}`} className="btn">
               View Product Details
             </Link>
           </div>
@@ -113,10 +113,10 @@ const Inverters = () => {
 
   if (loading) {
     return (
-      <div className="solar-inverters-page">
+      <div className="solar-panels-page">
         <Header />
         <div className="container">
-          <div className="loading-state">Loading inverters...</div>
+          <div className="loading-state">Loading solar panels...</div>
         </div>
         <Footer />
       </div>
@@ -124,7 +124,7 @@ const Inverters = () => {
   }
 
   return (
-    <div className="solar-inverters-page">
+    <div className="solar-panels-page">
       <Header />
       
       {/* Hero Section */}
@@ -134,24 +134,24 @@ const Inverters = () => {
         </div>
         <div className="hero-content">
           <div className="hero-icon">
-            <i className="fa-solid fa-bolt"></i>
+            <i className="fa-solid fa-sun"></i>
           </div>
-          <h1 className="hero-title">Solar Inverters</h1>
+          <h1 className="hero-title">Solar Panels</h1>
           <p className="hero-description">
-            Discover our range of high-efficiency inverters for residential and commercial systems with advanced power conversion technology.
+            Discover our range of premium solar panels designed for maximum efficiency, durability, and long-term performance.
           </p>
           <div className="hero-breadcrumb">
             <Link href="/" className="breadcrumb-link">Home</Link>
             <span className="breadcrumb-separator">›</span>
-            <span className="breadcrumb-current">Inverters</span>
+            <span className="breadcrumb-current">Solar Panels</span>
           </div>
         </div>
       </section>
       
       <div className="container">
         <div className="header">
-          <h1>Solar Inverters</h1>
-          <p>Discover our range of high-efficiency inverters for residential and commercial systems</p>
+          <h1>Solar Panels</h1>
+          <p>Discover our range of premium solar panels designed for maximum efficiency, durability, and long-term performance</p>
         </div>
         
         <div className="filters">
@@ -168,7 +168,7 @@ const Inverters = () => {
         
         <div className="products-grid">
           {products.length === 0 ? (
-            <div className="empty-state">No inverters found.</div>
+            <div className="empty-state">No solar panels found.</div>
           ) : (
             products.map((product) => (
               <ProductCard key={product._id} product={product} />
@@ -182,5 +182,4 @@ const Inverters = () => {
   );
 };
 
-export default Inverters;
-
+export default SolarPanels;

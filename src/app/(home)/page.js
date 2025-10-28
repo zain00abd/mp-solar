@@ -10,7 +10,7 @@ const slidesData = [
     title: 'Premium Solar Panels',
     description: 'High-efficiency solar panels that convert sunlight into electricity, reducing your energy bills and environmental impact.',
     buttonText: 'Learn More',
-    buttonLink: '#products',
+    buttonLink: '#panels',
     image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
     className: 'slide-1'
   },
@@ -43,7 +43,7 @@ const categoriesData = [
     title: 'Solar Panels',
     description: 'High-efficiency solar panels with a 25-year warranty, perfect for residential and commercial use',
     image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-    link: '/products',
+    link: '/panels',
     brands: [
       'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxSnUnztmtcobBAqB-wMTbL6A8L8igM6VQoA&s',
       'https://lirp.cdn-website.com/46830114/dms3rep/multi/opt/favicon4-1920w.png',
