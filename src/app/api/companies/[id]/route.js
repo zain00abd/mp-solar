@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Company from '@/models/Company';
-import Product from '@/models/Product';
+import Battery from '@/models/Battery';
+import Inverter from '@/models/Inverter';
+import Panel from '@/models/Panel';
 import mongoose from 'mongoose';
 
 // GET - جلب شركة واحدة
@@ -28,14 +30,22 @@ export async function GET(request, { params }) {
       );
     }
 
-    // جلب منتجات الشركة أيضاً
-    const products = await Product.find({ company: id }).select('name category price image');
+    // جلب منتجات الشركة من جميع المجموعات
+    const batteries = await Battery.find({ company: id }).select('name price image isActive');
+    const inverters = await Inverter.find({ company: id }).select('name price image isActive');
+    const panels = await Panel.find({ company: id }).select('name price image isActive');
 
     return NextResponse.json({
       success: true,
       data: {
         ...company.toObject(),
-        products
+        products: { batteries, inverters, panels },
+        counts: {
+          batteries: batteries.length,
+          inverters: inverters.length,
+          panels: panels.length,
+          total: batteries.length + inverters.length + panels.length
+        }
       }
     });
 
@@ -143,13 +153,17 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    // التحقق من وجود منتجات مرتبطة بالشركة
-    const productsCount = await Product.countDocuments({ company: id });
-    if (productsCount > 0) {
+    // التحقق من وجود منتجات مرتبطة بالشركة عبر جميع المجموعات
+    const batteriesCount = await Battery.countDocuments({ company: id });
+    const invertersCount = await Inverter.countDocuments({ company: id });
+    const panelsCount = await Panel.countDocuments({ company: id });
+    const totalCount = batteriesCount + invertersCount + panelsCount;
+
+    if (totalCount > 0) {
       return NextResponse.json(
         { 
           success: false, 
-          error: `Cannot delete company. ${productsCount} products are associated with this company. Please delete or reassign the products first.` 
+          error: `Cannot delete company. ${totalCount} products are associated with this company (batteries: ${batteriesCount}, inverters: ${invertersCount}, panels: ${panelsCount}). Please delete or reassign the products first.` 
         },
         { status: 409 }
       );

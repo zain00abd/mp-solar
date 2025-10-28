@@ -5,15 +5,15 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
 import "@fortawesome/fontawesome-free/css/solid.min.css";
+import { headers } from 'next/headers';
 
-// Page Header Component
 const PageHeader = () => {
   return (
     <section className="page-header">
       <div className="container">
         <div className="page-header-content">
           <h1>⚡ Solar Inverters</h1>
-          <p>Explore our advanced solar inverters designed for optimal energy conversion, reliability, and smart monitoring capabilities.</p>
+          <p>Discover our range of high-efficiency inverters for residential and commercial systems.</p>
           <div className="breadcrumb">
             <Link href="/">Home</Link>
             <span>›</span>
@@ -26,23 +26,32 @@ const PageHeader = () => {
 };
 
 // Enhanced Product Card Component
-const ProductCard = ({ product, brandId }) => {
-  const productId = `${brandId}-${product.name.toLowerCase().replace(/\s+/g, '-')}`;
+const ProductCard = ({ product }) => {
+  const productId = product?._id;
+  const brandName = product?.company?.name || product?.brand || '';
+  const brandLogo = product?.company?.logo || product?.brandLogo || '';
+  const imageUrl = product?.image || '/placeholder.png';
+  const specs = Array.isArray(product?.specs) ? product.specs : [];
+  const s0 = specs[0];
+  const s1 = specs[1];
+  const s2 = specs[2];
+  const s3 = specs[3];
+  const priceText = product?.price ? `${product.price}${product?.currency ? ' ' + product.currency : ''}` : '—';
 
   return (
     <div className="product-card-enhanced">
       <div className="product-image-container">
-        <img className="product-image" src={product.image} alt={product.name} />
+        <img className="product-image" src={imageUrl} alt={product?.name || 'Inverter'} />
       </div>
 
       <div className="product-content-enhanced">
         <div className="product-header">
-          <h3 className="product-title">{product.name}</h3>
+          <h3 className="product-title">{product?.name}</h3>
           <div className="brand-name-row">
             <div className="brand-logo-circle">
-              <img src={product.brandLogo} alt={product.brand} />
+              <img src={brandLogo} alt={brandName} />
             </div>
-            <div className="product-brand-name">{product.brand}</div>
+            <div className="product-brand-name">{brandName}</div>
           </div>
         </div>
 
@@ -50,24 +59,24 @@ const ProductCard = ({ product, brandId }) => {
           <h4 className="specs-title">Key Specifications</h4>
           <div className="product-specs-grid">
             <div className="spec-item">
-              <span className="spec-value">{product.specs[0].value}</span>
-              <span className="spec-label">{product.specs[0].label}</span>
+              <span className="spec-value">{s0?.value ?? '—'}</span>
+              <span className="spec-label">{s0?.label ?? '—'}</span>
             </div>
             <div className="spec-divider-vertical"></div>
             <div className="spec-item">
-              <span className="spec-value">{product.specs[1].value}</span>
-              <span className="spec-label">{product.specs[1].label}</span>
+              <span className="spec-value">{s1?.value ?? '—'}</span>
+              <span className="spec-label">{s1?.label ?? '—'}</span>
             </div>
           </div>
           <div className="product-specs-grid">
             <div className="spec-item">
-              <span className="spec-value">{product.specs[2].value}</span>
-              <span className="spec-label">{product.specs[2].label}</span>
+              <span className="spec-value">{s2?.value ?? '—'}</span>
+              <span className="spec-label">{s2?.label ?? '—'}</span>
             </div>
             <div className="spec-divider-vertical"></div>
             <div className="spec-item">
-              <span className="spec-value">{product.specs[3].value}</span>
-              <span className="spec-label">{product.specs[3].label}</span>
+              <span className="spec-value">{s3?.value ?? '—'}</span>
+              <span className="spec-label">{s3?.label ?? '—'}</span>
             </div>
           </div>
         </div>
@@ -76,7 +85,7 @@ const ProductCard = ({ product, brandId }) => {
           <h4 className="pricing-title">Price</h4>
           <div className="product-price-enhanced">
             <span className="price-label">Starting from</span>
-            <span className="price-value">${product.price}</span>
+            <span className="price-value">${priceText}</span>
           </div>
         </div>
 
@@ -89,250 +98,79 @@ const ProductCard = ({ product, brandId }) => {
 };
 
 // Brand Section Component
-const BrandSection = ({ brand }) => {
-  const brandId = brand.name.toLowerCase().replace(/\s+/g, '-');
-  
+const BrandSection = ({ company, products }) => {
   return (
-    <div className="brand-section">
-      <div className="brand-header">
-        <div className="brand-logo-section">
-          <img src={brand.logo} alt={brand.name} />
-        </div>
-        <div className="brand-info">
-          <h2>{brand.name}</h2>
-          <div className="brand-country">
-            <span><i className="fa-solid fa-globe" style={{color:"#74C0FC", scale:"1.1"}}></i></span>
-            <span>{brand.country}</span>
+    <section className="brand-section">
+      <div className="container">
+        <div className="brand-header">
+          <div className="brand-info">
+            <div className="brand-details">
+              <div className="brand-name-row">
+                <div className="brand-logo-circle">
+                  <img src={company.logo} alt={company.name} />
+                </div>
+                <h2>{company.name}</h2>
+              </div>
+              <p className="brand-country">📍 {company.country}</p>
+              {company.description && <p className="brand-description">{company.description}</p>}
+            </div>
           </div>
         </div>
+        <div className="products-grid">
+          {products.map((product) => (
+            <ProductCard key={product._id} product={product} />
+          ))}
+        </div>
       </div>
-      <div className="products-grid">
-        {brand.products.map((product, index) => (
-          <ProductCard key={index} product={product} brandId={brandId} />
-        ))}
-      </div>
-    </div>
+    </section>
   );
 };
 
-// Inverters Data
-const invertersData = [
-  {
-    name: "Huawei",
-    country: "China",
-    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMJX3X0fF0Qi8lTy2_YJqYQdNvVbFvhO7XRw&s",
-    products: [
-      {
-        name: "Huawei SUN2000-8KTL-M1",
-        brand: "Huawei",
-        brandLogo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMJX3X0fF0Qi8lTy2_YJqYQdNvVbFvhO7XRw&s",
-        badge: "Smart AI",
-        image: "/inverter3.png",
-        description: "Advanced AI-powered string inverter with smart optimization and monitoring. Perfect for residential and small commercial systems.",
-        features: [
-          "98.65% Maximum Efficiency",
-          "AI-Powered AFCI Protection",
-          "Smart String Monitoring",
-          "WiFi & 4G Connectivity Built-in"
-        ],
-        specs: [
-          { label: "Power Output", value: "8 kW" },
-          { label: "Efficiency", value: "98.65%" },
-          { label: "Type", value: "String Inverter" },
-          { label: "Warranty", value: "10 Years" }
-        ],
-        price: "1,850"
-      },
-      {
-        name: "Huawei SUN2000-100KTL-M1",
-        brand: "Huawei",
-        brandLogo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMJX3X0fF0Qi8lTy2_YJqYQdNvVbFvhO7XRw&s",
-        badge: "Commercial",
-        image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-        description: "High-power string inverter for commercial and utility-scale projects. Features advanced cooling and maximum efficiency.",
-        features: [
-          "98.8% Peak Efficiency",
-          "Smart I-V Curve Diagnosis",
-          "IP66 Protection Rating",
-          "Natural Cooling Technology"
-        ],
-        specs: [
-          { label: "Power Output", value: "100 kW" },
-          { label: "Efficiency", value: "98.8%" },
-          { label: "Type", value: "String Inverter" },
-          { label: "Warranty", value: "10 Years" }
-        ],
-        price: "12,500"
-      }
-    ]
-  },
-  {
-    name: "SMA Solar",
-    country: "Germany",
-    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3nGQy8B0YC0LVH_zKZmOeK5QdPrN5xZmH3w&s",
-    products: [
-      {
-        name: "SMA Sunny Tripower 10.0",
-        brand: "SMA Solar",
-        brandLogo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3nGQy8B0YC0LVH_zKZmOeK5QdPrN5xZmH3w&s",
-        badge: "Premium",
-        image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-        description: "German-engineered three-phase inverter with exceptional reliability. Ideal for residential and commercial installations.",
-        features: [
-          "98.4% Maximum Efficiency",
-          "Integrated ShadeFix Technology",
-          "OptiTrac Global Peak Tracking",
-          "SMA Grid Guard Protection"
-        ],
-        specs: [
-          { label: "Power Output", value: "10 kW" },
-          { label: "Efficiency", value: "98.4%" },
-          { label: "Type", value: "3-Phase String" },
-          { label: "Warranty", value: "10 Years" }
-        ],
-        price: "2,200"
-      },
-      {
-        name: "SMA Sunny Boy 7.7",
-        brand: "SMA Solar",
-        brandLogo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT3nGQy8B0YC0LVH_zKZmOeK5QdPrN5xZmH3w&s",
-        badge: "Best Seller",
-        image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-        description: "Reliable single-phase inverter for residential applications. Features integrated smart monitoring and excellent performance.",
-        features: [
-          "97.7% Peak Efficiency",
-          "Integrated DC Disconnect",
-          "SMA Smart Connected",
-          "TS4-R Rapid Shutdown Compatible"
-        ],
-        specs: [
-          { label: "Power Output", value: "7.7 kW" },
-          { label: "Efficiency", value: "97.7%" },
-          { label: "Type", value: "Single-Phase" },
-          { label: "Warranty", value: "10 Years" }
-        ],
-        price: "1,650"
-      }
-    ]
-  },
-  {
-    name: "Fronius",
-    country: "Austria",
-    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZ9YxPQK3m_u-3HhPdGBE9KGnJC6Bm8vGD5A&s",
-    products: [
-      {
-        name: "Fronius Primo 8.2",
-        brand: "Fronius",
-        brandLogo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZ9YxPQK3m_u-3HhPdGBE9KGnJC6Bm8vGD5A&s",
-        badge: "High Quality",
-        image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-        description: "Austrian precision-engineered inverter with SnapINverter technology. Easy installation and exceptional performance.",
-        features: [
-          "98.1% Maximum Efficiency",
-          "Dynamic Peak Manager",
-          "SuperFlex Design (2 MPPTs)",
-          "Integrated WiFi & Web Server"
-        ],
-        specs: [
-          { label: "Power Output", value: "8.2 kW" },
-          { label: "Efficiency", value: "98.1%" },
-          { label: "Type", value: "String Inverter" },
-          { label: "Warranty", value: "10 Years" }
-        ],
-        price: "2,100"
-      }
-    ]
-  },
-  {
-    name: "SolarEdge",
-    country: "Israel",
-    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjVR6Y5zBzKVx5mLxN8QvKxKx_GJQYhN_N5Q&s",
-    products: [
-      {
-        name: "SolarEdge SE7600H-US",
-        brand: "SolarEdge",
-        brandLogo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjVR6Y5zBzKVx5mLxN8QvKxKx_GJQYhN_N5Q&s",
-        badge: "Optimizer System",
-        image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-        description: "Revolutionary inverter with power optimizer technology. Maximizes energy harvest at the module level with advanced monitoring.",
-        features: [
-          "99% Weighted Efficiency",
-          "Module-Level Monitoring & Control",
-          "SafeDC™ Built-in Safety",
-          "HD-Wave Technology"
-        ],
-        specs: [
-          { label: "Power Output", value: "7.6 kW" },
-          { label: "Efficiency", value: "99%" },
-          { label: "Type", value: "DC Optimized" },
-          { label: "Warranty", value: "12 Years" }
-        ],
-        price: "1,950"
-      },
-      {
-        name: "SolarEdge SE10K-RWS",
-        brand: "SolarEdge",
-        brandLogo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjVR6Y5zBzKVx5mLxN8QvKxKx_GJQYhN_N5Q&s",
-        badge: "StorEdge Ready",
-        image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-        description: "Three-phase inverter with integrated backup power and battery storage capability. Perfect for residential energy independence.",
-        features: [
-          "97.6% European Efficiency",
-          "StorEdge Battery Compatible",
-          "Backup Power Interface",
-          "Smart Energy Management"
-        ],
-        specs: [
-          { label: "Power Output", value: "10 kW" },
-          { label: "Efficiency", value: "97.6%" },
-          { label: "Type", value: "Hybrid 3-Phase" },
-          { label: "Warranty", value: "12 Years" }
-        ],
-        price: "3,200"
-      }
-    ]
-  },
-  {
-    name: "GoodWe",
-    country: "China",
-    logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8zF5LqTMBKPp3QmLVhFqZ_7bQJ-YCY5xKZg&s",
-    products: [
-      {
-        name: "GoodWe GW10K-MS",
-        brand: "GoodWe",
-        brandLogo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8zF5LqTMBKPp3QmLVhFqZ_7bQJ-YCY5xKZg&s",
-        badge: "Budget-Friendly",
-        image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-        description: "Cost-effective three-phase inverter with excellent reliability. Great value for money without compromising on quality.",
-        features: [
-          "98.3% Maximum Efficiency",
-          "Dual MPPT Design",
-          "IP65 Weather Protection",
-          "Smart Grid Support"
-        ],
-        specs: [
-          { label: "Power Output", value: "10 kW" },
-          { label: "Efficiency", value: "98.3%" },
-          { label: "Type", value: "3-Phase String" },
-          { label: "Warranty", value: "10 Years" }
-        ],
-        price: "1,550"
-      }
-    ]
+// Helper to group products by company
+const groupByCompany = (items) => {
+  const map = new Map();
+  for (const p of items) {
+    const comp = p.company || {};
+    const key = comp._id || comp.name || JSON.stringify(comp);
+    if (!map.has(key)) {
+      map.set(key, { company: comp, products: [] });
+    }
+    map.get(key).products.push(p);
   }
-];
+  return Array.from(map.values());
+};
 
-// Main Component
-const Inverters = () => {
+const Inverters = async () => {
+  let products = [];
+  try {
+    const h = await headers();
+    const host = h.get('x-forwarded-host') ?? h.get('host');
+    const proto = h.get('x-forwarded-proto') ?? 'http';
+    const base = host ? `${proto}://${host}` : (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
+    const res = await fetch(`${base}/api/inverters?limit=100`, { cache: 'no-store' });
+    if (res.ok) {
+      const json = await res.json();
+      products = json.data || [];
+    }
+  } catch (e) {
+    console.error('Failed to load inverters', e);
+  }
+
+  const grouped = groupByCompany(products);
+
   return (
     <div className="solar-inverters-page">
       <Header />
       <PageHeader />
       <section className="products-section">
         <div className="container">
-          {invertersData.map((brand, index) => (
-            <BrandSection key={index} brand={brand} />
-          ))}
+          {grouped.length === 0 ? (
+            <div className="empty-state">No inverters found.</div>
+          ) : (
+            grouped.map((g, idx) => (
+              <BrandSection key={(g.company?._id || idx)} company={g.company} products={g.products} />
+            ))
+          )}
         </div>
       </section>
       <Footer />

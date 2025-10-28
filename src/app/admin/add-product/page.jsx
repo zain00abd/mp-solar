@@ -188,7 +188,15 @@ export default function AddProductPage() {
         price: parseFloat(productData.price) || 0
       };
 
-      const response = await fetch('/api/products', {
+      // تحديد المسار الصحيح حسب القسم
+      const endpointMap = {
+        products: '/api/products-panels',
+        inverters: '/api/inverters',
+        batteries: '/api/batteries',
+      };
+      const endpoint = endpointMap[productData.category] || '/api/products';
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

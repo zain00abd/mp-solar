@@ -1,0 +1,238 @@
+/* ملف الألوان المخصصة لصفحات المنتجات */
+/* يتم استيراد هذا الملف مع الملف المشترك لتخصيص الألوان */
+
+/* ألوان صفحة المنتجات العامة (Products) - برتقالي */
+.products-theme {
+    --product-primary: #FFA500;
+    --product-secondary: #4A90E2;
+    --product-accent: #FFD700;
+    --product-primary-rgb: 255, 165, 0;
+    --product-secondary-rgb: 74, 144, 226;
+    --product-accent-rgb: 255, 215, 0;
+}
+
+/* تطبيق الثيم على العناصر */
+.products-theme .page-header {
+    background: linear-gradient(135deg, rgba(255, 165, 0, 0.1), rgba(255, 215, 0, 0.05));
+}
+
+.products-theme .brand-header {
+    border-bottom: 1px solid rgba(255, 165, 0, 0.2);
+}
+
+.products-theme .product-card-enhanced {
+    border: 1px solid rgba(255, 165, 0, 0.2);
+}
+
+.products-theme .product-specs-section {
+    background: rgba(255, 165, 0, 0.08);
+    border: 1px solid rgba(255, 165, 0, 0.18);
+}
+
+.products-theme .product-pricing-section {
+    background: rgba(255, 165, 0, 0.12);
+    border: 1px solid rgba(255, 165, 0, 0.22);
+}
+
+/* ألوان صفحة الانفرترات (Inverters) - أزرق */
+.inverters-theme {
+    --product-primary: #4A90E2;
+    --product-secondary: #2E86DE;
+    --product-accent: #5DADE2;
+    --product-primary-rgb: 74, 144, 226;
+    --product-secondary-rgb: 46, 134, 222;
+    --product-accent-rgb: 93, 173, 226;
+}
+
+/* تطبيق الثيم على العناصر */
+.inverters-theme .page-header {
+    background: linear-gradient(135deg, rgba(74, 144, 226, 0.1), rgba(93, 173, 226, 0.05));
+}
+
+.inverters-theme .brand-header {
+    border-bottom: 1px solid rgba(74, 144, 226, 0.2);
+}
+
+.inverters-theme .product-card-enhanced {
+    border: 1px solid rgba(74, 144, 226, 0.2);
+}
+
+.inverters-theme .product-specs-section {
+    background: rgba(74, 144, 226, 0.08);
+    border: 1px solid rgba(74, 144, 226, 0.18);
+}
+
+.inverters-theme .product-pricing-section {
+    background: rgba(74, 144, 226, 0.12);
+    border: 1px solid rgba(74, 144, 226, 0.22);
+}
+
+/* ألوان صفحة البطاريات (Batteries) - أخضر */
+.batteries-theme {
+    --product-primary: #10B981;
+    --product-secondary: #059669;
+    --product-accent: #34D399;
+    --product-primary-rgb: 16, 185, 129;
+    --product-secondary-rgb: 5, 150, 105;
+    --product-accent-rgb: 52, 211, 153;
+}
+
+/* تطبيق الثيم على العناصر */
+.batteries-theme .page-header {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(52, 211, 153, 0.05));
+}
+
+.batteries-theme .brand-header {
+    border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.batteries-theme .product-card-enhanced {
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.batteries-theme .product-specs-section {
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.18);
+}
+
+.batteries-theme .product-pricing-section {
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.22);
+}
+
+/* ألوان إضافية يمكن استخدامها للصفحات الجديدة */
+
+/* ثيم أحمر للألواح الشمسية */
+.panels-theme {
+    --product-primary: #EF4444;
+    --product-secondary: #DC2626;
+    --product-accent: #F87171;
+    --product-primary-rgb: 239, 68, 68;
+    --product-secondary-rgb: 220, 38, 38;
+    --product-accent-rgb: 248, 113, 113;
+}
+
+/* ثيم بنفسجي للإكسسوارات */
+.accessories-theme {
+    --product-primary: #8B5CF6;
+    --product-secondary: #7C3AED;
+    --product-accent: #A78BFA;
+    --product-primary-rgb: 139, 92, 246;
+    --product-secondary-rgb: 124, 58, 237;
+    --product-accent-rgb: 167, 139, 250;
+}
+
+/* ثيم وردي للخدمات */
+.services-theme {
+    --product-primary: #EC4899;
+    --product-secondary: #DB2777;
+    --product-accent: #F472B6;
+    --product-primary-rgb: 236, 72, 153;
+    --product-secondary-rgb: 219, 39, 119;
+    --product-accent-rgb: 244, 114, 182;
+}
+
+/* ثيم أصفر للعروض الخاصة */
+.offers-theme {
+    --product-primary: #F59E0B;
+    --product-secondary: #D97706;
+    --product-accent: #FCD34D;
+    --product-primary-rgb: 245, 158, 11;
+    --product-secondary-rgb: 217, 119, 6;
+    --product-accent-rgb: 252, 211, 77;
+}
+
+/* ثيم تركوازي للتقنيات الذكية */
+.smart-tech-theme {
+    --product-primary: #06B6D4;
+    --product-secondary: #0891B2;
+    --product-accent: #67E8F9;
+    --product-primary-rgb: 6, 182, 212;
+    --product-secondary-rgb: 8, 145, 178;
+    --product-accent-rgb: 103, 232, 249;
+}
+
+/* كيفية الاستخدام:
+   1. أضف الكلاس المناسب لعنصر body أو html في كل صفحة
+   2. مثال: <body class="batteries-theme"> لصفحة البطاريات
+   3. أو استخدم JavaScript لإضافة الكلاس ديناميكياً
+*/
+
+/* مثال على كيفية تطبيق الثيم باستخدام data attributes */
+[data-theme="products"] {
+    --product-primary: #FFA500;
+    --product-secondary: #4A90E2;
+    --product-accent: #FFD700;
+    --product-primary-rgb: 255, 165, 0;
+    --product-secondary-rgb: 74, 144, 226;
+    --product-accent-rgb: 255, 215, 0;
+}
+
+[data-theme="inverters"] {
+    --product-primary: #4A90E2;
+    --product-secondary: #2E86DE;
+    --product-accent: #5DADE2;
+    --product-primary-rgb: 74, 144, 226;
+    --product-secondary-rgb: 46, 134, 222;
+    --product-accent-rgb: 93, 173, 226;
+}
+
+[data-theme="batteries"] {
+    --product-primary: #10B981;
+    --product-secondary: #059669;
+    --product-accent: #34D399;
+    --product-primary-rgb: 16, 185, 129;
+    --product-secondary-rgb: 5, 150, 105;
+    --product-accent-rgb: 52, 211, 153;
+}
+
+[data-theme="panels"] {
+    --product-primary: #EF4444;
+    --product-secondary: #DC2626;
+    --product-accent: #F87171;
+    --product-primary-rgb: 239, 68, 68;
+    --product-secondary-rgb: 220, 38, 38;
+    --product-accent-rgb: 248, 113, 113;
+}
+
+/* أنماط خاصة للتحويل السلس بين الألوان */
+.theme-transition {
+    transition: 
+        background-color 0.3s ease,
+        border-color 0.3s ease,
+        color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+/* تأثيرات خاصة للثيمات المختلفة */
+.products-theme .page-header {
+    background: linear-gradient(135deg, rgba(255, 165, 0, 0.1), rgba(255, 215, 0, 0.05));
+}
+
+.inverters-theme .page-header {
+    background: linear-gradient(135deg, rgba(74, 144, 226, 0.1), rgba(93, 173, 226, 0.05));
+}
+
+.batteries-theme .page-header {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(52, 211, 153, 0.05));
+}
+
+.panels-theme .page-header {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(248, 113, 113, 0.05));
+}
+
+.accessories-theme .page-header {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(167, 139, 250, 0.05));
+}
+
+.services-theme .page-header {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(244, 114, 182, 0.05));
+}
+
+.offers-theme .page-header {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(252, 211, 77, 0.05));
+}
+
+.smart-tech-theme .page-header {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(103, 232, 249, 0.05));
+}

@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Company from '@/models/Company';
+import Battery from '@/models/Battery';
+import Inverter from '@/models/Inverter';
+import Panel from '@/models/Panel';
 
 // GET - جلب جميع الشركات
 export async function GET(request) {
@@ -12,6 +15,7 @@ export async function GET(request) {
     const limit = parseInt(searchParams.get('limit')) || 10;
     const search = searchParams.get('search') || '';
     const country = searchParams.get('country') || '';
+    const includeCounts = (searchParams.get('includeCounts') || 'false').toLowerCase() === 'true';
 
     // بناء فلتر البحث
     let filter = {};
@@ -34,9 +38,33 @@ export async function GET(request) {
     // حساب العدد الإجمالي
     const total = await Company.countDocuments(filter);
 
+    let resultCompanies = companies;
+
+    // في حال طلب ملخص المنتجات، نجلب الأعداد من كل مجموعة
+    if (includeCounts) {
+      resultCompanies = await Promise.all(
+        companies.map(async (company) => {
+          const [batteryCount, inverterCount, panelCount] = await Promise.all([
+            Battery.countDocuments({ company: company._id, isActive: true }),
+            Inverter.countDocuments({ company: company._id, isActive: true }),
+            Panel.countDocuments({ company: company._id, isActive: true }),
+          ]);
+          const totalProducts = batteryCount + inverterCount + panelCount;
+          const obj = company.toObject();
+          obj.productsSummary = {
+            batteries: batteryCount,
+            inverters: inverterCount,
+            panels: panelCount,
+            total: totalProducts,
+          };
+          return obj;
+        })
+      );
+    }
+
     return NextResponse.json({
       success: true,
-      data: companies,
+      data: resultCompanies,
       pagination: {
         page,
         limit,
