@@ -113,6 +113,7 @@ const Inverters = () => {
 
   if (loading) {
     return (
+      <>
       <div className="solar-inverters-page">
         <Header />
         <div className="container">
@@ -120,12 +121,15 @@ const Inverters = () => {
         </div>
         <Footer />
       </div>
+      </>
     );
   }
 
   return (
-    <div className="solar-inverters-page">
+
+    <>
       <Header />
+    <div className="solar-inverters-page">
       
       {/* Hero Section */}
       <section className="hero-section">
@@ -149,22 +153,9 @@ const Inverters = () => {
       </section>
       
       <div className="container">
-        <div className="header">
-          <h1>Solar Inverters</h1>
-          <p>Discover our range of high-efficiency inverters for residential and commercial systems</p>
-        </div>
+
         
-        <div className="filters">
-          {filters.map((filter) => (
-            <button
-              key={filter}
-              className={`filter-btn ${activeFilter === filter ? 'active' : ''}`}
-              onClick={() => setActiveFilter(filter)}
-            >
-              {filter}
-            </button>
-          ))}
-        </div>
+
         
         <div className="products-grid">
           {products.length === 0 ? (
@@ -179,6 +170,7 @@ const Inverters = () => {
       
       <Footer />
     </div>
+    </>
   );
 };
 

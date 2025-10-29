@@ -29,11 +29,13 @@
 /* Hero Section */
 .hero-section {
   position: relative;
+  top: 30px;
   min-height: 60vh;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  margin-bottom: 20px;
 }
 
 .hero-background {
@@ -106,7 +108,7 @@
   font-size: 3.5rem;
   font-weight: 700;
   color: var(--detail-primary);
-  margin-bottom: 20px;
+
   text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   animation: titleGlow 4s ease-in-out infinite;
 }
@@ -407,7 +409,7 @@
   }
   
   .container {
-    padding: 15px;
+    padding: 5px;
   }
   
   .header {
