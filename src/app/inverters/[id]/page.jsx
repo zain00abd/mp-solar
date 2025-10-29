@@ -49,8 +49,9 @@ const InverterDetail = async ({ params }) => {
   const features = Array.isArray(product.features) ? product.features : [];
 
   return (
-    <div className="product-detail-page">
+    <>
       <Header />
+    <div className="product-detail-page">
       
       <div className="">
         <div className="header" style={{marginTop: '50px'}}>
@@ -141,13 +142,12 @@ const InverterDetail = async ({ params }) => {
           </div>
         </div>
         
-        <div className="detail-footer">
-          <p>All Rights Reserved © 2023 | Renewable Energy Solutions</p>
-        </div>
+
       </div>
       
-      <Footer />
     </div>
+      <Footer />
+    </>
   );
 };
 
