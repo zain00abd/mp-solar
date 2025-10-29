@@ -148,24 +148,7 @@ const SolarPanels = () => {
         </div>
       </section>
       
-      <div className="container">
-        <div className="header">
-          <h1>Solar Panels</h1>
-          <p>Discover our range of premium solar panels designed for maximum efficiency, durability, and long-term performance</p>
-        </div>
-        
-        <div className="filters">
-          {filters.map((filter) => (
-            <button
-              key={filter}
-              className={`filter-btn ${activeFilter === filter ? 'active' : ''}`}
-              onClick={() => setActiveFilter(filter)}
-            >
-              {filter}
-            </button>
-          ))}
-        </div>
-        
+      <div className="container" >
         <div className="products-grid">
           {products.length === 0 ? (
             <div className="empty-state">No solar panels found.</div>

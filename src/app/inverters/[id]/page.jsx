@@ -52,8 +52,8 @@ const InverterDetail = async ({ params }) => {
     <div className="product-detail-page">
       <Header />
       
-      <div className="container">
-        <div className="header">
+      <div className="">
+        <div className="header" style={{marginTop: '50px'}}>
           <h1>{product.name || 'Advanced Solar Inverter'}</h1>
         </div>
         
@@ -141,7 +141,7 @@ const InverterDetail = async ({ params }) => {
           </div>
         </div>
         
-        <div className="footer">
+        <div className="detail-footer">
           <p>All Rights Reserved © 2023 | Renewable Energy Solutions</p>
         </div>
       </div>

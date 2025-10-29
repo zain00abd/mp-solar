@@ -52,7 +52,7 @@ const PanelDetail = async ({ params }) => {
     <div className="product-detail-page">
       <Header />
       
-      <div className="container">
+      <div className="detail-container" >
         <div className="header">
           <h1>{product.name || 'Advanced Solar Panel'}</h1>
         </div>
@@ -141,7 +141,7 @@ const PanelDetail = async ({ params }) => {
           </div>
         </div>
         
-        <div className="footer">
+        <div className="detail-footer">
           <p>All Rights Reserved © 2023 | Renewable Energy Solutions</p>
         </div>
       </div>
