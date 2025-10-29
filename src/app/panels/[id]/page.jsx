@@ -26,16 +26,18 @@ const PanelDetail = async ({ params }) => {
 
   if (!product) {
     return (
-      <div className="product-detail-page">
+      <>
         <Header />
+      <div className="">
         <div className="container" style={{ padding: '200px 0', textAlign: 'center' }}>
           <h2>Product not found</h2>
           <Link href="/panels" className="btn" style={{ marginTop: '20px' }}>
             Back to Solar Panels
           </Link>
         </div>
-        <Footer />
       </div>
+        <Footer />
+      </>
     );
   }
 
@@ -49,11 +51,12 @@ const PanelDetail = async ({ params }) => {
   const features = Array.isArray(product.features) ? product.features : [];
 
   return (
-    <div className="product-detail-page">
+    <>
       <Header />
+    <div className="product-detail-page">
       
       <div className="detail-container" >
-        <div className="header">
+        <div className="header" style={{marginTop: '50px'}}>
           <h1>{product.name || 'Advanced Solar Panel'}</h1>
         </div>
         
@@ -141,13 +144,12 @@ const PanelDetail = async ({ params }) => {
           </div>
         </div>
         
-        <div className="detail-footer">
-          <p>All Rights Reserved © 2023 | Renewable Energy Solutions</p>
-        </div>
+
       </div>
       
-      <Footer />
     </div>
+      <Footer />
+    </>
   );
 };
 

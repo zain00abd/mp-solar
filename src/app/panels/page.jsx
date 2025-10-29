@@ -102,7 +102,7 @@ const SolarPanels = () => {
           </div>
           
           <div className="product-actions">
-            <Link href={`/products/${product?._id}`} className="btn">
+            <Link href={`/panels/${product?._id}`} className="btn">
               View Product Details
             </Link>
           </div>
