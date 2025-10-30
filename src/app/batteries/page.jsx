@@ -54,7 +54,7 @@ const Batteries = () => {
           <h3 className="product-title">{product?.name || 'Solar Battery'}</h3>
           <p className="product-description">
             {(product?.description.slice(0,75) + " ......." )|| 'High-efficiency lithium-ion battery for solar energy storage.'}
-            <Link href={`/batteries/${product?._id}`} className="" style={{color: 'rgba(0, 255, 170, 0.84)', fontWeight: '600', textDecoration: 'underline'}}> More</Link>
+            <Link href={`/batteries/${product?._id}`} className="" style={{color: 'rgba(0, 255, 170, 0.84)', fontWeight: '600', textDecoration: 'none'}}> More</Link>
           </p>
           
           <div className="specs-container">

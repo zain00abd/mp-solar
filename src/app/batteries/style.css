@@ -122,7 +122,7 @@
   font-size: 3.5rem;
   font-weight: 700;
   color: var(--detail-primary);
-  margin-bottom: 20px;
+
   text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   animation: titleGlow 4s ease-in-out infinite;
 }
@@ -494,8 +494,7 @@
   }
   
   .specs-container {
-    grid-template-columns: 1fr;
-    gap: 12px;
+
   }
   
   .features-grid {
