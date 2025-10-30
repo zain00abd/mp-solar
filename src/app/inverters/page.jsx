@@ -53,7 +53,8 @@ const Inverters = () => {
         <div className="product-content">
           <h3 className="product-title">{product?.name || 'Solar Inverter'}</h3>
           <p className="product-description">
-            {product?.description || 'High-efficiency inverter for converting DC solar power to AC for your home.'}
+            {(product?.description.slice(0,100) + " ......") || 'High-efficiency inverter for converting DC solar power to AC for your home.'}
+            <Link href={`/inverters/${product?._id}`} className="" style={{color: "#2563EB", textDecoration: 'none', fontWeight:"600"}}> More</Link>
           </p>
           
           <div className="specs-container">

@@ -53,7 +53,8 @@ const Batteries = () => {
         <div className="product-content">
           <h3 className="product-title">{product?.name || 'Solar Battery'}</h3>
           <p className="product-description">
-            {product?.description || 'High-efficiency lithium-ion battery for solar energy storage.'}
+            {(product?.description.slice(0,75) + " ......." )|| 'High-efficiency lithium-ion battery for solar energy storage.'}
+            <Link href={`/batteries/${product?._id}`} className="" style={{color: 'rgba(0, 255, 170, 0.84)', fontWeight: '600', textDecoration: 'underline'}}> More</Link>
           </p>
           
           <div className="specs-container">
@@ -113,19 +114,23 @@ const Batteries = () => {
 
   if (loading) {
     return (
-      <div className="solar-batteries-page">
+
+      <>
         <Header />
+            <div className="solar-batteries-page">
         <div className="container">
           <div className="loading-state">Loading batteries...</div>
         </div>
-        <Footer />
       </div>
+        <Footer />
+      </>
     );
   }
 
   return (
-    <div className="solar-batteries-page">
+    <>
       <Header />
+        <div className="solar-batteries-page">
       
       {/* Hero Section */}
       <section className="hero-section">
@@ -149,22 +154,7 @@ const Batteries = () => {
       </section>
       
       <div className="container">
-        <div className="header">
-          <h1>Solar Lithium Batteries</h1>
-          <p>Discover our range of high-quality lithium solar batteries for all your energy needs</p>
-        </div>
-        
-        <div className="filters">
-          {filters.map((filter) => (
-            <button
-              key={filter}
-              className={`filter-btn ${activeFilter === filter ? 'active' : ''}`}
-              onClick={() => setActiveFilter(filter)}
-            >
-              {filter}
-            </button>
-          ))}
-        </div>
+
         
         <div className="products-grid">
           {products.length === 0 ? (
@@ -177,8 +167,10 @@ const Batteries = () => {
         </div>
       </div>
       
-      <Footer />
     </div>
+      <Footer />
+    </>
+
   );
 };
 
