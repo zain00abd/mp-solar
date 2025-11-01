@@ -100,9 +100,9 @@
 .product-detail-page .section {
   margin-bottom: 30px;
   padding: 25px;
-  background: rgba(59, 130, 246, 0.03);
+  /* background: rgba(59, 130, 246, 0.03); */
   border-radius: 12px;
-  border: 1px solid rgba(59, 130, 246, 0.1);
+  /* border: 1px solid rgba(59, 130, 246, 0.1); */
 }
 
 .product-detail-page .section h2 {

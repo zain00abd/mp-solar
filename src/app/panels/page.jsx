@@ -52,6 +52,16 @@ const SolarPanels = () => {
         
         <div className="product-content">
           <h3 className="product-title">{product?.name || 'Solar Panel'}</h3>
+          {product?.company && (
+            <div className="product-company" style={{display:'flex', alignItems:'center', gap:'10px', marginTop:'6px'}}>
+              {product?.company?.logo && (
+                <img src={product.company.logo} alt={product?.company?.name || 'Company'} />
+              )}
+              <span style={{fontSize:'0.95rem', color:'#6b7280', fontWeight:600}}>
+                {product?.company?.name || '—'}
+              </span>
+            </div>
+          )}
           <p className="product-description">
             {product?.description || 'High-efficiency solar panel designed for maximum energy production and durability.'}
           </p>
@@ -149,15 +159,39 @@ const SolarPanels = () => {
       </section>
       
       <div className="container" >
-        <div className="products-grid">
-          {products.length === 0 ? (
-            <div className="empty-state">No solar panels found.</div>
-          ) : (
-            products.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))
-          )}
-        </div>
+        {products.length === 0 ? (
+          <div className="empty-state">No solar panels found.</div>
+        ) : (
+          (() => {
+            const groups = products.reduce((acc, p) => {
+              const id = p?.company?._id || 'other';
+              if (!acc[id]) acc[id] = { company: p?.company, items: [] };
+              acc[id].items.push(p);
+              return acc;
+            }, {});
+            return Object.values(groups).map((group, idx) => (
+              <section key={group?.company?._id || `other-${idx}`} className="company-section" style={{marginBottom:'32px'}}>
+                <div className="company-header" style={{display:'flex', alignItems:'center', gap:'12px', margin:'8px 0 16px'}}>
+                  {group?.company?.logo && (
+                    <img src={group.company.logo} alt={group?.company?.name || 'Company'} />
+                  )}
+                  <div className="company-text">
+                    <h2 className="company-name">{group?.company?.name || 'Other'}</h2>
+                    {group?.company?.country && (
+                      <div className="company-country">{group.company.country}</div>
+                    )}
+                  </div>
+                  <span className="company-count">({group.items.length})</span>
+                </div>
+                <div className="products-grid">
+                  {group.items.map((product) => (
+                    <ProductCard key={product._id} product={product} />
+                  ))}
+                </div>
+              </section>
+            ));
+          })()
+        )}
       </div>
       
       <Footer />
