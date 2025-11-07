@@ -42,10 +42,16 @@ const SolarPanels = () => {
     return (
       <div className="product-card">
         <div className="product-image-container">
-          <img 
-            src={product?.image || '/Solar Energy.jpg'} 
-            alt={product?.name || 'Solar Panel'} 
+          <img
+            src={product?.image || '/Solar Energy.jpg'}
+            alt={product?.name || 'Solar Panel'}
             className="product-image"
+            loading="lazy"
+            decoding="async"
+            onError={(e) => {
+              e.target.src = '/Solar Energy.jpg';
+              e.target.alt = 'Image not available';
+            }}
           />
           <div className="product-badge">Premium Quality</div>
         </div>

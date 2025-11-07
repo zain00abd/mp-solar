@@ -247,6 +247,14 @@
   display: flex;
   flex-direction: column;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  border-color: var(--detail-primary);
 }
 
 .product-image-container {
@@ -254,12 +262,9 @@
   height: 280px;
   overflow: hidden;
   position: relative;
-  background-color: rgba(35, 34, 34, 0.452);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 30px;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   border-radius: 15px 15px 0 0;
+  /* إزالة padding و display flex لأن cover يحتاج لتغطية كاملة */
 }
 
 .product-image-container::before {
@@ -269,17 +274,50 @@
   left: 0;
   right: 0;
   bottom: 0;
-  /* background: radial-gradient(circle at 30% 20%, rgba(245, 158, 11, 0.15) 0%, transparent 50%); */
+  background: linear-gradient(135deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.02) 100%);
   pointer-events: none;
+  z-index: 1;
 }
 
 .product-image {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* تغيير من contain إلى cover لتغطية المساحة بالكامل */
+  object-position: center; /* ضمان مركز الصورة */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: brightness(1);
+  /* إزالة drop-shadow لأنها تتداخل مع cover */
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.08);
+  filter: brightness(1.05) saturate(1.1);
+}
+
+/* تحسين أداء الصور */
+.product-image {
+  /* تحسين الأداء */
+  will-change: transform, filter;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* تحسين الـ loading للصور */
+.product-image[loading="lazy"] {
+  /* تأثير blur أثناء التحميل */
+  filter: blur(1px);
+  transition: filter 0.3s ease;
+}
+
+.product-image[loading="lazy"]:not([data-loaded]) {
+  opacity: 0.7;
+}
+
+.product-image[loading="lazy"][data-loaded] {
+  filter: blur(0);
+  opacity: 1;
 }
 
 .product-badge {
@@ -289,6 +327,7 @@
   background: linear-gradient(135deg, var(--detail-primary), var(--detail-accent));
   color: white;
   padding: 6px 14px;
+  z-index: 2;
   border-radius: 20px;
   font-size: 0.8rem;
   font-weight: 600;

@@ -42,10 +42,16 @@ const Batteries = () => {
     return (
       <div className="product-card">
         <div className="product-image-container">
-          <img 
-            src={product?.image || '/batter.png'} 
-            alt={product?.name || 'Battery'} 
+          <img
+            src={product?.image || '/batter.png'}
+            alt={product?.name || 'Battery'}
             className="product-image"
+            loading="lazy"
+            decoding="async"
+            onError={(e) => {
+              e.target.src = '/batter.png';
+              e.target.alt = 'Image not available';
+            }}
           />
           <div className="product-badge">Best Seller</div>
         </div>
@@ -80,27 +86,7 @@ const Batteries = () => {
             </div>
           </div>
           
-          <div className="product-features">
-            <h4 className="features-title">Key Features</h4>
-            <div className="features-grid">
-              <div className="feature-item">
-                <span className="feature-icon">✓</span>
-                <span>Smart BMS</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">✓</span>
-                <span>Wi-Fi Monitoring</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">✓</span>
-                <span>Wall Mountable</span>
-              </div>
-              <div className="feature-item">
-                <span className="feature-icon">✓</span>
-                <span>Silent Operation</span>
-              </div>
-            </div>
-          </div>
+
           
           <div className="product-actions">
             <Link href={`/batteries/${product?._id}`} className="btn">
