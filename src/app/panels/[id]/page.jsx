@@ -22,22 +22,21 @@ async function fetchProduct(id) {
 }
 
 const PanelDetail = async ({ params }) => {
-  const product = await fetchProduct(params.id);
+  const { id } = await params;
+  const product = await fetchProduct(id);
 
   if (!product) {
     return (
-      <>
+      <div className="product-detail-page">
         <Header />
-      <div className="">
         <div className="container" style={{ padding: '200px 0', textAlign: 'center' }}>
           <h2>Product not found</h2>
           <Link href="/panels" className="btn" style={{ marginTop: '20px' }}>
             Back to Solar Panels
           </Link>
         </div>
-      </div>
         <Footer />
-      </>
+      </div>
     );
   }
 
@@ -51,12 +50,11 @@ const PanelDetail = async ({ params }) => {
   const features = Array.isArray(product.features) ? product.features : [];
 
   return (
-    <>
-      <Header />
     <div className="product-detail-page">
+      <Header />
       
-      <div className="detail-container" >
-        <div className="header" style={{marginTop: '50px'}}>
+      <div className="detail-container">
+        <div className="header">
           <h1>{product.name || 'Advanced Solar Panel'}</h1>
         </div>
         
@@ -143,13 +141,10 @@ const PanelDetail = async ({ params }) => {
             </div>
           </div>
         </div>
-        
-
       </div>
       
-    </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

@@ -62,7 +62,7 @@
 .product-detail-page .product-content {
   display: flex;
   flex-wrap: wrap;
-  padding: 0px;
+  padding: 40px;
   gap: 40px;
 }
 

@@ -513,3 +513,90 @@
   }
 }
 
+/* Company grouping section */
+.company-section {
+  margin-bottom: 48px;
+}
+
+.company-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 4px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  position: relative;
+  width: 100%;
+}
+
+.company-header img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
+}
+
+/* new: text container and name */
+.company-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.company-name {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--detail-primary);
+}
+
+.company-count {
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+
+.company-country {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* Company logo inside product cards */
+.product-company img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.3));
+}
+
+/* Full-width divider under company header */
+.company-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -12px;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(59, 130, 246, 0.45), rgba(59, 130, 246, 0.15), transparent);
+  border-radius: 2px;
+}
+
+/* Ensure responsive logo sizes override base after all declarations */
+@media (max-width: 768px) {
+  .company-header img {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+@media (max-width: 480px) {
+  .company-header img {
+    width: 48px;
+    height: 48px;
+  }
+}
+

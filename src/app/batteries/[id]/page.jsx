@@ -22,7 +22,8 @@ async function fetchBattery(id) {
 }
 
 const BatteryDetail = async ({ params }) => {
-  const product = await fetchBattery(params.id);
+  const { id } = await params;
+  const product = await fetchBattery(id);
 
   if (!product) {
     return (

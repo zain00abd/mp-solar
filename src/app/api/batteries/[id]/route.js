@@ -7,7 +7,7 @@ import mongoose from 'mongoose';
 // GET - جلب بطارية عبر المعرّف
 export async function GET(_request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json({ success: false, error: 'Invalid battery ID' }, { status: 400 });
@@ -32,7 +32,7 @@ export async function GET(_request, { params }) {
 // PUT - تحديث بطارية
 export async function PUT(request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -78,7 +78,7 @@ export async function PUT(request, { params }) {
 // DELETE - حذف أو تعطيل بطارية
 export async function DELETE(request, { params }) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const { searchParams } = new URL(request.url);
     const permanent = searchParams.get('permanent') === 'true';
 

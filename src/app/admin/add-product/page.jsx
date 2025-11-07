@@ -33,6 +33,17 @@ export default function AddProductPage() {
     warranty: ''
   });
 
+  const [imagePreview, setImagePreview] = useState('');
+  const [imageUploadMethod, setImageUploadMethod] = useState('file'); // 'file' or 'url'
+  const [logoPreview, setLogoPreview] = useState('');
+  const [logoUploadMethod, setLogoUploadMethod] = useState('file'); // 'file' or 'url'
+  const [compressingImage, setCompressingImage] = useState(false);
+  const [uploadingToImgbb, setUploadingToImgbb] = useState(false);
+
+  // مفتاح API من ImgBB - احصل عليه من https://api.imgbb.com/
+  // ضع المفتاح في ملف .env.local بهذا الشكل: NEXT_PUBLIC_IMGBB_API_KEY=your_key_here
+  const IMGBB_API_KEY = process.env.NEXT_PUBLIC_IMGBB_API_KEY || '';
+
   const [companyData, setCompanyData] = useState({
     name: '',
     country: '',
@@ -119,6 +130,216 @@ export default function AddProductPage() {
     }));
   };
 
+  // دالة لضغط الصورة قبل التحميل باستخدام WebP
+  const compressImage = (file, maxWidth = 800, maxHeight = 800, quality = 0.85) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          // حساب الأبعاد الجديدة مع الحفاظ على نسبة العرض إلى الارتفاع
+          if (width > height) {
+            if (width > maxWidth) {
+              height *= maxWidth / width;
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxHeight) {
+              width *= maxHeight / height;
+              height = maxHeight;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          // تحسين جودة الرسم
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // تحويل إلى WebP بدلاً من JPEG - حجم أصغر بنسبة 25-35%
+          const compressedBase64 = canvas.toDataURL('image/webp', quality);
+          resolve(compressedBase64);
+        };
+        img.onerror = (error) => reject(error);
+      };
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  // دالة لرفع الصورة إلى ImgBB
+  const uploadToImgBB = async (base64Image) => {
+    // التحقق من وجود مفتاح API
+    if (!IMGBB_API_KEY || IMGBB_API_KEY === '') {
+      console.warn('⚠️ مفتاح ImgBB API غير موجود. سيتم حفظ الصورة محلياً كـ base64');
+      return base64Image; // إرجاع base64 كبديل
+    }
+
+    try {
+      // إزالة بادئة data:image
+      const base64Data = base64Image.split(',')[1];
+      
+      const formData = new FormData();
+      formData.append('image', base64Data);
+      
+      const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        return result.data.url; // رابط الصورة
+      } else {
+        throw new Error(result.error?.message || 'فشل رفع الصورة');
+      }
+    } catch (error) {
+      console.error('Error uploading to ImgBB:', error);
+      throw error;
+    }
+  };
+
+  const handleImageFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // التحقق من نوع الملف
+      if (!file.type.startsWith('image/')) {
+        alert('الرجاء اختيار ملف صورة فقط');
+        return;
+      }
+
+      // التحقق من حجم الملف (أقل من 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('حجم الصورة كبير جداً. الرجاء اختيار صورة أقل من 5MB');
+        return;
+      }
+
+      try {
+        setCompressingImage(true);
+        // ضغط الصورة قبل الرفع باستخدام WebP
+        const compressedImage = await compressImage(file, 800, 800, 0.85);
+        setImagePreview(compressedImage);
+        
+        setCompressingImage(false);
+        setUploadingToImgbb(true);
+        
+        // رفع الصورة إلى ImgBB
+        const imageUrl = await uploadToImgBB(compressedImage);
+        
+        setProductData(prev => ({
+          ...prev,
+          image: imageUrl
+        }));
+      } catch (error) {
+        console.error('Error processing image:', error);
+        alert('حدث خطأ أثناء معالجة الصورة: ' + error.message);
+        // في حالة الفشل، استخدم base64 كبديل
+        setProductData(prev => ({
+          ...prev,
+          image: imagePreview || ''
+        }));
+      } finally {
+        setCompressingImage(false);
+        setUploadingToImgbb(false);
+      }
+    }
+  };
+
+  const handleImageUrlChange = (e) => {
+    const url = e.target.value;
+    setProductData(prev => ({
+      ...prev,
+      image: url
+    }));
+    setImagePreview(url);
+  };
+
+  const clearImage = () => {
+    setProductData(prev => ({
+      ...prev,
+      image: ''
+    }));
+    setImagePreview('');
+    // إعادة تعيين input file
+    const fileInput = document.getElementById('image-file');
+    if (fileInput) fileInput.value = '';
+  };
+
+  const handleLogoFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // التحقق من نوع الملف
+      if (!file.type.startsWith('image/')) {
+        alert('الرجاء اختيار ملف صورة فقط');
+        return;
+      }
+
+      // التحقق من حجم الملف (أقل من 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('حجم الصورة كبير جداً. الرجاء اختيار صورة أقل من 5MB');
+        return;
+      }
+
+      try {
+        setCompressingImage(true);
+        // ضغط الشعار باستخدام WebP
+        const compressedImage = await compressImage(file, 400, 400, 0.9);
+        setLogoPreview(compressedImage);
+        
+        setCompressingImage(false);
+        setUploadingToImgbb(true);
+        
+        // رفع الشعار إلى ImgBB
+        const logoUrl = await uploadToImgBB(compressedImage);
+        
+        setCompanyData(prev => ({
+          ...prev,
+          logo: logoUrl
+        }));
+      } catch (error) {
+        console.error('Error processing logo:', error);
+        alert('حدث خطأ أثناء معالجة الشعار: ' + error.message);
+        // في حالة الفشل، استخدم base64 كبديل
+        setCompanyData(prev => ({
+          ...prev,
+          logo: logoPreview || ''
+        }));
+      } finally {
+        setCompressingImage(false);
+        setUploadingToImgbb(false);
+      }
+    }
+  };
+
+  const handleLogoUrlChange = (e) => {
+    const url = e.target.value;
+    setCompanyData(prev => ({
+      ...prev,
+      logo: url
+    }));
+    setLogoPreview(url);
+  };
+
+  const clearLogo = () => {
+    setCompanyData(prev => ({
+      ...prev,
+      logo: ''
+    }));
+    setLogoPreview('');
+    // إعادة تعيين input file
+    const fileInput = document.getElementById('logo-file');
+    if (fileInput) fileInput.value = '';
+  };
+
   const handleCompanyInputChange = (e) => {
     const { name, value } = e.target;
     setCompanyData(prev => ({
@@ -152,6 +373,7 @@ export default function AddProductPage() {
           website: '',
           established: ''
         });
+        setLogoPreview('');
         setShowCompanyForm(false);
         fetchCompanies(); // إعادة جلب الشركات
         setProductData(prev => ({ ...prev, company: result.data._id }));
@@ -316,17 +538,92 @@ export default function AddProductPage() {
                 />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="image">رابط الصورة *</label>
-                <input
-                  type="url"
-                  id="image"
-                  name="image"
-                  value={productData.image}
-                  onChange={handleInputChange}
-                  required
-                  placeholder="https://example.com/image.jpg"
-                />
+              <div className="form-group image-upload-section">
+                <label>صورة المنتج *</label>
+                
+                {/* خيارات رفع الصورة */}
+                <div className="image-upload-methods">
+                  <button
+                    type="button"
+                    className={`method-btn ${imageUploadMethod === 'file' ? 'active' : ''}`}
+                    onClick={() => setImageUploadMethod('file')}
+                  >
+                    رفع من الجهاز
+                  </button>
+                  <button
+                    type="button"
+                    className={`method-btn ${imageUploadMethod === 'url' ? 'active' : ''}`}
+                    onClick={() => setImageUploadMethod('url')}
+                  >
+                    إدخال رابط
+                  </button>
+                </div>
+
+                {/* رفع صورة من الجهاز */}
+                {imageUploadMethod === 'file' && (
+                  <div className="file-upload-container">
+                    <input
+                      type="file"
+                      id="image-file"
+                      accept="image/*"
+                      onChange={handleImageFileChange}
+                      className="file-input"
+                    />
+                      <label htmlFor="image-file" className="file-input-label">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="17 8 12 3 7 8"></polyline>
+                          <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <span>اضغط لاختيار صورة أو اسحب الملف هنا</span>
+                        <span className="file-hint">سيتم تحويل الصورة تلقائياً إلى WebP (أقل من 5MB)</span>
+                      </label>
+                  </div>
+                )}
+
+                {/* إدخال رابط URL */}
+                {imageUploadMethod === 'url' && (
+                  <input
+                    type="url"
+                    id="image-url"
+                    name="image"
+                    value={productData.image.startsWith('data:') ? '' : productData.image}
+                    onChange={handleImageUrlChange}
+                    placeholder="https://example.com/image.jpg"
+                    className="url-input"
+                  />
+                )}
+
+                {/* رسالة الضغط */}
+                {compressingImage && (
+                  <div className="compressing-message">
+                    <div className="spinner"></div>
+                    <span>جاري ضغط الصورة وتحسين الجودة...</span>
+                  </div>
+                )}
+
+                {/* رسالة الرفع إلى ImgBB */}
+                {uploadingToImgbb && (
+                  <div className="compressing-message uploading">
+                    <div className="spinner"></div>
+                    <span>جاري رفع الصورة إلى السحابة...</span>
+                  </div>
+                )}
+
+                {/* معاينة الصورة */}
+                {imagePreview && !compressingImage && !uploadingToImgbb && (
+                  <div className="image-preview-container">
+                    <img src={imagePreview} alt="معاينة الصورة" className="image-preview" />
+                    <button
+                      type="button"
+                      onClick={clearImage}
+                      className="clear-image-btn"
+                      title="حذف الصورة"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="form-group">
@@ -576,17 +873,92 @@ export default function AddProductPage() {
                   />
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="company-logo">رابط الشعار *</label>
-                  <input
-                    type="url"
-                    id="company-logo"
-                    name="logo"
-                    value={companyData.logo}
-                    onChange={handleCompanyInputChange}
-                    required
-                    placeholder="https://example.com/logo.png"
-                  />
+                <div className="form-group image-upload-section">
+                  <label>شعار الشركة *</label>
+                  
+                  {/* خيارات رفع الشعار */}
+                  <div className="image-upload-methods">
+                    <button
+                      type="button"
+                      className={`method-btn ${logoUploadMethod === 'file' ? 'active' : ''}`}
+                      onClick={() => setLogoUploadMethod('file')}
+                    >
+                      رفع من الجهاز
+                    </button>
+                    <button
+                      type="button"
+                      className={`method-btn ${logoUploadMethod === 'url' ? 'active' : ''}`}
+                      onClick={() => setLogoUploadMethod('url')}
+                    >
+                      إدخال رابط
+                    </button>
+                  </div>
+
+                  {/* رفع صورة من الجهاز */}
+                  {logoUploadMethod === 'file' && (
+                    <div className="file-upload-container">
+                      <input
+                        type="file"
+                        id="logo-file"
+                        accept="image/*"
+                        onChange={handleLogoFileChange}
+                        className="file-input"
+                      />
+                      <label htmlFor="logo-file" className="file-input-label">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                          <polyline points="17 8 12 3 7 8"></polyline>
+                          <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <span>اضغط لاختيار شعار أو اسحب الملف هنا</span>
+                        <span className="file-hint">سيتم تحويل الشعار تلقائياً إلى WebP (أقل من 5MB)</span>
+                      </label>
+                    </div>
+                  )}
+
+                  {/* إدخال رابط URL */}
+                  {logoUploadMethod === 'url' && (
+                    <input
+                      type="url"
+                      id="logo-url"
+                      name="logo"
+                      value={companyData.logo.startsWith('data:') ? '' : companyData.logo}
+                      onChange={handleLogoUrlChange}
+                      placeholder="https://example.com/logo.png"
+                      className="url-input"
+                    />
+                  )}
+
+                  {/* رسالة الضغط */}
+                  {compressingImage && (
+                    <div className="compressing-message">
+                      <div className="spinner"></div>
+                      <span>جاري ضغط الشعار وتحسين الجودة...</span>
+                    </div>
+                  )}
+
+                  {/* رسالة الرفع إلى ImgBB */}
+                  {uploadingToImgbb && (
+                    <div className="compressing-message uploading">
+                      <div className="spinner"></div>
+                      <span>جاري رفع الشعار إلى السحابة...</span>
+                    </div>
+                  )}
+
+                  {/* معاينة الشعار */}
+                  {logoPreview && !compressingImage && !uploadingToImgbb && (
+                    <div className="image-preview-container">
+                      <img src={logoPreview} alt="معاينة الشعار" className="image-preview" />
+                      <button
+                        type="button"
+                        onClick={clearLogo}
+                        className="clear-image-btn"
+                        title="حذف الشعار"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 <div className="form-group">

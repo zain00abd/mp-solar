@@ -22,7 +22,8 @@ async function fetchInverter(id) {
 }
 
 const InverterDetail = async ({ params }) => {
-  const product = await fetchInverter(params.id);
+  const { id } = await params;
+  const product = await fetchInverter(id);
 
   if (!product) {
     return (
@@ -49,12 +50,11 @@ const InverterDetail = async ({ params }) => {
   const features = Array.isArray(product.features) ? product.features : [];
 
   return (
-    <>
-      <Header />
     <div className="product-detail-page">
+      <Header />
       
-      <div className="">
-        <div className="header" style={{marginTop: '50px'}}>
+      <div className="detail-container">
+        <div className="header">
           <h1>{product.name || 'Advanced Solar Inverter'}</h1>
         </div>
         
@@ -141,13 +141,10 @@ const InverterDetail = async ({ params }) => {
             </div>
           </div>
         </div>
-        
-
       </div>
       
-    </div>
       <Footer />
-    </>
+    </div>
   );
 };
 

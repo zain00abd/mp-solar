@@ -134,100 +134,99 @@ const statsData = [
 //   );
 // };
 
-// Modern Hero Component
+// Modern Hero Component with Grid Animation
 const ModernHero = () => {
-  const [activeProduct, setActiveProduct] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveProduct((prev) => (prev + 1) % 3);
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const products = [
-    { icon: '☀️', name: 'Solar Panels', color: '#FFA500', link: '/products' },
-    { icon: '⚡', name: 'Inverters', color: '#4A90E2', link: '/inverters' },
-    { icon: '🔋', name: 'Batteries', color: '#10B981', link: '/batteries' }
-  ];
-
   return (
-    <section className="modern-hero" id="home">
-      <div className="hero-background">
-        <div className="gradient-orb orb-1"></div>
-        <div className="gradient-orb orb-2"></div>
-        <div className="gradient-orb orb-3"></div>
+    <section className="modern-hero-new" id="home">
+      {/* Animated Grid Background */}
+      <div className="hero-grid-background">
+        <svg aria-hidden="true" className="hero-grid-svg">
+          <defs>
+            <pattern id="grid-pattern" width="200" height="200" x="50%" y="-1" patternUnits="userSpaceOnUse">
+              <path d="M.5 200V.5H200" fill="none"></path>
+            </pattern>
+          </defs>
+          <svg x="50%" y="-1" className="grid-overflow">
+            <path d="M-200 0h201v201h-201Z M600 0h201v201h-201Z M-400 600h201v201h-201Z M200 800h201v201h-201Z" strokeWidth="0"></path>
+          </svg>
+          <rect width="100%" height="100%" fill="url(#grid-pattern)" strokeWidth="0"></rect>
+        </svg>
+        
+        {/* Gradient Blob */}
+        <div className="gradient-blob"></div>
       </div>
 
-      <div className="container hero-container">
-        <div className="hero-content">
-
-          
-          <h1 className="hero-title" style={{textAlign: 'center'}}>
-            Power Your Future with
-            <span className="gradient-text"> Clean Energy</span>
-          </h1>
-          
-          <p className="hero-description">
-            Transform your home or business with premium solar solutions. 
-            Experience energy independence, reduce costs, and contribute to a sustainable future.
-          </p>
-
-          <div className="hero-image-wrapper">
-            <img 
-              src="https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
-              alt="Solar Panels" 
-              className="hero-image"
-            />
-            <div className="image-overlay"></div>
-          </div>
-
-          <div className="hero-stats">
-            <div className="stat-item">
-              <div className="stat-number">500+</div>
-              <div className="stat-label">Projects Completed</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-number">25 Years</div>
-              <div className="stat-label">Warranty</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-number">98%</div>
-              <div className="stat-label">Satisfaction Rate</div>
+      {/* Main Content */}
+      <div className="hero-main-container">
+        <div className="hero-content-grid">
+          {/* Left Content */}
+          <div className="hero-text-content">
+            <h1 className="hero-main-title">
+              Power Your Future with
+              <span className="gradient-text"> Clean Energy</span>
+            </h1>
+            <p className="hero-main-description">
+              Transform your home or business with premium solar solutions. 
+              Experience energy independence, reduce costs, and contribute to a sustainable future.
+            </p>
+            <div className="hero-action-buttons">
+              <a href="#products" className="btn-get-started">Get started</a>
+              <a href="#about" className="btn-live-demo">
+                Explore more <span aria-hidden="true">→</span>
+              </a>
             </div>
           </div>
 
-
-        </div>
-
-
-        {/* <div className="hero-visual">
-          <div className="product-showcase">
-            {products.map((product, index) => (
-              <div
-                key={index}
-                className={`product-card ${index === activeProduct ? 'active' : ''}`}
-                style={{ '--product-color': product.color }}
-              >
-                <div className="product-icon">{product.icon}</div>
-                <div className="product-name">{product.name}</div>
-                <a href={product.link} className="product-link">
-                  Discover →
-                </a>
+          {/* Right Images Grid - Random Layout */}
+          <div className="hero-images-grid">
+            <div className="image-column column-1">
+              <div className="hero-img-wrapper img-size-2">
+                <img 
+                  src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&h=528&q=80" 
+                  alt="Solar Installation 1" 
+                  className="hero-grid-img"
+                />
+                <div className="img-ring"></div>
               </div>
-            ))}
+            </div>
+            <div className="image-column column-2">
+              <div className="hero-img-wrapper img-size-1">
+                <img 
+                  src="https://images.unsplash.com/photo-1485217988980-11786ced9454?ixlib=rb-4.0.3&auto=format&fit=crop&h=528&q=80" 
+                  alt="Solar Installation 2" 
+                  className="hero-grid-img"
+                />
+                <div className="img-ring"></div>
+              </div>
+              <div className="hero-img-wrapper img-size-3">
+                <img 
+                  src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-4.0.3&auto=format&fit=crop&w=396&h=528&q=80" 
+                  alt="Solar Installation 3" 
+                  className="hero-grid-img"
+                />
+                <div className="img-ring"></div>
+              </div>
+            </div>
+            <div className="image-column column-3">
+              <div className="hero-img-wrapper img-size-3">
+                <img 
+                  src="https://images.unsplash.com/photo-1670272504528-790c24957dda?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=528&q=80" 
+                  alt="Solar Installation 4" 
+                  className="hero-grid-img"
+                />
+                <div className="img-ring"></div>
+              </div>
+              <div className="hero-img-wrapper img-size-2">
+                <img 
+                  src="https://images.unsplash.com/photo-1670272505284-8faba1c31f7d?ixlib=rb-4.0.3&auto=format&fit=crop&h=528&q=80" 
+                  alt="Solar Installation 5" 
+                  className="hero-grid-img"
+                />
+                <div className="img-ring"></div>
+              </div>
+            </div>
           </div>
-
-
-
-        </div> */}
-
-      </div>
-
-      <div className="scroll-indicator">
-        <div className="scroll-icon"></div>
-        <span>Scroll to explore</span>
+        </div>
       </div>
     </section>
   );

@@ -260,7 +260,6 @@
   justify-content: center;
   padding: 30px;
   border-radius: 15px 15px 0 0;
-  position: relative;
 }
 
 .product-image-container::before {
@@ -492,15 +491,12 @@
   .product-title {
     font-size: 1.3rem;
   }
-  
 
   .company-header img {
     width: 56px;
     height: 56px;
   }
 
-  
-  
   .features-grid {
     grid-template-columns: 1fr;
   }
