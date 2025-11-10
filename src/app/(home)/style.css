@@ -27,7 +27,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-.container {
+.home-container {
     width: 90%;
     max-width: 1200px;
     margin: 0 auto;
@@ -300,7 +300,9 @@ header.scrolled {
     font-size: 36px;
     margin-bottom: 20px;
     color: var(--text-light);
+    font-family: 'Segoe UI', 'Arial', sans-serif;
     position: relative;
+    font-weight: 700;
 }
 
 .about-text h2::after {
@@ -403,7 +405,7 @@ header.scrolled {
 }
 
 /* Ensure content is above background */
-.products .container {
+.products .home-container {
     position: relative;
     z-index: 1;
 }
@@ -490,6 +492,7 @@ header.scrolled {
     position: relative;
     display: inline-block;
     font-family: 'Segoe UI', 'Arial', sans-serif;
+    font-weight: 700;
 }
 
 .section-title h2::after {
@@ -810,6 +813,8 @@ header.scrolled {
     font-size: 28px;
     margin-bottom: 15px;
     color: var(--text-light);
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    font-weight: 700;
 }
 
 .product-content .product-description {
@@ -1138,6 +1143,8 @@ header.scrolled {
     font-size: 36px;
     margin-bottom: 20px;
     position: relative;
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    font-weight: 700;
 }
 
 .cta p {
@@ -1633,7 +1640,7 @@ footer {
 
 /* Extra Small Screens */
 @media (max-width: 480px) {
-    .container {
+    .home-container {
         width: 95%;
     }
     

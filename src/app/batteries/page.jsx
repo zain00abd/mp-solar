@@ -58,6 +58,16 @@ const Batteries = () => {
         
         <div className="product-content">
           <h3 className="product-title">{product?.name || 'Solar Battery'}</h3>
+          {product?.company && (
+            <div className="product-company" style={{display:'flex', alignItems:'center', gap:'10px', marginTop:'6px'}}>
+              {product?.company?.logo && (
+                <img src={product.company.logo} alt={product?.company?.name || 'Company'} />
+              )}
+              <span style={{fontSize:'0.95rem', color:'#6b7280', fontWeight:600}}>
+                {product?.company?.name || '—'}
+              </span>
+            </div>
+          )}
           <p className="product-description">
             {(product?.description.slice(0,75) + " ......." )|| 'High-efficiency lithium-ion battery for solar energy storage.'}
             <Link href={`/batteries/${product?._id}`} className="" style={{color: 'rgba(0, 255, 170, 0.84)', fontWeight: '600', textDecoration: 'none'}}> More</Link>

@@ -50,7 +50,13 @@ export default function AddProductPage() {
     logo: '',
     description: '',
     website: '',
-    established: ''
+    established: '',
+    color1: '#1e40af',
+    color2: '#3b82f6',
+    color3: '#60a5fa',
+    opacity1: 100,
+    opacity2: 100,
+    opacity3: 100
   });
 
   const categories = [
@@ -348,17 +354,48 @@ export default function AddProductPage() {
     }));
   };
 
+  // دالة لتحويل HEX + Opacity إلى RGBA
+  const hexToRgba = (hex, opacity) => {
+    // إزالة # من البداية
+    hex = hex.replace('#', '');
+    
+    // تحويل HEX إلى RGB
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    const alpha = opacity / 100;
+    
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
+
+  // دالة للحصول على اللون مع الشفافية
+  const getColorWithOpacity = (colorName) => {
+    const colorValue = companyData[colorName];
+    const opacityName = colorName.replace('color', 'opacity');
+    const opacityValue = companyData[opacityName];
+    
+    return hexToRgba(colorValue, opacityValue);
+  };
+
   const handleSubmitCompany = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      // تحويل الألوان إلى RGBA قبل الإرسال
+      const dataToSend = {
+        ...companyData,
+        color1: getColorWithOpacity('color1'),
+        color2: getColorWithOpacity('color2'),
+        color3: getColorWithOpacity('color3')
+      };
+      
       const response = await fetch('/api/companies', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(companyData),
+        body: JSON.stringify(dataToSend),
       });
 
       const result = await response.json();
@@ -371,7 +408,13 @@ export default function AddProductPage() {
           logo: '',
           description: '',
           website: '',
-          established: ''
+          established: '',
+          color1: '#1e40af',
+          color2: '#3b82f6',
+          color3: '#60a5fa',
+          opacity1: 100,
+          opacity2: 100,
+          opacity3: 100
         });
         setLogoPreview('');
         setShowCompanyForm(false);
@@ -997,6 +1040,169 @@ export default function AddProductPage() {
                     max={new Date().getFullYear()}
                     placeholder="2000"
                   />
+                </div>
+
+                {/* ألوان الشركة */}
+                <div className="colors-section">
+                  <h4>ألوان الشركة (للعرض والتصميم)</h4>
+                  <div className="form-row colors-row">
+                    <div className="form-group color-input-group">
+                      <label htmlFor="company-color1">اللون الأساسي</label>
+                      <div className="color-input-wrapper">
+                        <input
+                          type="color"
+                          id="company-color1"
+                          name="color1"
+                          value={companyData.color1}
+                          onChange={handleCompanyInputChange}
+                          className="color-picker"
+                        />
+                        <input
+                          type="text"
+                          value={companyData.color1}
+                          onChange={(e) => handleCompanyInputChange({
+                            target: { name: 'color1', value: e.target.value }
+                          })}
+                          placeholder="#1e40af"
+                          className="color-text-input"
+                          pattern="^#[0-9A-Fa-f]{6}$"
+                        />
+                      </div>
+                      <div className="opacity-control">
+                        <label htmlFor="opacity1" className="opacity-label">
+                          <span>الشفافية</span>
+                          <span className="opacity-value">{companyData.opacity1}%</span>
+                        </label>
+                        <input
+                          type="range"
+                          id="opacity1"
+                          name="opacity1"
+                          min="0"
+                          max="100"
+                          value={companyData.opacity1}
+                          onChange={handleCompanyInputChange}
+                          className="opacity-slider"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group color-input-group">
+                      <label htmlFor="company-color2">اللون الثانوي</label>
+                      <div className="color-input-wrapper">
+                        <input
+                          type="color"
+                          id="company-color2"
+                          name="color2"
+                          value={companyData.color2}
+                          onChange={handleCompanyInputChange}
+                          className="color-picker"
+                        />
+                        <input
+                          type="text"
+                          value={companyData.color2}
+                          onChange={(e) => handleCompanyInputChange({
+                            target: { name: 'color2', value: e.target.value }
+                          })}
+                          placeholder="#3b82f6"
+                          className="color-text-input"
+                          pattern="^#[0-9A-Fa-f]{6}$"
+                        />
+                      </div>
+                      <div className="opacity-control">
+                        <label htmlFor="opacity2" className="opacity-label">
+                          <span>الشفافية</span>
+                          <span className="opacity-value">{companyData.opacity2}%</span>
+                        </label>
+                        <input
+                          type="range"
+                          id="opacity2"
+                          name="opacity2"
+                          min="0"
+                          max="100"
+                          value={companyData.opacity2}
+                          onChange={handleCompanyInputChange}
+                          className="opacity-slider"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group color-input-group">
+                      <label htmlFor="company-color3">اللون المساعد</label>
+                      <div className="color-input-wrapper">
+                        <input
+                          type="color"
+                          id="company-color3"
+                          name="color3"
+                          value={companyData.color3}
+                          onChange={handleCompanyInputChange}
+                          className="color-picker"
+                        />
+                        <input
+                          type="text"
+                          value={companyData.color3}
+                          onChange={(e) => handleCompanyInputChange({
+                            target: { name: 'color3', value: e.target.value }
+                          })}
+                          placeholder="#60a5fa"
+                          className="color-text-input"
+                          pattern="^#[0-9A-Fa-f]{6}$"
+                        />
+                      </div>
+                      <div className="opacity-control">
+                        <label htmlFor="opacity3" className="opacity-label">
+                          <span>الشفافية</span>
+                          <span className="opacity-value">{companyData.opacity3}%</span>
+                        </label>
+                        <input
+                          type="range"
+                          id="opacity3"
+                          name="opacity3"
+                          min="0"
+                          max="100"
+                          value={companyData.opacity3}
+                          onChange={handleCompanyInputChange}
+                          className="opacity-slider"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* معاينة الألوان */}
+                  <div className="colors-preview">
+                    <span>معاينة الألوان مع الشفافية:</span>
+                    <div className="preview-boxes">
+                      <div className="preview-item">
+                        <div 
+                          className="preview-box" 
+                          style={{ backgroundColor: getColorWithOpacity('color1') }}
+                          title={`${companyData.color1} - ${companyData.opacity1}%`}
+                        ></div>
+                        <span className="preview-label">
+                          {getColorWithOpacity('color1')}
+                        </span>
+                      </div>
+                      <div className="preview-item">
+                        <div 
+                          className="preview-box" 
+                          style={{ backgroundColor: getColorWithOpacity('color2') }}
+                          title={`${companyData.color2} - ${companyData.opacity2}%`}
+                        ></div>
+                        <span className="preview-label">
+                          {getColorWithOpacity('color2')}
+                        </span>
+                      </div>
+                      <div className="preview-item">
+                        <div 
+                          className="preview-box" 
+                          style={{ backgroundColor: getColorWithOpacity('color3') }}
+                          title={`${companyData.color3} - ${companyData.opacity3}%`}
+                        ></div>
+                        <span className="preview-label">
+                          {getColorWithOpacity('color3')}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="company-form-buttons">

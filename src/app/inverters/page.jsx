@@ -20,6 +20,7 @@ const Inverters = () => {
       const response = await fetch('/api/inverters?limit=100');
       if (response.ok) {
         const data = await response.json();
+        console.log(data)
         setProducts(data?.data || []);
       }
     } catch (error) {
@@ -51,7 +52,19 @@ const Inverters = () => {
         </div>
         
         <div className="product-content">
-          <h3 className="product-title">{product?.name || 'Solar Inverter'}</h3>
+          <h3 className="product-title" style={{color:`${product.company.color1}`}}>{product?.name || 'Solar Inverter'}</h3>
+          <hr style={{backgroundColor:`${product.company.color1}`, width:"100%", height:"1px" , border:"none", boxShadow:`${product.company.color2} 0px 0px 18px 3px`, marginBottom:"15px"}} />
+          
+          {product?.company && (
+            <div className="product-company" style={{display:'flex', alignItems:'center', gap:'10px', marginTop:'6px'}}>
+              {product?.company?.logo && (
+                <img src={product.company.logo} alt={product?.company?.name || 'Company'} />
+              )}
+              <span style={{fontSize:'0.95rem', color:'#6b7280', fontWeight:600}}>
+                {product?.company?.name || '—'}
+              </span>
+            </div>
+          )}
           <p className="product-description">
             {(product?.description.slice(0,100) + " ......") || 'High-efficiency inverter for converting DC solar power to AC for your home.'}
             <Link href={`/inverters/${product?._id}`} className="" style={{color: "#2563EB", textDecoration: 'none', fontWeight:"600"}}> More</Link>

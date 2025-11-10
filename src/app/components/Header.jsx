@@ -104,7 +104,7 @@ const Header = () => {
 
   return (
     <header className="shared-header">
-      <div className="container header-container">
+      <div className="shared-container header-container">
         <div className="logo">
           <Link href="/">
             <img src="/logo22.png" alt="MB Solar Power Logo" className="logo-image" />

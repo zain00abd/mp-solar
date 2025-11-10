@@ -236,7 +236,7 @@ const ModernHero = () => {
 const AboutSection = () => {
   return (
     <section className="about" id="about">
-      <div className="container">
+      <div className="home-container">
         <div className="about-content">
           <div className="about-text">
             <h2>About MB<span className="gradient-text"> Solar Power</span></h2>
@@ -369,7 +369,7 @@ const ProductsSection = () => {
         />
       ))}
       
-      <div className="container">
+      <div className="home-container">
         <div className="section-title">
           <h2>
             Our
@@ -424,7 +424,7 @@ const ProjectCard = ({ project }) => {
 const ProjectsSection = () => {
   return (
     <section className="projects" id="projects">
-      <div className="container">
+      <div className="home-container">
         <div className="section-title">
           <h2>
             Completed
@@ -446,7 +446,7 @@ const ProjectsSection = () => {
 const WhyChooseSection = () => {
   return (
     <section className="why-choose">
-      <div className="container">
+      <div className="home-container">
         <div className="why-choose-header">
           <h2>Why Choose <span className="gradient-text">MB Solar?</span></h2>
           <p>With decades of combined experience, industry-leading technology, and a commitment to customer satisfaction, we deliver solar solutions that exceed expectations. Our end-to-end service ensures a seamless transition to clean energy.</p>
@@ -469,7 +469,7 @@ const WhyChooseSection = () => {
 const CTASection = () => {
   return (
     <section className="cta" id="contact">
-      <div className="container">
+      <div className="home-container">
         <h2>Ready to Go Solar?</h2>
         <p>Contact us today for a free consultation and quote. Our experts will help you design the perfect solar solution for your needs.</p>
         <a href="#" className="btn">Contact Us Now</a>
@@ -482,7 +482,7 @@ const CTASection = () => {
 const Footer = () => {
   return (
     <footer>
-      <div className="container">
+      <div className="home-container">
         <div className="footer-grid">
           <div className="footer-column">
             <h3>MB Solar Power</h3>
@@ -559,10 +559,9 @@ const MainPage = () => {
   }, [mobileMenuOpen]);
 
   return (
-    <div className="main-page">
-      <Header 
 
-      />
+    <div className="main-page">
+    <Header />
       <ModernHero />
       <AboutSection />
       <ProductsSection />
@@ -571,6 +570,7 @@ const MainPage = () => {
       <CTASection />
       <Footer />
     </div>
+
   );
 };
 

@@ -1,4 +1,5 @@
 import './globals.css'
+import Script from 'next/script'
 
 export const metadata = {
   title: 'MB Solar - Solar Energy Solutions',
@@ -11,7 +12,10 @@ export default function RootLayout({ children }) {
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body>{children}</body>
+      <body>
+        <Script src="https://cdn.tailwindcss.com" strategy="beforeInteractive" />
+        {children}
+      </body>
     </html>
   )
 }

@@ -19,13 +19,7 @@
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
-.solar-panels-page {
-  background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, var(--dark-bg) 30%, rgba(217, 119, 6, 0.03) 70%, #0f172a 100%);
-  color: var(--text-primary);
-  line-height: 1.7;
-  min-height: 100vh;
-  position: relative;
-}
+
 
 .solar-panels-page::before {
   content: '';
@@ -519,8 +513,9 @@
   }
   
   .product-image-container {
-    height: 240px;
+    height: 400px;
     padding: 20px;
+    background: none;
   }
   
   .product-content {
@@ -561,7 +556,7 @@
   }
   
   .product-image-container {
-    height: 200px;
+    height: 400px;
     padding: 15px;
   }
 

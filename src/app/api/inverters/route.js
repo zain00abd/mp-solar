@@ -42,7 +42,7 @@ export async function GET(request) {
       .sort(sort)
       .skip(skip)
       .limit(limit)
-      .populate('company', 'name country logo');
+      .populate('company', 'name country logo color1 color2 color3');
 
     const total = await Inverter.countDocuments(filter);
 
@@ -91,7 +91,7 @@ export async function POST(request) {
     const inverter = new Inverter({ name, company, badge, image, description, features: features || [], specs: specs || [], price, currency: currency || 'USD', availability: availability || 'in-stock', tags: tags || [], warranty: warranty || {}, category: 'inverters' });
     await inverter.save();
 
-    const populatedInverter = await Inverter.findById(inverter._id).populate('company', 'name country logo');
+    const populatedInverter = await Inverter.findById(inverter._id).populate('company', 'name country logo color1 color2 color3');
     return NextResponse.json({ success: true, data: populatedInverter, message: 'Inverter created successfully' }, { status: 201 });
   } catch (error) {
     console.error('Error creating inverter:', error);

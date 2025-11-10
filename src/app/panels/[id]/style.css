@@ -11,6 +11,14 @@
   --detail-border-dark: #1e293b;
 }
 
+.grid-pattern {
+  background-color: #1f2937;
+  background-image: 
+    linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
 .product-detail-page * {
   margin: 0;
   padding: 0;

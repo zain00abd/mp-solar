@@ -88,7 +88,7 @@ export async function POST(request) {
     await connectDB();
     
     const body = await request.json();
-    const { name, country, logo, description, website, established } = body;
+    const { name, country, logo, description, website, established, color1, color2, color3 } = body;
 
     // التحقق من البيانات المطلوبة
     if (!name || !country || !logo) {
@@ -114,7 +114,10 @@ export async function POST(request) {
       logo,
       description,
       website,
-      established
+      established,
+      color1,
+      color2,
+      color3
     });
 
     await company.save();
