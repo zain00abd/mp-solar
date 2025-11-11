@@ -20,6 +20,8 @@ const Batteries = () => {
       const response = await fetch('/api/batteries?limit=100');
       if (response.ok) {
         const data = await response.json();
+        console.log(data?.data);
+
         setProducts(data?.data || []);
       }
     } catch (error) {
@@ -57,7 +59,9 @@ const Batteries = () => {
         </div>
         
         <div className="product-content">
-          <h3 className="product-title">{product?.name || 'Solar Battery'}</h3>
+          <h3 className="product-title" style={{color:`${product?.company?.color1 || '#FFA500'}`}}>{product?.name || 'Solar Battery'}</h3>
+          <hr style={{backgroundColor:`${product?.company?.color1 || '#FFA500'}`, width:"100%", height:"1px" , border:"none", boxShadow:`${product?.company?.color2 || '#4A90E2'} 0px 0px 18px 3px`, marginBottom:"15px"}} />
+          
           {product?.company && (
             <div className="product-company" style={{display:'flex', alignItems:'center', gap:'10px', marginTop:'6px'}}>
               {product?.company?.logo && (
@@ -70,28 +74,28 @@ const Batteries = () => {
           )}
           <p className="product-description">
             {(product?.description.slice(0,75) + " ......." )|| 'High-efficiency lithium-ion battery for solar energy storage.'}
-            <Link href={`/batteries/${product?._id}`} className="" style={{color: 'rgba(0, 255, 170, 0.84)', fontWeight: '600', textDecoration: 'none'}}> More</Link>
+            <Link href={`/batteries/${product?._id}`} className="" style={{color: `${product?.company?.color1 || '#FFA500'}`, textDecoration: 'none', fontWeight:"600"}}> More</Link>
           </p>
           
           <div className="specs-container">
             <div className="spec-column">
-              <div className="spec-item">
+              <div className="spec-item" style={{backgroundColor:`${product?.company?.color2 || '#4A90E2'}`}}>
                 <span className="spec-label">{s0?.label || 'Capacity'}</span>
-                <span className="spec-value">{s0?.value || '5 kWh'}</span>
+                <span className="spec-value" style={{color:`${product?.company?.color1 || '#FFA500'}`}}>{s0?.value || '5 kWh'}</span>
               </div>
-              <div className="spec-item">
+              <div className="spec-item" style={{backgroundColor:`${product?.company?.color2 || '#4A90E2'}`}}>
                 <span className="spec-label">{s1?.label || 'Voltage'}</span>
-                <span className="spec-value">{s1?.value || '48V'}</span>
+                <span className="spec-value" style={{color:`${product?.company?.color1 || '#FFA500'}`}}>{s1?.value || '48V'}</span>
               </div>
             </div>
             <div className="spec-column">
-              <div className="spec-item">
+              <div className="spec-item" style={{backgroundColor:`${product?.company?.color2 || '#4A90E2'}`}}>
                 <span className="spec-label">{s2?.label || 'Lifespan'}</span>
-                <span className="spec-value">{s2?.value || '10 Years'}</span>
+                <span className="spec-value" style={{color:`${product?.company?.color1 || '#FFA500'}`}}>{s2?.value || '10 Years'}</span>
               </div>
-              <div className="spec-item">
+              <div className="spec-item" style={{backgroundColor:`${product?.company?.color2 || '#4A90E2'}`}}>
                 <span className="spec-label">{s3?.label || 'Efficiency'}</span>
-                <span className="spec-value">{s3?.value || '98%'}</span>
+                <span className="spec-value" style={{color:`${product?.company?.color1 || '#FFA500'}`}}>{s3?.value || '98%'}</span>
               </div>
             </div>
           </div>
@@ -99,7 +103,7 @@ const Batteries = () => {
 
           
           <div className="product-actions">
-            <Link href={`/batteries/${product?._id}`} className="btn">
+            <Link href={`/batteries/${product?._id}`} className="btn" style={{backgroundColor:`${product?.company?.color2 || '#4A90E2'}`, color:`${product?.company?.color1 || '#FFA500'}`}}>
               View Product Details
             </Link>
           </div>

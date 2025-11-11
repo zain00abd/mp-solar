@@ -19,7 +19,7 @@ export async function GET(request, { params }) {
       );
     }
 
-    const product = await Product.findById(id).populate('company', 'name country logo website');
+    const product = await Product.findById(id).populate('company', 'name country logo color1 color2 color3');
 
     if (!product) {
       return NextResponse.json(
@@ -126,7 +126,7 @@ export async function PUT(request, { params }) {
       id,
       { $set: body },
       { new: true, runValidators: true }
-    ).populate('company', 'name country logo');
+    ).populate('company', 'name country logo color1 color2 color3');
 
     return NextResponse.json({
       success: true,

@@ -57,7 +57,9 @@ const SolarPanels = () => {
         </div>
 
         <div className="product-content">
-          <h3 className="product-title">{product?.name || 'Solar Panel'}</h3>
+          <h3 className="product-title" style={{color:`${product?.company?.color1 || '#FFA500'}`}}>{product?.name || 'Solar Panel'}</h3>
+          <hr style={{backgroundColor:`${product?.company?.color1 || '#FFA500'}`, width:"100%", height:"1px" , border:"none", boxShadow:`${product?.company?.color2 || '#4A90E2'} 0px 0px 18px 3px`, marginBottom:"15px"}} />
+          
           {product?.company && (
             <div className="product-company" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '6px' }}>
               {product?.company?.logo && (
@@ -74,23 +76,23 @@ const SolarPanels = () => {
 
           <div className="specs-container">
             <div className="spec-column">
-              <div className="spec-item">
+              <div className="spec-item" style={{backgroundColor:`${product?.company?.color2 || '#4A90E2'}`}}>
                 <span className="spec-label">{s0?.label || 'Power'}</span>
-                <span className="spec-value">{s0?.value || '400W'}</span>
+                <span className="spec-value" style={{color:`${product?.company?.color1 || '#FFA500'}`}}>{s0?.value || '400W'}</span>
               </div>
-              <div className="spec-item">
+              <div className="spec-item" style={{backgroundColor:`${product?.company?.color2 || '#4A90E2'}`}}>
                 <span className="spec-label">{s1?.label || 'Efficiency'}</span>
-                <span className="spec-value">{s1?.value || '22%'}</span>
+                <span className="spec-value" style={{color:`${product?.company?.color1 || '#FFA500'}`}}>{s1?.value || '22%'}</span>
               </div>
             </div>
             <div className="spec-column">
-              <div className="spec-item">
+              <div className="spec-item" style={{backgroundColor:`${product?.company?.color2 || '#4A90E2'}`}}>
                 <span className="spec-label">{s2?.label || 'Warranty'}</span>
-                <span className="spec-value">{s2?.value || '25 Years'}</span>
+                <span className="spec-value" style={{color:`${product?.company?.color1 || '#FFA500'}`}}>{s2?.value || '25 Years'}</span>
               </div>
-              <div className="spec-item">
+              <div className="spec-item" style={{backgroundColor:`${product?.company?.color2 || '#4A90E2'}`}}>
                 <span className="spec-label">{s3?.label || 'Type'}</span>
-                <span className="spec-value">{s3?.value || 'Mono'}</span>
+                <span className="spec-value" style={{color:`${product?.company?.color1 || '#FFA500'}`}}>{s3?.value || 'Mono'}</span>
               </div>
             </div>
           </div>
@@ -118,7 +120,7 @@ const SolarPanels = () => {
           </div>
 
           <div className="product-actions">
-            <Link href={`/panels/${product?._id}`} className="btn">
+            <Link href={`/panels/${product?._id}`} className="btn" style={{backgroundColor:`${product?.company?.color2 || '#4A90E2'}`, color:`${product?.company?.color1 || '#FFA500'}`}}>
               View Product Details
             </Link>
           </div>

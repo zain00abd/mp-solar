@@ -42,7 +42,7 @@ export async function GET(request) {
       .sort(sort)
       .skip(skip)
       .limit(limit)
-      .populate('company', 'name country logo');
+      .populate('company', 'name country logo color1 color2 color3');
 
     const total = await Battery.countDocuments(filter);
 
@@ -91,7 +91,7 @@ export async function POST(request) {
     const battery = new Battery({ name, company, badge, image, description, features: features || [], specs: specs || [], price, currency: currency || 'USD', availability: availability || 'in-stock', tags: tags || [], warranty: warranty || {}, category: 'batteries' });
     await battery.save();
 
-    const populatedBattery = await Battery.findById(battery._id).populate('company', 'name country logo');
+    const populatedBattery = await Battery.findById(battery._id).populate('company', 'name country logo color1 color2 color3');
     return NextResponse.json({ success: true, data: populatedBattery, message: 'Battery created successfully' }, { status: 201 });
   } catch (error) {
     console.error('Error creating battery:', error);

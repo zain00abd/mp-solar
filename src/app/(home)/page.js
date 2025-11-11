@@ -2,125 +2,182 @@
 import React, { useState, useEffect } from 'react';
 import './style.css';
 import Header from '@/app/components/Header';
+import { LanguageContext } from '@/app/contexts/LanguageContext';
 // import 'bootstrap/dist/css/bootstrap.min.css';
-// Slider data
-const slidesData = [
-  {
-    id: 1,
-    title: 'Premium Solar Panels',
-    description: 'High-efficiency solar panels that convert sunlight into electricity, reducing your energy bills and environmental impact.',
-    buttonText: 'Learn More',
-    buttonLink: '#panels',
-    image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-    className: 'slide-1'
-  },
-  {
-    id: 2,
-    title: 'Advanced Inverters',
-    description: 'Smart inverters that convert DC power from solar panels into usable AC power for your home or business.',
-    buttonText: 'Discover Inverters',
-    buttonLink: '/inverters',
-    image: '/inverter3.png',
-    className: 'slide-2'
-  },
-  {
-    id: 3,
-    title: 'Solar Batteries',
-    description: 'Energy storage solutions that allow you to store excess solar power for use during nighttime or power outages.',
-    buttonText: 'Explore Batteries',
-    buttonLink: '/batteries',
-    image: '/batter.png',
-    className: 'slide-3'
-  }
-];
 
-// Categories data
-const categoriesData = [
-  {
-    id: 'solar-panels',
-    icon: '☀',
-    iconClass: 'icon-solar',
-    title: 'Solar Panels',
-    description: 'High-efficiency solar panels with a 25-year warranty, perfect for residential and commercial use',
-    image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-    link: '/panels',
-    brands: [
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxSnUnztmtcobBAqB-wMTbL6A8L8igM6VQoA&s',
-      'https://lirp.cdn-website.com/46830114/dms3rep/multi/opt/favicon4-1920w.png',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJHIuMM-NiQzORXQ3pOkqkhsPIv_KYaTQo0w&s',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBU_5kHbqGvQQJVVZ9K5v0LXKCVqhLZPqKkQ&s'
-    ]
+// Translations
+const translations = {
+  en: {
+    header: {
+      home: "Home",
+      about: "About",
+      products: "Products",
+      projects: "Projects",
+      contact: "Contact"
+    },
+    hero: {
+      title: "Power Your Future with",
+      titleHighlight: "Clean Energy",
+      description: "Transform your home or business with premium solar solutions. Experience energy independence, reduce costs, and contribute to a sustainable future.",
+      getStarted: "Get started",
+      exploreMore: "Explore more"
+    },
+    about: {
+      title: "About MB",
+      titleHighlight: "Solar Power",
+      description1: "With over 14 years of experience in the renewable energy industry, MB Solar Power has established itself as a leading provider of solar energy solutions. Our commitment to quality, innovation, and customer satisfaction sets us apart.",
+      description2: "We specialize in designing and installing customized solar systems that maximize energy production and return on investment for our clients.",
+      features: {
+        expert: {
+          title: "Expert Team",
+          description: "Certified professionals with extensive solar industry experience"
+        },
+        quality: {
+          title: "Quality Products",
+          description: "We use only premium components from trusted manufacturers"
+        },
+        service: {
+          title: "Full Service",
+          description: "From consultation to installation and maintenance"
+        }
+      }
+    },
+    products: {
+      title: "Our",
+      titleHighlight: "Products",
+      subtitle: "Discover a wide range of high-quality solar energy products",
+      browseProducts: "Browse Products",
+      availableFrom: "Available from",
+      categories: {
+        solarPanels: {
+          title: "Solar Panels",
+          description: "High-efficiency solar panels with a 25-year warranty, perfect for residential and commercial use"
+        },
+        inverters: {
+          title: "Inverters",
+          description: "Smart hybrid inverters with MPPT technology for maximum efficiency and exceptional performance"
+        },
+        batteries: {
+          title: "Batteries",
+          description: "Lithium-ion batteries for energy storage with a lifespan of over 10 years"
+        }
+      }
+    },
+    projects: {
+      title: "Completed",
+      titleHighlight: "Projects",
+      subtitle: "Explore some of our successful solar installations for residential and commercial clients",
+      systemCapacity: "System Capacity:"
+    },
+    whyChoose: {
+      title: "Why Choose",
+      titleHighlight: "MB Solar?",
+      description: "With decades of combined experience, industry-leading technology, and a commitment to customer satisfaction, we deliver solar solutions that exceed expectations. Our end-to-end service ensures a seamless transition to clean energy.",
+      stats: {
+        satisfaction: "Satisfaction",
+        support: "Support",
+        warranty: "Warranty",
+        rated: "Rated"
+      }
+    },
+    cta: {
+      title: "Ready to Go Solar?",
+      description: "Contact us today for a free consultation and quote. Our experts will help you design the perfect solar solution for your needs.",
+      button: "Contact Us Now"
+    },
+    footer: {
+      tagline: "Professional solar energy solutions for a sustainable future.",
+      ourProducts: "Our Products",
+      contactUs: "Contact Us",
+      copyright: "© 2023 MB Solar Power. All rights reserved."
+    }
   },
-  {
-    id: 'inverters',
-    icon: '⚡︎',
-    iconClass: 'icon-inverter',
-    title: 'Inverters',
-    description: 'Smart hybrid inverters with MPPT technology for maximum efficiency and exceptional performance',
-    image: 'inverter3.png',
-    link: '/inverters',
-    brands: [
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxSnUnztmtcobBAqB-wMTbL6A8L8igM6VQoA&s',
-      'https://lirp.cdn-website.com/46830114/dms3rep/multi/opt/favicon4-1920w.png',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJHIuMM-NiQzORXQ3pOkqkhsPIv_KYaTQo0w&s',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBU_5kHbqGvQQJVVZ9K5v0LXKCVqhLZPqKkQ&s'
-    ]
-  },
-  {
-    id: 'batteries',
-    icon: '🔋︎',
-    iconClass: 'icon-battery',
-    title: 'Batteries',
-    description: 'Lithium-ion batteries for energy storage with a lifespan of over 10 years',
-    image: 'batter.png',
-    link: '/batteries',
-    brands: [
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxSnUnztmtcobBAqB-wMTbL6A8L8igM6VQoA&s',
-      'https://lirp.cdn-website.com/46830114/dms3rep/multi/opt/favicon4-1920w.png',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJHIuMM-NiQzORXQ3pOkqkhsPIv_KYaTQo0w&s',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBU_5kHbqGvQQJVVZ9K5v0LXKCVqhLZPqKkQ&s'
-    ]
+  ar: {
+    header: {
+      home: "الرئيسية",
+      about: "من نحن",
+      products: "المنتجات",
+      projects: "المشاريع",
+      contact: "اتصل بنا"
+    },
+    hero: {
+      title: "شغّل مستقبلك بـ",
+      titleHighlight: "الطاقة النظيفة",
+      description: "حوّل منزلك أو عملك بحلول الطاقة الشمسية المميزة. استمتع بالاستقلال في الطاقة، قلل التكاليف، وساهم في مستقبل مستدام.",
+      getStarted: "ابدأ الآن",
+      exploreMore: "استكشف المزيد"
+    },
+    about: {
+      title: "حول",
+      titleHighlight: "MB Solar Power",
+      description1: "مع أكثر من 14 سنوات من الخبرة في صناعة الطاقة المتجددة، أصبحت MB Solar Power مزودًا رائدًا لحلول الطاقة الشمسية. التزامنا بالجودة والابتكار ورضا العملاء يميزنا عن الآخرين.",
+      description2: "نتخصص في تصميم وتركيب أنظمة الطاقة الشمسية المخصصة التي تعظم إنتاج الطاقة والعائد على الاستثمار لعملائنا.",
+      features: {
+        expert: {
+          title: "فريق خبير",
+          description: "محترفون معتمدون بخبرة واسعة في صناعة الطاقة الشمسية"
+        },
+        quality: {
+          title: "منتجات عالية الجودة",
+          description: "نستخدم فقط مكونات مميزة من مصنعين موثوقين"
+        },
+        service: {
+          title: "خدمة كاملة",
+          description: "من الاستشارة إلى التركيب والصيانة"
+        }
+      }
+    },
+    products: {
+      title: "منتجاتنا",
+      titleHighlight: "",
+      subtitle: "اكتشف مجموعة واسعة من منتجات الطاقة الشمسية عالية الجودة",
+      browseProducts: "تصفح المنتجات",
+      availableFrom: "متوفر من",
+      categories: {
+        solarPanels: {
+          title: "الألواح الشمسية",
+          description: "ألواح شمسية عالية الكفاءة بضمان 25 عامًا، مثالية للاستخدام السكني والتجاري"
+        },
+        inverters: {
+          title: "العاكسات",
+          description: "عاكسات هجينة ذكية بتقنية MPPT لأقصى كفاءة وأداء استثنائي"
+        },
+        batteries: {
+          title: "البطاريات",
+          description: "بطاريات ليثيوم أيون لتخزين الطاقة بعمر افتراضي يزيد عن 10 سنوات"
+        }
+      }
+    },
+    projects: {
+      title: "المشاريع",
+      titleHighlight: "المكتملة",
+      subtitle: "استكشف بعض منشآتنا الشمسية الناجحة للعملاء السكنيين والتجاريين",
+      systemCapacity: "سعة النظام:"
+    },
+    whyChoose: {
+      title: "لماذا تختار",
+      titleHighlight: "MB Solar؟",
+      description: "مع عقود من الخبرة المشتركة، والتكنولوجيا الرائدة في الصناعة، والالتزام برضا العملاء، نقدم حلول الطاقة الشمسية التي تتجاوز التوقعات. خدمتنا الشاملة تضمن انتقالًا سلسًا إلى الطاقة النظيفة.",
+      stats: {
+        satisfaction: "رضا",
+        support: "دعم",
+        warranty: "ضمان",
+        rated: "تقييم"
+      }
+    },
+    cta: {
+      title: "هل أنت مستعد للتحول للطاقة الشمسية؟",
+      description: "اتصل بنا اليوم للحصول على استشارة مجانية وعرض أسعار. سيساعدك خبراؤنا في تصميم الحل الشمسي المثالي لاحتياجاتك.",
+      button: "اتصل بنا الآن"
+    },
+    footer: {
+      tagline: "حلول الطاقة الشمسية المهنية لمستقبل مستدام.",
+      ourProducts: "منتجاتنا",
+      contactUs: "اتصل بنا",
+      copyright: "© 2023 MB Solar Power. جميع الحقوق محفوظة."
+    }
   }
-];
-
-// Projects data
-const projectsData = [
-  {
-    id: 1,
-    title: 'Residential Rooftop Installation',
-    description: 'Complete solar panel installation with battery storage for a modern family home.',
-    capacity: '12 kW',
-    location: 'San Diego, CA',
-    date: 'March 2024',
-    image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-  },
-  {
-    id: 2,
-    title: 'Commercial Office Building',
-    description: 'Large-scale commercial installation reducing operational energy costs by 65%.',
-    capacity: '50 kW',
-    location: 'Austin, TX',
-    date: 'February 2024',
-    image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-  },
-  {
-    id: 3,
-    title: 'Industrial Warehouse Complex',
-    description: 'Massive solar array powering an entire warehouse facility with green energy.',
-    capacity: '200 kW',
-    location: 'Phoenix, AZ',
-    date: 'January 2024',
-    image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-  }
-];
-
-// Statistics data
-const statsData = [
-  { number: '100%', label: 'Satisfaction' },
-  { number: '24/7', label: 'Support' },
-  { number: '25yr', label: 'Warranty' },
-  { number: 'A+', label: 'Rated' }
-];
+};
 
 // Header Component
 // const Header = ({ mobileMenuOpen, setMobileMenuOpen, scrolled }) => {
@@ -134,8 +191,61 @@ const statsData = [
 //   );
 // };
 
+// Language Switcher Component
+const LanguageSwitcher = ({ language, setLanguage }) => {
+  return (
+    <div className="language-switcher" style={{
+      position: 'fixed',
+      top: '100px',
+      right: language === 'ar' ? 'auto' : '20px',
+      left: language === 'ar' ? '20px' : 'auto',
+      zIndex: 1000,
+      background: 'rgba(0, 0, 0, 0.8)',
+      borderRadius: '25px',
+      padding: '8px',
+      display: 'flex',
+      gap: '5px',
+      backdropFilter: 'blur(10px)',
+      border: '1px solid rgba(255, 255, 255, 0.1)'
+    }}>
+      <button
+        onClick={() => setLanguage('en')}
+        style={{
+          padding: '8px 16px',
+          borderRadius: '20px',
+          border: 'none',
+          background: language === 'en' ? 'rgba(59, 130, 246, 0.8)' : 'transparent',
+          color: 'white',
+          cursor: 'pointer',
+          fontSize: '14px',
+          fontWeight: language === 'en' ? 'bold' : 'normal',
+          transition: 'all 0.3s ease'
+        }}
+      >
+        EN
+      </button>
+      <button
+        onClick={() => setLanguage('ar')}
+        style={{
+          padding: '8px 16px',
+          borderRadius: '20px',
+          border: 'none',
+          background: language === 'ar' ? 'rgba(59, 130, 246, 0.8)' : 'transparent',
+          color: 'white',
+          cursor: 'pointer',
+          fontSize: '14px',
+          fontWeight: language === 'ar' ? 'bold' : 'normal',
+          transition: 'all 0.3s ease'
+        }}
+      >
+        AR
+      </button>
+    </div>
+  );
+};
+
 // Modern Hero Component with Grid Animation
-const ModernHero = () => {
+const ModernHero = ({ t }) => {
   return (
     <section className="modern-hero-new" id="home">
       {/* Animated Grid Background */}
@@ -162,17 +272,16 @@ const ModernHero = () => {
           {/* Left Content */}
           <div className="hero-text-content">
             <h1 className="hero-main-title">
-              Power Your Future with
-              <span className="gradient-text"> Clean Energy</span>
+              {t.hero.title}
+              <span className="gradient-text"> {t.hero.titleHighlight}</span>
             </h1>
             <p className="hero-main-description">
-              Transform your home or business with premium solar solutions. 
-              Experience energy independence, reduce costs, and contribute to a sustainable future.
+              {t.hero.description}
             </p>
             <div className="hero-action-buttons">
-              <a href="#products" className="btn-get-started">Get started</a>
+              <a href="#products" className="btn-get-started">{t.hero.getStarted}</a>
               <a href="#about" className="btn-live-demo">
-                Explore more <span aria-hidden="true">→</span>
+                {t.hero.exploreMore} <span aria-hidden="true">→</span>
               </a>
             </div>
           </div>
@@ -233,36 +342,36 @@ const ModernHero = () => {
 };
 
 // About Section Component
-const AboutSection = () => {
+const AboutSection = ({ t }) => {
   return (
     <section className="about" id="about">
       <div className="home-container">
         <div className="about-content">
           <div className="about-text">
-            <h2>About MB<span className="gradient-text"> Solar Power</span></h2>
-            <p>With over 10 years of experience in the renewable energy industry, MB Solar Power has established itself as a leading provider of solar energy solutions. Our commitment to quality, innovation, and customer satisfaction sets us apart.</p>
-            <p>We specialize in designing and installing customized solar systems that maximize energy production and return on investment for our clients.</p>
+            <h2>{t.about.title}<span className="gradient-text"> {t.about.titleHighlight}</span></h2>
+            <p>{t.about.description1}</p>
+            <p>{t.about.description2}</p>
             
             <div className="about-features">
               <div className="feature">
                 <div className="feature-icon">✓</div>
                 <div className="feature-text">
-                  <h4>Expert Team</h4>
-                  <p>Certified professionals with extensive solar industry experience</p>
+                  <h4>{t.about.features.expert.title}</h4>
+                  <p>{t.about.features.expert.description}</p>
                 </div>
               </div>
               <div className="feature">
                 <div className="feature-icon">☀️</div>
                 <div className="feature-text">
-                  <h4>Quality Products</h4>
-                  <p>We use only premium components from trusted manufacturers</p>
+                  <h4>{t.about.features.quality.title}</h4>
+                  <p>{t.about.features.quality.description}</p>
                 </div>
               </div>
               <div className="feature">
                 <div className="feature-icon">🔧</div>
                 <div className="feature-text">
-                  <h4>Full Service</h4>
-                  <p>From consultation to installation and maintenance</p>
+                  <h4>{t.about.features.service.title}</h4>
+                  <p>{t.about.features.service.description}</p>
                 </div>
               </div>
             </div>
@@ -277,7 +386,7 @@ const AboutSection = () => {
 };
 
 // Category Card Component
-const CategoryCard = ({ category, index }) => {
+const CategoryCard = ({ category, index, t }) => {
   return (
     <div className="category-card" id={category.id}>
       <div 
@@ -292,7 +401,7 @@ const CategoryCard = ({ category, index }) => {
         <p>{category.description}</p>
         
         <div className="category-brands">
-          <span className="category-brands-label">Available from:</span>
+          <span className="category-brands-label">{t.products.availableFrom}</span>
           {category.brands.map((brand, idx) => (
             <div key={idx} className="brand-logo">
               <img src={brand} alt={`Brand ${idx + 1}`} />
@@ -300,14 +409,14 @@ const CategoryCard = ({ category, index }) => {
           ))}
         </div>
         
-        <a href={category.link} className="category-btn">Browse Products</a>
+        <a href={category.link} className="category-btn">{t.products.browseProducts}</a>
       </div>
     </div>
   );
 };
 
 // Products Section Component
-const ProductsSection = () => {
+const ProductsSection = ({ t, categoriesData }) => {
   // Generate particles
   const floatingParticles = [
     { duration: '15s', delay: '0s', drift: '20px', left: '10%' },
@@ -372,15 +481,15 @@ const ProductsSection = () => {
       <div className="home-container">
         <div className="section-title">
           <h2>
-            Our
-            <span className="gradient-text"> Products</span>
+            {t.products.title}
+            {t.products.titleHighlight && <span className="gradient-text"> {t.products.titleHighlight}</span>}
           </h2>
-          <p>Discover a wide range of high-quality solar energy products</p>
+          <p>{t.products.subtitle}</p>
         </div>
         
         <div className="categories-grid">
           {categoriesData.map((category, index) => (
-            <CategoryCard key={category.id} category={category} index={index} />
+            <CategoryCard key={category.id} category={category} index={index} t={t} />
           ))}
         </div>
       </div>
@@ -389,7 +498,7 @@ const ProductsSection = () => {
 };
 
 // Project Card Component
-const ProjectCard = ({ project }) => {
+const ProjectCard = ({ project, t }) => {
   return (
     <div className="project-card">
       <div 
@@ -412,7 +521,7 @@ const ProjectCard = ({ project }) => {
           </div>
           <div className="project-detail-item">
             <span className="project-icon capacity">⚡︎</span>
-            <span>System Capacity: {project.capacity}</span>
+            <span>{t.projects.systemCapacity} {project.capacity}</span>
           </div>
         </div>
       </div>
@@ -421,20 +530,20 @@ const ProjectCard = ({ project }) => {
 };
 
 // Projects Section Component
-const ProjectsSection = () => {
+const ProjectsSection = ({ t, projectsData }) => {
   return (
     <section className="projects" id="projects">
       <div className="home-container">
         <div className="section-title">
           <h2>
-            Completed
-            <span className="gradient-text"> Projects</span>
+            {t.projects.title}
+            {t.projects.titleHighlight && <span className="gradient-text"> {t.projects.titleHighlight}</span>}
           </h2>
-          <p>Explore some of our successful solar installations for residential and commercial clients</p>
+          <p>{t.projects.subtitle}</p>
         </div>
         <div className="projects-grid">
           {projectsData.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+            <ProjectCard key={project.id} project={project} t={t} />
           ))}
         </div>
       </div>
@@ -443,13 +552,13 @@ const ProjectsSection = () => {
 };
 
 // Why Choose Us Section Component
-const WhyChooseSection = () => {
+const WhyChooseSection = ({ t, statsData }) => {
   return (
     <section className="why-choose">
       <div className="home-container">
         <div className="why-choose-header">
-          <h2>Why Choose <span className="gradient-text">MB Solar?</span></h2>
-          <p>With decades of combined experience, industry-leading technology, and a commitment to customer satisfaction, we deliver solar solutions that exceed expectations. Our end-to-end service ensures a seamless transition to clean energy.</p>
+          <h2>{t.whyChoose.title} <span className="gradient-text">{t.whyChoose.titleHighlight}</span></h2>
+          <p>{t.whyChoose.description}</p>
         </div>
         
         <div className="stats-grid">
@@ -466,39 +575,39 @@ const WhyChooseSection = () => {
 };
 
 // CTA Section Component
-const CTASection = () => {
+const CTASection = ({ t }) => {
   return (
     <section className="cta" id="contact">
       <div className="home-container">
-        <h2>Ready to Go Solar?</h2>
-        <p>Contact us today for a free consultation and quote. Our experts will help you design the perfect solar solution for your needs.</p>
-        <a href="#" className="btn">Contact Us Now</a>
+        <h2>{t.cta.title}</h2>
+        <p>{t.cta.description}</p>
+        <a href="#" className="btn">{t.cta.button}</a>
       </div>
     </section>
   );
 };
 
 // Footer Component
-const Footer = () => {
+const Footer = ({ t }) => {
   return (
     <footer>
       <div className="home-container">
         <div className="footer-grid">
           <div className="footer-column">
             <h3>MB Solar Power</h3>
-            <p>Professional solar energy solutions for a sustainable future.</p>
+            <p>{t.footer.tagline}</p>
           </div>
           <div className="footer-column">
-            <h3>Our Products</h3>
+            <h3>{t.footer.ourProducts}</h3>
             <ul>
-              <li><a href="#solar-panels">Solar Panels</a></li>
-              <li><a href="#inverters">Inverters</a></li>
-              <li><a href="#batteries">Batteries</a></li>
-              <li><a href="#projects">Projects</a></li>
+              <li><a href="#solar-panels">{t.products.categories.solarPanels.title}</a></li>
+              <li><a href="#inverters">{t.products.categories.inverters.title}</a></li>
+              <li><a href="#batteries">{t.products.categories.batteries.title}</a></li>
+              <li><a href="#projects">{t.projects.title}</a></li>
             </ul>
           </div>
           <div className="footer-column">
-            <h3>Contact Us</h3>
+            <h3>{t.footer.contactUs}</h3>
             <ul>
               <li>Phone: (555) 123-4567</li>
               <li>Email: info@mbsolarpower.com</li>
@@ -507,7 +616,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="copyright">
-          <p>&copy; 2023 MB Solar Power. All rights reserved.</p>
+          <p>{t.footer.copyright}</p>
         </div>
       </div>
     </footer>
@@ -518,6 +627,110 @@ const Footer = () => {
 const MainPage = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [language, setLanguage] = useState('en');
+
+  const t = translations[language];
+
+  // Language context value
+  const languageContextValue = {
+    language,
+    setLanguage,
+    translations: translations
+  };
+
+  // Dynamic categories data based on language
+  const categoriesData = [
+    {
+      id: 'solar-panels',
+      icon: '☀',
+      iconClass: 'icon-solar',
+      title: t.products.categories.solarPanels.title,
+      description: t.products.categories.solarPanels.description,
+      image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+      link: '/panels',
+      brands: [
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxSnUnztmtcobBAqB-wMTbL6A8L8igM6VQoA&s',
+        'https://lirp.cdn-website.com/46830114/dms3rep/multi/opt/favicon4-1920w.png',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJHIuMM-NiQzORXQ3pOkqkhsPIv_KYaTQo0w&s',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBU_5kHbqGvQQJVVZ9K5v0LXKCVqhLZPqKkQ&s'
+      ]
+    },
+    {
+      id: 'inverters',
+      icon: '⚡︎',
+      iconClass: 'icon-inverter',
+      title: t.products.categories.inverters.title,
+      description: t.products.categories.inverters.description,
+      image: 'inverter3.png',
+      link: '/inverters',
+      brands: [
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxSnUnztmtcobBAqB-wMTbL6A8L8igM6VQoA&s',
+        'https://lirp.cdn-website.com/46830114/dms3rep/multi/opt/favicon4-1920w.png',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJHIuMM-NiQzORXQ3pOkqkhsPIv_KYaTQo0w&s',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBU_5kHbqGvQQJVVZ9K5v0LXKCVqhLZPqKkQ&s'
+      ]
+    },
+    {
+      id: 'batteries',
+      icon: '🔋︎',
+      iconClass: 'icon-battery',
+      title: t.products.categories.batteries.title,
+      description: t.products.categories.batteries.description,
+      image: 'batter.png',
+      link: '/batteries',
+      brands: [
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxSnUnztmtcobBAqB-wMTbL6A8L8igM6VQoA&s',
+        'https://lirp.cdn-website.com/46830114/dms3rep/multi/opt/favicon4-1920w.png',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJHIuMM-NiQzORXQ3pOkqkhsPIv_KYaTQo0w&s',
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBU_5kHbqGvQQJVVZ9K5v0LXKCVqhLZPqKkQ&s'
+      ]
+    }
+  ];
+
+  // Projects data (keeping static data but can be translated if needed)
+  const projectsData = [
+    {
+      id: 1,
+      title: language === 'ar' ? 'تركيب سقف سكني' : 'Residential Rooftop Installation',
+      description: language === 'ar' ? 'تركيب كامل للألواح الشمسية مع تخزين البطاريات لمنزل عائلي حديث.' : 'Complete solar panel installation with battery storage for a modern family home.',
+      capacity: '12 kW',
+      location: language === 'ar' ? 'سان دييغو، كاليفورنيا' : 'San Diego, CA',
+      date: language === 'ar' ? 'مارس 2024' : 'March 2024',
+      image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
+    },
+    {
+      id: 2,
+      title: language === 'ar' ? 'مبنى مكتبي تجاري' : 'Commercial Office Building',
+      description: language === 'ar' ? 'تركيب تجاري واسع النطاق يقلل تكاليف الطاقة التشغيلية بنسبة 65%.' : 'Large-scale commercial installation reducing operational energy costs by 65%.',
+      capacity: '50 kW',
+      location: language === 'ar' ? 'أوستن، تكساس' : 'Austin, TX',
+      date: language === 'ar' ? 'فبراير 2024' : 'February 2024',
+      image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
+    },
+    {
+      id: 3,
+      title: language === 'ar' ? 'مجمع مستودعات صناعي' : 'Industrial Warehouse Complex',
+      description: language === 'ar' ? 'مجموعة شمسية ضخمة تغذي منشأة مستودع كاملة بالطاقة الخضراء.' : 'Massive solar array powering an entire warehouse facility with green energy.',
+      capacity: '200 kW',
+      location: language === 'ar' ? 'فينيكس، أريزونا' : 'Phoenix, AZ',
+      date: language === 'ar' ? 'يناير 2024' : 'January 2024',
+      image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
+    }
+  ];
+
+  // Statistics data
+  const statsData = [
+    { number: '100%', label: t.whyChoose.stats.satisfaction },
+    { number: '24/7', label: t.whyChoose.stats.support },
+    { number: '25yr', label: t.whyChoose.stats.warranty },
+    { number: 'A+', label: t.whyChoose.stats.rated }
+  ];
+
+  // Apply RTL direction when Arabic is selected
+  useEffect(() => {
+    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = language;
+  }, [language]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -559,18 +772,18 @@ const MainPage = () => {
   }, [mobileMenuOpen]);
 
   return (
-
-    <div className="main-page">
-    <Header />
-      <ModernHero />
-      <AboutSection />
-      <ProductsSection />
-      <ProjectsSection />
-      <WhyChooseSection />
-      <CTASection />
-      <Footer />
-    </div>
-
+    <LanguageContext.Provider value={languageContextValue}>
+      <div className="main-page" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+        <Header />
+        <ModernHero t={t} />
+        <AboutSection t={t} />
+        <ProductsSection t={t} categoriesData={categoriesData} />
+        <ProjectsSection t={t} projectsData={projectsData} />
+        <WhyChooseSection t={t} statsData={statsData} />
+        <CTASection t={t} />
+        <Footer t={t} />
+      </div>
+    </LanguageContext.Provider>
   );
 };
 

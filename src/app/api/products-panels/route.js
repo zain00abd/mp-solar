@@ -42,7 +42,7 @@ export async function GET(request) {
       .sort(sort)
       .skip(skip)
       .limit(limit)
-      .populate('company', 'name country logo');
+      .populate('company', 'name country logo color1 color2 color3');
 
     const total = await Panel.countDocuments(filter);
 
@@ -91,7 +91,7 @@ export async function POST(request) {
     const panel = new Panel({ name, company, badge, image, description, features: features || [], specs: specs || [], price, currency: currency || 'USD', availability: availability || 'in-stock', tags: tags || [], warranty: warranty || {}, category: 'products' });
     await panel.save();
 
-    const populatedPanel = await Panel.findById(panel._id).populate('company', 'name country logo');
+    const populatedPanel = await Panel.findById(panel._id).populate('company', 'name country logo color1 color2 color3');
     return NextResponse.json({ success: true, data: populatedPanel, message: 'Panel created successfully' }, { status: 201 });
   } catch (error) {
     console.error('Error creating panel:', error);

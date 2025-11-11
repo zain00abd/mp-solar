@@ -67,33 +67,33 @@ const Inverters = () => {
           )}
           <p className="product-description">
             {(product?.description.slice(0,100) + " ......") || 'High-efficiency inverter for converting DC solar power to AC for your home.'}
-            <Link href={`/inverters/${product?._id}`} className="" style={{color: "#2563EB", textDecoration: 'none', fontWeight:"600"}}> More</Link>
+            <Link href={`/inverters/${product?._id}`} className="" style={{color: `${product.company.color1}`, textDecoration: 'none', fontWeight:"600"}}> More</Link>
           </p>
           
           <div className="specs-container">
             <div className="spec-column">
-              <div className="spec-item">
+              <div className="spec-item" style={{backgroundColor:`${product.company.color2}`}}>
                 <span className="spec-label">{s0?.label || 'Power Rating'}</span>
-                <span className="spec-value">{s0?.value || '5 kW'}</span>
+                <span className="spec-value" style={{color:`${product.company.color1}`}}>{s0?.value || '5 kW'}</span>
               </div>
-              <div className="spec-item">
+              <div className="spec-item" style={{backgroundColor:`${product.company.color2}`}}>
                 <span className="spec-label">{s1?.label || 'Efficiency'}</span>
-                <span className="spec-value">{s1?.value || '98%'}</span>
+                <span className="spec-value" style={{color:`${product.company.color1}`}}>{s1?.value || '98%'}</span>
               </div>
             </div>
             <div className="spec-column">
-              <div className="spec-item">
+              <div className="spec-item" style={{backgroundColor:`${product.company.color2}`}}>
                 <span className="spec-label">{s2?.label || 'Warranty'}</span>
-                <span className="spec-value">{s2?.value || '10 Years'}</span>
+                <span className="spec-value" style={{color:`${product.company.color1}`}}>{s2?.value || '10 Years'}</span>
               </div>
-              <div className="spec-item">
+              <div className="spec-item" style={{backgroundColor:`${product.company.color2}`}}>
                 <span className="spec-label">{s3?.label || 'Type'}</span>
-                <span className="spec-value">{s3?.value || 'String'}</span>
+                <span className="spec-value" style={{color:`${product.company.color1}`}}>{s3?.value || 'String'}</span>
               </div>
             </div>
           </div>
           
-          <div className="product-features">
+          {/* <div className="product-features">
             <h4 className="features-title">Key Features</h4>
             <div className="features-grid">
               <div className="feature-item">
@@ -113,14 +113,15 @@ const Inverters = () => {
                 <span>Easy Installation</span>
               </div>
             </div>
-          </div>
+          </div> */}
           
-          <div className="product-actions">
-            <Link href={`/inverters/${product?._id}`} className="btn">
+          <div className="product-actions" >
+            <Link href={`/inverters/${product?._id}`} className="btn" style={{backgroundColor:`${product.company.color2}`, color:`${product.company.color1}`}}>
               View Product Details
             </Link>
           </div>
         </div>
+        
       </div>
     );
   };

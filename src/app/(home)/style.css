@@ -2919,3 +2919,58 @@ footer {
         transform: rotate(-1.5deg);
     }
 }
+
+/* RTL Support */
+[dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+}
+
+[dir="rtl"] .hero-text-content {
+    text-align: right;
+}
+
+[dir="rtl"] .hero-action-buttons {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .about-content {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .about-text {
+    text-align: right;
+}
+
+[dir="rtl"] .section-title {
+    text-align: right;
+}
+
+[dir="rtl"] .category-content {
+    text-align: right;
+}
+
+[dir="rtl"] .project-content {
+    text-align: right;
+}
+
+[dir="rtl"] .why-choose-header {
+    text-align: right;
+}
+
+[dir="rtl"] .cta {
+    text-align: right;
+}
+
+[dir="rtl"] .footer-grid {
+    direction: rtl;
+}
+
+[dir="rtl"] .footer-column {
+    text-align: right;
+}
+
+[dir="rtl"] .btn-live-demo span {
+    transform: rotate(180deg);
+    display: inline-block;
+}

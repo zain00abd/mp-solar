@@ -15,7 +15,7 @@ export async function GET(_request, { params }) {
 
     await connectDB();
 
-    const inverter = await Inverter.findById(id).populate('company', 'name country logo');
+    const inverter = await Inverter.findById(id).populate('company', 'name country logo color1 color2 color3');
     if (!inverter) {
       return NextResponse.json({ success: false, error: 'Inverter not found' }, { status: 404 });
     }
@@ -59,7 +59,7 @@ export async function PUT(request, { params }) {
       }
     }
 
-    const updated = await Inverter.findByIdAndUpdate(id, body, { new: true, runValidators: true }).populate('company', 'name country logo');
+    const updated = await Inverter.findByIdAndUpdate(id, body, { new: true, runValidators: true }).populate('company', 'name country logo color1 color2 color3');
     if (!updated) {
       return NextResponse.json({ success: false, error: 'Inverter not found' }, { status: 404 });
     }

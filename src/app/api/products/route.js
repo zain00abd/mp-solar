@@ -59,7 +59,7 @@ export async function GET(request) {
       .sort(sort)
       .skip(skip)
       .limit(limit)
-      .populate('company', 'name country logo');
+      .populate('company', 'name country logo color1 color2 color3');
 
     // حساب العدد الإجمالي
     const total = await Product.countDocuments(filter);
@@ -179,7 +179,7 @@ export async function POST(request) {
     await product.save();
 
     // جلب المنتج مع بيانات الشركة
-    const populatedProduct = await Product.findById(product._id).populate('company', 'name country logo');
+    const populatedProduct = await Product.findById(product._id).populate('company', 'name country logo color1 color2 color3');
 
     return NextResponse.json({
       success: true,

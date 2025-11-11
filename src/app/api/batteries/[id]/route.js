@@ -15,7 +15,7 @@ export async function GET(_request, { params }) {
 
     await connectDB();
 
-    const battery = await Battery.findById(id).populate('company', 'name country logo');
+    const battery = await Battery.findById(id).populate('company', 'name country logo color1 color2 color3');
     if (!battery) {
       return NextResponse.json({ success: false, error: 'Battery not found' }, { status: 404 });
     }
@@ -59,7 +59,7 @@ export async function PUT(request, { params }) {
       }
     }
 
-    const updated = await Battery.findByIdAndUpdate(id, body, { new: true, runValidators: true }).populate('company', 'name country logo');
+    const updated = await Battery.findByIdAndUpdate(id, body, { new: true, runValidators: true }).populate('company', 'name country logo color1 color2 color3');
     if (!updated) {
       return NextResponse.json({ success: false, error: 'Battery not found' }, { status: 404 });
     }

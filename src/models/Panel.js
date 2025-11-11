@@ -49,7 +49,7 @@ PanelSchema.virtual('formattedPrice').get(function() {
 });
 
 PanelSchema.pre(/^find/, function(next) {
-  this.populate({ path: 'company', select: 'name country logo' });
+  this.populate({ path: 'company', select: 'name country logo color1 color2 color3' });
   next();
 });
 

@@ -49,7 +49,7 @@ BatterySchema.virtual('formattedPrice').get(function() {
 });
 
 BatterySchema.pre(/^find/, function(next) {
-  this.populate({ path: 'company', select: 'name country logo' });
+  this.populate({ path: 'company', select: 'name country logo color1 color2 color3' });
   next();
 });
 

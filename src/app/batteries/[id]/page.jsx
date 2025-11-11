@@ -90,10 +90,10 @@ const BatteryDetail = async ({ params }) => {
             <div className="lg:col-span-2 lg:col-start-1 lg:row-start-1 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
               <div className="lg:pr-4">
                 <div className="lg:max-w-lg">
-                  <h1 className="text-center mt-2 text-4xl font-semibold tracking-tight text-pretty text-white sm:text-5xl">
+                  <h1 className="text-center mt-2 text-4xl font-semibold tracking-tight text-pretty text-white sm:text-5xl" style={{color:`${product.company?.color1 || '#FFA500'}`}}>
                     {product.name || 'Advanced Solar Lithium Battery'}
                   </h1>
-                  <h2 className="mt-6 text-lg font-semibold text-[var(--primary)]">Description</h2>
+                  <h2 className="mt-6 text-lg font-semibold text-[var(--primary)]" style={{color:`white`}}>Description</h2>
                   <p className="mt-2 text-xl/8 text-gray-300">
                     {product.description || 'Our advanced solar lithium-ion battery provides an efficient solution for storing solar energy. Specifically designed for residential and commercial solar energy systems, this battery ensures maximum utilization of renewable energy, providing clean and sustainable power 24/7.'}
                   </p>
@@ -116,7 +116,7 @@ const BatteryDetail = async ({ params }) => {
                   <ul role="list" className="mt-4 space-y-4 text-gray-300">
                     {displayFeatures.map((feature, index) => (
                       <li key={index} className="flex gap-x-3">
-                        <svg viewBox="0 0 20 20" fill="currentColor" className="mt-0.5 h-5 w-5 flex-none text-[var(--accent)]">
+                        <svg viewBox="0 0 20 20" fill="currentColor" className="mt-0.5 h-5 w-5 flex-none text-[var(--accent)]" style={{color:`${product.company?.color1 || '#FFA500'}`}}>
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
                         </svg>
                         <span className="text-gray-300">{feature}</span>
