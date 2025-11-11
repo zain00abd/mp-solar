@@ -4,7 +4,7 @@ import './shared.css';
 
 const Footer = () => {
   return (
-    <footer className="shared-footer">
+    <footer className="shared-footer" style={{marginTop:"0px"}}>
       <div className="container">
         <div className="footer-content">
           <div className="footer-column">

@@ -55,15 +55,15 @@ const SolarPanels = () => {
           />
           <div className="product-badge">Premium Quality</div>
         </div>
-        
+
         <div className="product-content">
           <h3 className="product-title">{product?.name || 'Solar Panel'}</h3>
           {product?.company && (
-            <div className="product-company" style={{display:'flex', alignItems:'center', gap:'10px', marginTop:'6px'}}>
+            <div className="product-company" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '6px' }}>
               {product?.company?.logo && (
                 <img src={product.company.logo} alt={product?.company?.name || 'Company'} />
               )}
-              <span style={{fontSize:'0.95rem', color:'#6b7280', fontWeight:600}}>
+              <span style={{ fontSize: '0.95rem', color: '#6b7280', fontWeight: 600 }}>
                 {product?.company?.name || '—'}
               </span>
             </div>
@@ -71,7 +71,7 @@ const SolarPanels = () => {
           <p className="product-description">
             {product?.description || 'High-efficiency solar panel designed for maximum energy production and durability.'}
           </p>
-          
+
           <div className="specs-container">
             <div className="spec-column">
               <div className="spec-item">
@@ -94,7 +94,7 @@ const SolarPanels = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="product-features">
             <h4 className="features-title">Key Features</h4>
             <div className="features-grid">
@@ -116,7 +116,7 @@ const SolarPanels = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="product-actions">
             <Link href={`/panels/${product?._id}`} className="btn">
               View Product Details
@@ -140,68 +140,71 @@ const SolarPanels = () => {
   }
 
   return (
-    <div className="solar-panels-page">
-      <Header />
-      
-      {/* Hero Section */}
-      <section className="hero-section">
-        <div className="hero-background">
-          <div className="hero-grid"></div>
-        </div>
-        <div className="hero-content">
-          <div className="hero-icon">
-            <i className="fa-solid fa-sun"></i>
+
+    <>
+        <Header />
+      <div className="solar-panels-page">
+
+        {/* Hero Section */}
+        <section className="hero-section">
+          <div className="hero-background">
+            <div className="hero-grid"></div>
           </div>
-          <h1 className="hero-title">Solar Panels</h1>
-          <p className="hero-description">
-            Discover our range of premium solar panels designed for maximum efficiency, durability, and long-term performance.
-          </p>
-          <div className="hero-breadcrumb">
-            <Link href="/" className="breadcrumb-link">Home</Link>
-            <span className="breadcrumb-separator">›</span>
-            <span className="breadcrumb-current">Solar Panels</span>
+          <div className="hero-content">
+            <div className="hero-icon">
+              <i className="fa-solid fa-sun"></i>
+            </div>
+            <h1 className="hero-title">Solar Panels</h1>
+            <p className="hero-description">
+              Discover our range of premium solar panels designed for maximum efficiency, durability, and long-term performance.
+            </p>
+            <div className="hero-breadcrumb">
+              <Link href="/" className="breadcrumb-link">Home</Link>
+              <span className="breadcrumb-separator">›</span>
+              <span className="breadcrumb-current">Solar Panels</span>
+            </div>
           </div>
-        </div>
-      </section>
-      
-      <div className="container" >
-        {products.length === 0 ? (
-          <div className="empty-state">No solar panels found.</div>
-        ) : (
-          (() => {
-            const groups = products.reduce((acc, p) => {
-              const id = p?.company?._id || 'other';
-              if (!acc[id]) acc[id] = { company: p?.company, items: [] };
-              acc[id].items.push(p);
-              return acc;
-            }, {});
-            return Object.values(groups).map((group, idx) => (
-              <section key={group?.company?._id || `other-${idx}`} className="company-section" style={{marginBottom:'32px'}}>
-                <div className="company-header" style={{display:'flex', alignItems:'center', gap:'12px', margin:'8px 0 16px'}}>
-                  {group?.company?.logo && (
-                    <img src={group.company.logo} alt={group?.company?.name || 'Company'} />
-                  )}
-                  <div className="company-text">
-                    <h2 className="company-name">{group?.company?.name || 'Other'}</h2>
-                    {group?.company?.country && (
-                      <div className="company-country">{group.company.country}</div>
+        </section>
+
+        <div className="container" >
+          {products.length === 0 ? (
+            <div className="empty-state">No solar panels found.</div>
+          ) : (
+            (() => {
+              const groups = products.reduce((acc, p) => {
+                const id = p?.company?._id || 'other';
+                if (!acc[id]) acc[id] = { company: p?.company, items: [] };
+                acc[id].items.push(p);
+                return acc;
+              }, {});
+              return Object.values(groups).map((group, idx) => (
+                <section key={group?.company?._id || `other-${idx}`} className="company-section" style={{ marginBottom: '32px' }}>
+                  <div className="company-header" style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '8px 0 16px' }}>
+                    {group?.company?.logo && (
+                      <img src={group.company.logo} alt={group?.company?.name || 'Company'} />
                     )}
+                    <div className="company-text">
+                      <h2 className="company-name">{group?.company?.name || 'Other'}</h2>
+                      {group?.company?.country && (
+                        <div className="company-country">{group.company.country}</div>
+                      )}
+                    </div>
+                    <span className="company-count">({group.items.length})</span>
                   </div>
-                  <span className="company-count">({group.items.length})</span>
-                </div>
-                <div className="products-grid">
-                  {group.items.map((product) => (
-                    <ProductCard key={product._id} product={product} />
-                  ))}
-                </div>
-              </section>
-            ));
-          })()
-        )}
+                  <div className="products-grid">
+                    {group.items.map((product) => (
+                      <ProductCard key={product._id} product={product} />
+                    ))}
+                  </div>
+                </section>
+              ));
+            })()
+          )}
+        </div>
+
       </div>
-      
-      <Footer />
-    </div>
+        <Footer />
+    </>
   );
 };
 

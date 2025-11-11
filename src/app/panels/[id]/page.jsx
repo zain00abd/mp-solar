@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import '../../globals.css';
+// import '../../globals.css';
 import './style.css';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
@@ -28,7 +28,7 @@ const PanelDetail = async ({ params }) => {
 
   if (!product) {
     return (
-      <div className="bg-gray-800 min-h-screen">
+      <div className="bg-[var(--dark-bg)] text-[var(--text-light)] min-h-screen">
         <Header />
         <div className="container mx-auto px-6 py-24 text-center">
           <h2 className="text-2xl font-semibold text-white mb-4">Product not found</h2>
@@ -63,20 +63,23 @@ const PanelDetail = async ({ params }) => {
   const displayFeatures = features.length > 0 ? features : defaultFeatures;
 
   return (
-    <div className="bg-gray-800 min-h-screen">
+
+    <>
+    
       <Header />
+    <div className="bg-[var(--dark-bg)] text-[var(--text-light)] min-h-screen">
       
       <div className="relative isolate overflow-hidden px-6 py-24 sm:py-32 lg:overflow-visible lg:px-0">
         {/* Enhanced Grid Background */}
         <div className="absolute inset-0 -z-10 overflow-hidden grid-pattern">
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-gray-900 to-gray-800 opacity-95"></div>
-          <svg aria-hidden="true" className="absolute top-0 left-[max(50%,25rem)] h-256 w-512 -translate-x-1/2 mask-[radial-gradient(64rem_64rem_at_top,white,transparent)] stroke-blue-500/30">
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--dark-surface)] via-[var(--dark-card)] to-[var(--dark-surface)] opacity-95"></div>
+          <svg aria-hidden="true" className="absolute top-0 left-[max(50%,25rem)] h-256 w-512 -translate-x-1/2 mask-[radial-gradient(64rem_64rem_at_top,white,transparent)] stroke-[var(--secondary)] stroke-opacity-30">
             <defs>
               <pattern id="enhanced-pattern" width="80" height="80" x="50%" y="-1" patternUnits="userSpaceOnUse">
                 <path d="M40 80V.5M.5 .5H80" fill="none" stroke="currentColor" strokeWidth="1"/>
               </pattern>
             </defs>
-            <svg x="50%" y="-1" className="overflow-visible fill-blue-500/20">
+            <svg x="50%" y="-1" className="overflow-visible fill-[var(--secondary)] fill-opacity-20">
               <path d="M-100.5 0h201v201h-201Z M699.5 0h201v201h-201Z M499.5 400h201v201h-201Z M-300.5 600h201v201h-201Z" strokeWidth="0" />
             </svg>
             <rect width="100%" height="100%" fill="url(#enhanced-pattern)" strokeWidth="0" />
@@ -87,11 +90,11 @@ const PanelDetail = async ({ params }) => {
           <div className="lg:col-span-2 lg:col-start-1 lg:row-start-1 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
             <div className="lg:pr-4">
               <div className="lg:max-w-lg">
-                <p className="text-base/7 font-semibold text-blue-400">Solar Panel Technology</p>
-                <h1 className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-white sm:text-5xl">
+
+                <h1 className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-white sm:text-5xl text-center">
                   {product.name || 'Advanced Solar Panel'}
                 </h1>
-                <h2 className="mt-6 text-lg font-semibold text-blue-400">Description</h2>
+                <h2 className="mt-6 text-lg font-semibold text-[var(--primary)]">Description</h2>
                 <p className="mt-2 text-xl/8 text-gray-300">
                   {product.description || 'Our advanced solar panel provides exceptional energy conversion efficiency and long-term reliability. Designed with cutting-edge photovoltaic technology, this panel delivers maximum power output while maintaining excellent performance in various weather conditions.'}
                 </p>
@@ -99,22 +102,22 @@ const PanelDetail = async ({ params }) => {
             </div>
           </div>
           
-          <div className="-mt-12 -ml-12 p-12 lg:sticky lg:top-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:overflow-hidden">
+          <div className="order-first mb-6 flex justify-center lg:order-none lg:sticky lg:top-4 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:overflow-hidden lg:-mt-12 lg:-ml-12 lg:p-12">
             <img 
               src={product.image || '/Solar Energy.jpg'} 
               alt={product.name || 'Solar Panel'} 
-              className="w-3xl max-w-none rounded-xl bg-gray-700 shadow-2xl ring-2 ring-blue-500/20 sm:w-228" 
+              className="mx-auto w-full max-w-[320px] rounded-xl bg-gray-700 shadow-2xl ring-2 ring-[var(--primary)] ring-opacity-20 lg:max-w-none lg:w-auto" 
             />
           </div>
           
           <div className="lg:col-span-2 lg:col-start-1 lg:row-start-2 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
             <div className="lg:pr-4">
               <div className="max-w-xl text-base/7 text-gray-300 lg:max-w-lg">
-                <h2 className="mt-8 text-lg font-semibold text-blue-400">Key Features</h2>
+                <h2 className="mt-8 text-lg font-semibold text-[var(--primary)]">Key Features</h2>
                 <ul role="list" className="mt-4 space-y-4 text-gray-300">
                   {displayFeatures.map((feature, index) => (
                     <li key={index} className="flex gap-x-3">
-                      <svg viewBox="0 0 20 20" fill="currentColor" className="mt-0.5 h-5 w-5 flex-none text-green-400">
+                      <svg viewBox="0 0 20 20" fill="currentColor" className="mt-0.5 h-5 w-5 flex-none text-[var(--accent)]">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
                       </svg>
                       <span className="text-gray-300">{feature}</span>
@@ -127,8 +130,8 @@ const PanelDetail = async ({ params }) => {
                   <table className="w-full">
                     <thead>
                       <tr className="bg-gray-800/50">
-                        <th className="px-6 py-3 text-left text-sm font-semibold text-blue-400 uppercase">Parameter</th>
-                        <th className="px-6 py-3 text-left text-sm font-semibold text-blue-400 uppercase">Value</th>
+                        <th className="px-6 py-3 text-left text-sm font-semibold text-[var(--primary)] uppercase">Parameter</th>
+                        <th className="px-6 py-3 text-left text-sm font-semibold text-[var(--primary)] uppercase">Value</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-700">
@@ -176,6 +179,7 @@ const PanelDetail = async ({ params }) => {
       
       <Footer />
     </div>
+    </>
   );
 };
 
