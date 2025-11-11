@@ -291,7 +291,7 @@ const ModernHero = ({ t }) => {
             <div className="image-column column-1">
               <div className="hero-img-wrapper img-size-2">
                 <img 
-                  src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&h=528&q=80" 
+                  src="batter.png" 
                   alt="Solar Installation 1" 
                   className="hero-grid-img"
                 />
@@ -301,7 +301,7 @@ const ModernHero = ({ t }) => {
             <div className="image-column column-2">
               <div className="hero-img-wrapper img-size-1">
                 <img 
-                  src="https://images.unsplash.com/photo-1485217988980-11786ced9454?ixlib=rb-4.0.3&auto=format&fit=crop&h=528&q=80" 
+                  src="panelsf.jpg" 
                   alt="Solar Installation 2" 
                   className="hero-grid-img"
                 />
@@ -309,7 +309,7 @@ const ModernHero = ({ t }) => {
               </div>
               <div className="hero-img-wrapper img-size-3">
                 <img 
-                  src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-4.0.3&auto=format&fit=crop&w=396&h=528&q=80" 
+                  src="inverter3.png" 
                   alt="Solar Installation 3" 
                   className="hero-grid-img"
                 />
@@ -319,7 +319,7 @@ const ModernHero = ({ t }) => {
             <div className="image-column column-3">
               <div className="hero-img-wrapper img-size-3">
                 <img 
-                  src="https://images.unsplash.com/photo-1670272504528-790c24957dda?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=528&q=80" 
+                  src="https://attaqa.net/wp-content/uploads/2022/11/90e8deaf21bf5c11130f56a2dadf17da.jpg" 
                   alt="Solar Installation 4" 
                   className="hero-grid-img"
                 />
@@ -327,7 +327,7 @@ const ModernHero = ({ t }) => {
               </div>
               <div className="hero-img-wrapper img-size-2">
                 <img 
-                  src="https://images.unsplash.com/photo-1670272505284-8faba1c31f7d?ixlib=rb-4.0.3&auto=format&fit=crop&h=528&q=80" 
+                  src="https://cdn.salla.sa/ZYRdwl/fba59b50-2826-4382-8453-db3106c26575-1000x566.92913385827-TODMv3mK2bsf8dNHvAo0lLS4oX8ZFrASx4vxiuFu.jpg" 
                   alt="Solar Installation 5" 
                   className="hero-grid-img"
                 />
