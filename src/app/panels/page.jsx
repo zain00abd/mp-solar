@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Loader from '../components/Loader';
 import './style.css';
 
 const SolarPanels = () => {
@@ -97,7 +98,7 @@ const SolarPanels = () => {
             </div>
           </div>
 
-          <div className="product-features">
+          {/* <div className="product-features">
             <h4 className="features-title">Key Features</h4>
             <div className="features-grid">
               <div className="feature-item">
@@ -117,7 +118,7 @@ const SolarPanels = () => {
                 <span>Long Warranty</span>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="product-actions">
             <Link href={`/panels/${product?._id}`} className="btn" style={{backgroundColor:`${product?.company?.color2 || '#4A90E2'}`, color:`${product?.company?.color1 || '#FFA500'}`}}>
@@ -130,15 +131,7 @@ const SolarPanels = () => {
   };
 
   if (loading) {
-    return (
-      <div className="solar-panels-page">
-        <Header />
-        <div className="container">
-          <div className="loading-state">Loading solar panels...</div>
-        </div>
-        <Footer />
-      </div>
-    );
+    return <Loader full label=" Loading..." />;
   }
 
   return (

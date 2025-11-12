@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Loader from '../components/Loader';
 import './style.css';
 
 const Inverters = () => {
@@ -127,17 +128,7 @@ const Inverters = () => {
   };
 
   if (loading) {
-    return (
-      <>
-      <div className="solar-inverters-page">
-        <Header />
-        <div className="container">
-          <div className="loading-state">Loading inverters...</div>
-        </div>
-        <Footer />
-      </div>
-      </>
-    );
+    return <Loader full label=" Loading..." />;
   }
 
   return (

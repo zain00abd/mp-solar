@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Loader from '../components/Loader';
 import './style.css';
 
 const Batteries = () => {
@@ -113,18 +114,7 @@ const Batteries = () => {
   };
 
   if (loading) {
-    return (
-
-      <>
-        <Header />
-            <div className="solar-batteries-page">
-        <div className="container">
-          <div className="loading-state">Loading batteries...</div>
-        </div>
-      </div>
-        <Footer />
-      </>
-    );
+    return <Loader full label=" Loading..." />;
   }
 
   return (
