@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import '../../components/shared.css';
 import './style.css';
 
 export default function AddProductPage() {
@@ -14,21 +15,12 @@ export default function AddProductPage() {
     name: '',
     category: 'products', // default to solar panels
     company: '',
-    badge: '',
     image: '',
+    pdfUrl: '',
     description: '',
     features: [''],
-    specs: {
-      power: '',
-      voltage: '',
-      efficiency: '',
-      warranty: '',
-      dimensions: '',
-      weight: ''
-    },
-    price: '',
-    currency: 'USD',
-    availability: 'in-stock',
+    models: [''],
+    specs: [{ label: '', value: '' }],
     tags: [''],
     warranty: ''
   });
@@ -65,18 +57,6 @@ export default function AddProductPage() {
     { value: 'batteries', label: 'البطاريات' }
   ];
 
-  const currencies = [
-    { value: 'USD', label: 'دولار أمريكي' },
-    { value: 'EUR', label: 'يورو' },
-    { value: 'SAR', label: 'ريال سعودي' },
-    { value: 'AED', label: 'درهم إماراتي' }
-  ];
-
-  const availabilityOptions = [
-    { value: 'in-stock', label: 'متوفر' },
-    { value: 'out-of-stock', label: 'غير متوفر' },
-    { value: 'pre-order', label: 'طلب مسبق' }
-  ];
 
   // جلب الشركات عند تحميل الصفحة
   useEffect(() => {
@@ -97,22 +77,10 @@ export default function AddProductPage() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
-    if (name.startsWith('specs.')) {
-      const specKey = name.split('.')[1];
-      setProductData(prev => ({
-        ...prev,
-        specs: {
-          ...prev.specs,
-          [specKey]: value
-        }
-      }));
-    } else {
-      setProductData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
+    setProductData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleArrayChange = (index, value, field) => {
@@ -133,6 +101,27 @@ export default function AddProductPage() {
     setProductData(prev => ({
       ...prev,
       [field]: prev[field].filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleSpecChange = (index, field, value) => {
+    setProductData(prev => ({
+      ...prev,
+      specs: prev.specs.map((s, i) => i === index ? { ...s, [field]: value } : s)
+    }));
+  };
+
+  const addSpec = () => {
+    setProductData(prev => ({
+      ...prev,
+      specs: [...prev.specs, { label: '', value: '' }]
+    }));
+  };
+
+  const removeSpec = (index) => {
+    setProductData(prev => ({
+      ...prev,
+      specs: prev.specs.filter((_, i) => i !== index)
     }));
   };
 
@@ -436,21 +425,18 @@ export default function AddProductPage() {
     setLoading(true);
 
     try {
-      // تحويل المواصفات من كائن إلى مصفوفة
-      const specsArray = Object.entries(productData.specs)
-        .filter(([key, value]) => value && value.trim() !== '')
-        .map(([key, value]) => ({
-          label: getSpecLabel(key),
-          value: value.trim()
-        }));
+      const specsArray = productData.specs
+        .filter(s => (s.label || '').trim() !== '' && (s.value || '').trim() !== '')
+        .map(s => ({ label: s.label.trim(), value: s.value.trim() }));
 
       // تنظيف البيانات
       const cleanedData = {
         ...productData,
         specs: specsArray,
         features: productData.features.filter(f => f.trim() !== ''),
+        models: productData.models.filter(m => m.trim() !== ''),
         tags: productData.tags.filter(t => t.trim() !== ''),
-        price: parseFloat(productData.price) || 0
+        pdfUrl: (productData.pdfUrl || '').trim()
       };
 
       // تحديد المسار الصحيح حسب القسم
@@ -485,18 +471,7 @@ export default function AddProductPage() {
     }
   };
 
-  // دالة مساعدة لتحويل مفاتيح المواصفات إلى تسميات عربية
-  const getSpecLabel = (key) => {
-    const labels = {
-      power: 'القدرة',
-      voltage: 'الجهد',
-      efficiency: 'الكفاءة',
-      warranty: 'الضمان',
-      dimensions: 'الأبعاد',
-      weight: 'الوزن'
-    };
-    return labels[key] || key;
-  };
+
 
   return (
     <div className="add-product-page">
@@ -521,6 +496,35 @@ export default function AddProductPage() {
                   required
                   placeholder="أدخل اسم المنتج"
                 />
+              </div>
+
+              {/* الموديلات */}
+              <div className="form-group">
+                <label>الموديلات</label>
+                {productData.models.map((model, index) => (
+                  <div key={index} className="array-input">
+                    <input
+                      type="text"
+                      value={model}
+                      onChange={(e) => handleArrayChange(index, e.target.value, 'models')}
+                      placeholder="أدخل موديل"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeArrayItem(index, 'models')}
+                      className="remove-btn"
+                    >
+                      حذف
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => addArrayItem('models')}
+                  className="add-btn"
+                >
+                  إضافة موديل
+                </button>
               </div>
 
               <div className="form-row">
@@ -569,17 +573,7 @@ export default function AddProductPage() {
                 </div>
               </div>
 
-              <div className="form-group">
-                <label htmlFor="badge">الشارة</label>
-                <input
-                  type="text"
-                  id="badge"
-                  name="badge"
-                  value={productData.badge}
-                  onChange={handleInputChange}
-                  placeholder="مثل: جديد، الأكثر مبيعاً، عرض خاص"
-                />
-              </div>
+              
 
               <div className="form-group image-upload-section">
                 <label>صورة المنتج *</label>
@@ -653,21 +647,35 @@ export default function AddProductPage() {
                   </div>
                 )}
 
-                {/* معاينة الصورة */}
-                {imagePreview && !compressingImage && !uploadingToImgbb && (
-                  <div className="image-preview-container">
-                    <img src={imagePreview} alt="معاينة الصورة" className="image-preview" />
-                    <button
-                      type="button"
-                      onClick={clearImage}
-                      className="clear-image-btn"
-                      title="حذف الصورة"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                )}
-              </div>
+              {/* معاينة الصورة */}
+              {imagePreview && !compressingImage && !uploadingToImgbb && (
+                <div className="image-preview-container">
+                  <img src={imagePreview} alt="معاينة الصورة" className="image-preview" />
+                  <button
+                    type="button"
+                    onClick={clearImage}
+                    className="clear-image-btn"
+                    title="حذف الصورة"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* رابط ملف PDF للمنتج */}
+            <div className="form-group">
+              <label htmlFor="pdfUrl">رابط ملف PDF للمنتج *</label>
+              <input
+                type="url"
+                id="pdfUrl"
+                name="pdfUrl"
+                value={productData.pdfUrl}
+                onChange={handleInputChange}
+                required
+                placeholder="https://example.com/datasheet.pdf"
+              />
+            </div>
 
               <div className="form-group">
                 <label htmlFor="description">الوصف *</label>
@@ -711,131 +719,47 @@ export default function AddProductPage() {
                 </button>
               </div>
 
-              {/* المواصفات التقنية */}
               <div className="specs-section">
                 <h3>المواصفات التقنية</h3>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="specs.power">القدرة</label>
-                    <input
-                      type="text"
-                      id="specs.power"
-                      name="specs.power"
-                      value={productData.specs.power}
-                      onChange={handleInputChange}
-                      placeholder="مثل: 400W"
-                    />
+                {productData.specs.map((spec, index) => (
+                  <div key={index} className="form-row">
+                    <div className="form-group">
+                      <label>اسم البارامتر</label>
+                      <input
+                        type="text"
+                        value={spec.label}
+                        onChange={(e) => handleSpecChange(index, 'label', e.target.value)}
+                        placeholder="اسم البارامتر (مثل: القدرة)"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>القيمة</label>
+                      <input
+                        type="text"
+                        value={spec.value}
+                        onChange={(e) => handleSpecChange(index, 'value', e.target.value)}
+                        placeholder="القيمة (مثل: 400W)"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => removeSpec(index)}
+                      className="remove-btn"
+                    >
+                      حذف
+                    </button>
                   </div>
-                  <div className="form-group">
-                    <label htmlFor="specs.voltage">الجهد</label>
-                    <input
-                      type="text"
-                      id="specs.voltage"
-                      name="specs.voltage"
-                      value={productData.specs.voltage}
-                      onChange={handleInputChange}
-                      placeholder="مثل: 24V"
-                    />
-                  </div>
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="specs.efficiency">الكفاءة</label>
-                    <input
-                      type="text"
-                      id="specs.efficiency"
-                      name="specs.efficiency"
-                      value={productData.specs.efficiency}
-                      onChange={handleInputChange}
-                      placeholder="مثل: 22%"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="specs.warranty">الضمان</label>
-                    <input
-                      type="text"
-                      id="specs.warranty"
-                      name="specs.warranty"
-                      value={productData.specs.warranty}
-                      onChange={handleInputChange}
-                      placeholder="مثل: 25 سنة"
-                    />
-                  </div>
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label htmlFor="specs.dimensions">الأبعاد</label>
-                    <input
-                      type="text"
-                      id="specs.dimensions"
-                      name="specs.dimensions"
-                      value={productData.specs.dimensions}
-                      onChange={handleInputChange}
-                      placeholder="مثل: 2000x1000x40mm"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="specs.weight">الوزن</label>
-                    <input
-                      type="text"
-                      id="specs.weight"
-                      name="specs.weight"
-                      value={productData.specs.weight}
-                      onChange={handleInputChange}
-                      placeholder="مثل: 22kg"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* السعر والتوفر */}
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="price">السعر *</label>
-                  <input
-                    type="number"
-                    id="price"
-                    name="price"
-                    value={productData.price}
-                    onChange={handleInputChange}
-                    required
-                    min="0"
-                    step="0.01"
-                    placeholder="0.00"
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="currency">العملة</label>
-                  <select
-                    id="currency"
-                    name="currency"
-                    value={productData.currency}
-                    onChange={handleInputChange}
-                  >
-                    {currencies.map(curr => (
-                      <option key={curr.value} value={curr.value}>
-                        {curr.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="availability">حالة التوفر</label>
-                <select
-                  id="availability"
-                  name="availability"
-                  value={productData.availability}
-                  onChange={handleInputChange}
+                ))}
+                <button
+                  type="button"
+                  onClick={addSpec}
+                  className="add-btn"
                 >
-                  {availabilityOptions.map(option => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+                  إضافة مواصفة
+                </button>
               </div>
+
+              
 
               {/* الكلمات المفتاحية */}
               <div className="form-group">
@@ -890,30 +814,32 @@ export default function AddProductPage() {
               <form onSubmit={handleSubmitCompany} className="company-form">
                 <h3>إضافة شركة جديدة</h3>
                 
-                <div className="form-group">
-                  <label htmlFor="company-name">اسم الشركة *</label>
-                  <input
-                    type="text"
-                    id="company-name"
-                    name="name"
-                    value={companyData.name}
-                    onChange={handleCompanyInputChange}
-                    required
-                    placeholder="أدخل اسم الشركة"
-                  />
-                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="company-name">اسم الشركة *</label>
+                    <input
+                      type="text"
+                      id="company-name"
+                      name="name"
+                      value={companyData.name}
+                      onChange={handleCompanyInputChange}
+                      required
+                      placeholder="أدخل اسم الشركة"
+                    />
+                  </div>
 
-                <div className="form-group">
-                  <label htmlFor="company-country">البلد *</label>
-                  <input
-                    type="text"
-                    id="company-country"
-                    name="country"
-                    value={companyData.country}
-                    onChange={handleCompanyInputChange}
-                    required
-                    placeholder="أدخل بلد الشركة"
-                  />
+                  <div className="form-group">
+                    <label htmlFor="company-country">البلد *</label>
+                    <input
+                      type="text"
+                      id="company-country"
+                      name="country"
+                      value={companyData.country}
+                      onChange={handleCompanyInputChange}
+                      required
+                      placeholder="أدخل بلد الشركة"
+                    />
+                  </div>
                 </div>
 
                 <div className="form-group image-upload-section">
@@ -1016,30 +942,32 @@ export default function AddProductPage() {
                   />
                 </div>
 
-                <div className="form-group">
-                  <label htmlFor="company-website">الموقع الإلكتروني</label>
-                  <input
-                    type="url"
-                    id="company-website"
-                    name="website"
-                    value={companyData.website}
-                    onChange={handleCompanyInputChange}
-                    placeholder="https://company-website.com"
-                  />
-                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="company-website">الموقع الإلكتروني</label>
+                    <input
+                      type="url"
+                      id="company-website"
+                      name="website"
+                      value={companyData.website}
+                      onChange={handleCompanyInputChange}
+                      placeholder="https://company-website.com"
+                    />
+                  </div>
 
-                <div className="form-group">
-                  <label htmlFor="company-established">سنة التأسيس</label>
-                  <input
-                    type="number"
-                    id="company-established"
-                    name="established"
-                    value={companyData.established}
-                    onChange={handleCompanyInputChange}
-                    min="1800"
-                    max={new Date().getFullYear()}
-                    placeholder="2000"
-                  />
+                  <div className="form-group">
+                    <label htmlFor="company-established">سنة التأسيس</label>
+                    <input
+                      type="number"
+                      id="company-established"
+                      name="established"
+                      value={companyData.established}
+                      onChange={handleCompanyInputChange}
+                      min="1800"
+                      max={new Date().getFullYear()}
+                      placeholder="2000"
+                    />
+                  </div>
                 </div>
 
                 {/* ألوان الشركة */}

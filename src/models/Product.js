@@ -31,15 +31,16 @@ const ProductSchema = new mongoose.Schema({
     ref: 'Company',
     required: [true, 'Company is required']
   },
-  badge: {
-    type: String,
-    trim: true,
-    maxlength: [50, 'Badge cannot exceed 50 characters']
-  },
   image: {
     type: String,
     required: [true, 'Product image is required'],
     trim: true
+  },
+  pdfUrl: {
+    type: String,
+    required: [true, 'Product PDF URL is required'],
+    trim: true,
+    match: [/^https?:\/\//i, 'Invalid URL format']
   },
   description: {
     type: String,
@@ -52,23 +53,12 @@ const ProductSchema = new mongoose.Schema({
     trim: true,
     maxlength: [200, 'Feature cannot exceed 200 characters']
   }],
+  models: [{
+    type: String,
+    trim: true,
+    maxlength: [200, 'Model name cannot exceed 200 characters']
+  }],
   specs: [SpecSchema],
-  price: {
-    type: Number,
-    required: [true, 'Price is required'],
-    min: [0, 'Price cannot be negative']
-  },
-  currency: {
-    type: String,
-    default: 'USD',
-    enum: ['USD', 'EUR', 'SAR', 'AED'],
-    uppercase: true
-  },
-  availability: {
-    type: String,
-    enum: ['in-stock', 'out-of-stock', 'pre-order'],
-    default: 'in-stock'
-  },
   isActive: {
     type: Boolean,
     default: true
@@ -97,13 +87,7 @@ const ProductSchema = new mongoose.Schema({
 ProductSchema.index({ category: 1 });
 ProductSchema.index({ company: 1 });
 ProductSchema.index({ name: 'text', description: 'text' });
-ProductSchema.index({ price: 1 });
 ProductSchema.index({ isActive: 1 });
-
-// Virtual for formatted price
-ProductSchema.virtual('formattedPrice').get(function() {
-  return `${this.currency} ${this.price.toLocaleString()}`;
-});
 
 // Pre-populate company data when querying
 ProductSchema.pre(/^find/, function(next) {

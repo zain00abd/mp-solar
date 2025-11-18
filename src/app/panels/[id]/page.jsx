@@ -12,7 +12,7 @@ async function fetchProduct(id) {
     const host = h.get('x-forwarded-host') ?? h.get('host');
     const proto = h.get('x-forwarded-proto') ?? 'http';
     const base = host ? `${proto}://${host}` : (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
-    const res = await fetch(`${base}/api/products-panels/${id}`, { cache: 'no-store' });
+    const res = await fetch(`${base}/api/products-panels/${id}`, { next: { revalidate: 600 } });
     if (!res.ok) return null;
     const json = await res.json();
     return json?.data || null;
@@ -49,6 +49,7 @@ const PanelDetail = async ({ params }) => {
 
   const specs = Array.isArray(product.specs) ? product.specs : [];
   const features = Array.isArray(product.features) ? product.features : [];
+  const models = Array.isArray(product.models) ? product.models : [];
 
   const defaultFeatures = [
     'High conversion efficiency up to 22%',
@@ -86,14 +87,29 @@ const PanelDetail = async ({ params }) => {
           </svg>
         </div>
 
-        <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-start lg:gap-y-10">
+        <div className="mx-auto grid max-w-5xl grid-cols-1 gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-start lg:gap-y-10">
           <div className="lg:col-span-2 lg:col-start-1 lg:row-start-1 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
             <div className="lg:pr-4">
-              <div className="lg:max-w-lg">
+              <div className="lg:max-w-2xl">
 
                 <h1 className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-white sm:text-5xl text-center">
                   {product.name || 'Advanced Solar Panel'}
                 </h1>
+                {models.length > 0 && (
+                  <div className="mt-4">
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {models.map((m, i) => (
+                        <span
+                          key={i}
+                          className="px-3 py-1 rounded-full text-sm font-semibold border bg-gray-800/50"
+                          style={{ borderColor: product.company?.color1 || '#FFA500', color: product.company?.color1 || '#FFA500' }}
+                        >
+                          {m}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 <h2 className="mt-6 text-lg font-semibold text-[var(--primary)]">Description</h2>
                 <p className="mt-2 text-xl/8 text-gray-300">
                   {product.description || 'Our advanced solar panel provides exceptional energy conversion efficiency and long-term reliability. Designed with cutting-edge photovoltaic technology, this panel delivers maximum power output while maintaining excellent performance in various weather conditions.'}
@@ -112,7 +128,7 @@ const PanelDetail = async ({ params }) => {
           
           <div className="lg:col-span-2 lg:col-start-1 lg:row-start-2 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
             <div className="lg:pr-4">
-              <div className="max-w-xl text-base/7 text-gray-300 lg:max-w-lg">
+              <div className="max-w-2xl text-base/7 text-gray-300 lg:max-w-2xl">
                 <h2 className="mt-8 text-lg font-semibold text-[var(--primary)]">Key Features</h2>
                 <ul role="list" className="mt-4 space-y-4 text-gray-300">
                   {displayFeatures.map((feature, index) => (
@@ -171,6 +187,17 @@ const PanelDetail = async ({ params }) => {
                     </tbody>
                   </table>
                 </div>
+                {product.pdfUrl && (
+                  <div className="mt-10 flex justify-center">
+                    <a
+                      href={product.pdfUrl}
+                      download
+                      className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-black ring-1 ring-[var(--accent)] shadow-[0_6px_24px_rgba(255,215,0,0.25)] hover:shadow-[0_8px_28px_rgba(255,215,0,0.35)] hover:brightness-105 transition"
+                    >
+                      Download
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           </div>

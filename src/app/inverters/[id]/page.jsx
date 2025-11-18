@@ -12,9 +12,11 @@ async function fetchInverter(id) {
     const host = h.get('x-forwarded-host') ?? h.get('host');
     const proto = h.get('x-forwarded-proto') ?? 'http';
     const base = host ? `${proto}://${host}` : (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
-    const res = await fetch(`${base}/api/inverters/${id}`, { cache: 'no-store' });
+    const res = await fetch(`${base}/api/inverters/${id}`, { next: { revalidate: 600 } });
     if (!res.ok) return null;
     const json = await res.json();
+    console.log(json.data.company.color1)
+
     return json?.data || null;
   } catch (e) {
     console.error('Failed to fetch inverter', e);
@@ -25,6 +27,7 @@ async function fetchInverter(id) {
 const InverterDetail = async ({ params }) => {
   const { id } = await params;
   const product = await fetchInverter(id);
+  console.log(product)
 
   if (!product) {
     return (
@@ -49,6 +52,7 @@ const InverterDetail = async ({ params }) => {
 
   const specs = Array.isArray(product.specs) ? product.specs : [];
   const features = Array.isArray(product.features) ? product.features : [];
+  const models = Array.isArray(product.models) ? product.models : [];
 
   const defaultFeatures = [
     'High conversion efficiency up to 98%',
@@ -85,13 +89,28 @@ const InverterDetail = async ({ params }) => {
             </svg>
           </div>
 
-          <div className="mx-auto grid max-w-2xl grid-cols-1 gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-start lg:gap-y-10">
+          <div className="mx-auto grid max-w-5xl grid-cols-1 gap-x-8 gap-y-16 lg:mx-0 lg:max-w-none lg:grid-cols-2 lg:items-start lg:gap-y-10">
             <div className="lg:col-span-2 lg:col-start-1 lg:row-start-1 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
               <div className="lg:pr-4">
-                <div className="lg:max-w-lg">
-                  <h1 className="text-center mt-2 text-4xl font-semibold tracking-tight text-pretty text-white sm:text-5xl">
+                <div className="lg:max-w-2xl">
+                  <h2 className="text-center mt-2 text-4xl font-semibold tracking-tight text-pretty text-white sm:text-5xl" style={{color:`${product.company.color1}`}}>
                     {product.name || 'Advanced Solar Inverter'}
-                  </h1>
+                  </h2>
+                  {models.length > 0 && (
+                    <div className="mt-4">
+                      <div className="flex flex-wrap justify-center gap-2">
+                        {models.map((m, i) => (
+                          <span
+                            key={i}
+                            className="px-3 py-1 rounded-full text-sm font-semibold border bg-gray-800/50"
+                            style={{ borderColor: product.company.color1, color: product.company.color1 }}
+                          >
+                            {m}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <h2 className="mt-6 text-lg font-semibold text-[var(--primary)]">Description</h2>
                   <p className="mt-2 text-xl/8 text-gray-300">
                     {product.description || 'Our advanced solar inverter provides efficient conversion of DC power from solar panels into usable AC power for your home or business. Designed with cutting-edge technology, this inverter ensures maximum energy harvest and reliable performance.'}
@@ -110,12 +129,12 @@ const InverterDetail = async ({ params }) => {
 
             <div className="lg:col-span-2 lg:col-start-1 lg:row-start-2 lg:mx-auto lg:grid lg:w-full lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
               <div className="lg:pr-4">
-                <div className="max-w-xl text-base/7 text-gray-300 lg:max-w-lg">
+                <div className="max-w-2xl text-base/7 text-gray-300 lg:max-w-2xl">
                   <h2 className="mt-8 text-lg font-semibold text-[var(--primary)]">Key Features</h2>
                   <ul role="list" className="mt-4 space-y-4 text-gray-300">
                     {displayFeatures.map((feature, index) => (
                       <li key={index} className="flex gap-x-3">
-                        <svg viewBox="0 0 20 20" fill="currentColor" className="mt-0.5 h-5 w-5 flex-none text-[var(--accent)]">
+                        <svg style={{ color:`${product.company.color3}`}} viewBox="0 0 20 20" fill="currentColor" className="mt-0.5 h-5 w-5 flex-none text-[var(--accent)]">
                           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
                         </svg>
                         <span className="text-gray-300">{feature}</span>
@@ -169,6 +188,17 @@ const InverterDetail = async ({ params }) => {
                       </tbody>
                     </table>
                   </div>
+                  {product.pdfUrl && (
+                    <div className="mt-10 flex justify-center">
+                      <a
+                        href={product.pdfUrl}
+                        download
+                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg font-semibold bg-gradient-to-r from-[var(--accent)] to-[var(--primary)] text-black ring-1 ring-[var(--accent)] shadow-[0_6px_24px_rgba(255,215,0,0.25)] hover:shadow-[0_8px_28px_rgba(255,215,0,0.35)] hover:brightness-105 transition"
+                      >
+                        Download
+                      </a>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

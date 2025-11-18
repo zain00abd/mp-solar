@@ -15,8 +15,6 @@ export async function GET(request) {
     const category = searchParams.get('category') || '';
     const company = searchParams.get('company') || '';
     const search = searchParams.get('search') || '';
-    const minPrice = parseFloat(searchParams.get('minPrice')) || 0;
-    const maxPrice = parseFloat(searchParams.get('maxPrice')) || Infinity;
     const sortBy = searchParams.get('sortBy') || 'createdAt';
     const sortOrder = searchParams.get('sortOrder') || 'desc';
 
@@ -41,11 +39,7 @@ export async function GET(request) {
       ];
     }
     
-    if (minPrice > 0 || maxPrice < Infinity) {
-      filter.price = {};
-      if (minPrice > 0) filter.price.$gte = minPrice;
-      if (maxPrice < Infinity) filter.price.$lte = maxPrice;
-    }
+    // لم يعد هناك فلترة حسب السعر
 
     // حساب التخطي
     const skip = (page - 1) * limit;
@@ -67,15 +61,7 @@ export async function GET(request) {
     // إحصائيات إضافية
     const stats = await Product.aggregate([
       { $match: filter },
-      {
-        $group: {
-          _id: null,
-          avgPrice: { $avg: '$price' },
-          minPrice: { $min: '$price' },
-          maxPrice: { $max: '$price' },
-          totalProducts: { $sum: 1 }
-        }
-      }
+      { $group: { _id: null, totalProducts: { $sum: 1 } } }
     ]);
 
     return NextResponse.json({
@@ -87,7 +73,7 @@ export async function GET(request) {
         total,
         pages: Math.ceil(total / limit)
       },
-      stats: stats[0] || { avgPrice: 0, minPrice: 0, maxPrice: 0, totalProducts: 0 }
+      stats: stats[0] || { totalProducts: 0 }
     });
 
   } catch (error) {
@@ -109,22 +95,20 @@ export async function POST(request) {
       name, 
       category, 
       company, 
-      badge, 
-      image, 
+      image,
+      pdfUrl, 
       description, 
       features, 
+      models,
       specs, 
-      price, 
-      currency,
-      availability,
       tags,
       warranty
     } = body;
 
     // التحقق من البيانات المطلوبة
-    if (!name || !category || !company || !image || !description || !price) {
+    if (!name || !category || !company || !image || !pdfUrl || !description) {
       return NextResponse.json(
-        { success: false, error: 'Name, category, company, image, description, and price are required' },
+        { success: false, error: 'Name, category, company, image, pdfUrl, and description are required' },
         { status: 400 }
       );
     }
@@ -164,14 +148,12 @@ export async function POST(request) {
       name,
       category,
       company,
-      badge,
       image,
+      pdfUrl,
       description,
       features: features || [],
+      models: models || [],
       specs: specs || [],
-      price,
-      currency: currency || 'USD',
-      availability: availability || 'in-stock',
       tags: tags || [],
       warranty: warranty || {}
     });

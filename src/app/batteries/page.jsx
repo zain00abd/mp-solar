@@ -18,12 +18,29 @@ const Batteries = () => {
 
   const fetchProducts = async () => {
     try {
+      const CACHE_KEY = 'cache:batteries:list';
+      const CACHE_TTL = 600000;
+      const raw = typeof window !== 'undefined' ? localStorage.getItem(CACHE_KEY) : null;
+      if (raw) {
+        try {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.exp && Date.now() < parsed.exp && Array.isArray(parsed.data)) {
+            setProducts(parsed.data);
+            return;
+          }
+        } catch {}
+      }
+
       const response = await fetch('/api/batteries?limit=100');
       if (response.ok) {
         const data = await response.json();
-        console.log(data?.data);
-
-        setProducts(data?.data || []);
+        const list = data?.data || [];
+        setProducts(list);
+        if (typeof window !== 'undefined') {
+          try {
+            localStorage.setItem(CACHE_KEY, JSON.stringify({ exp: Date.now() + CACHE_TTL, data: list }));
+          } catch {}
+        }
       }
     } catch (error) {
       console.error('Failed to fetch batteries:', error);
