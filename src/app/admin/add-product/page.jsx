@@ -57,6 +57,10 @@ export default function AddProductPage() {
     { value: 'batteries', label: 'البطاريات' }
   ];
 
+  const [orderCategory, setOrderCategory] = useState('products');
+  const [orderItems, setOrderItems] = useState([]);
+  const [orderLoading, setOrderLoading] = useState(false);
+
 
   // جلب الشركات عند تحميل الصفحة
   useEffect(() => {
@@ -123,6 +127,58 @@ export default function AddProductPage() {
       ...prev,
       specs: prev.specs.filter((_, i) => i !== index)
     }));
+  };
+
+  const endpointMap = {
+    products: '/api/products-panels',
+    inverters: '/api/inverters',
+    batteries: '/api/batteries'
+  };
+
+  const loadOrderItems = async () => {
+    setOrderLoading(true);
+    try {
+      const endpoint = endpointMap[orderCategory];
+      const res = await fetch(`${endpoint}?limit=100&sortBy=sortOrder&sortOrder=asc`);
+      if (res.ok) {
+        const json = await res.json();
+        setOrderItems(Array.isArray(json?.data) ? json.data : []);
+      }
+    } catch (e) {
+      console.error('Error loading items for ordering', e);
+    } finally {
+      setOrderLoading(false);
+    }
+  };
+
+  const moveItem = (index, dir) => {
+    setOrderItems(prev => {
+      const arr = [...prev];
+      const ni = index + dir;
+      if (ni < 0 || ni >= arr.length) return prev;
+      const tmp = arr[index];
+      arr[index] = arr[ni];
+      arr[ni] = tmp;
+      return arr;
+    });
+  };
+
+  const saveOrder = async () => {
+    try {
+      const endpoint = endpointMap[orderCategory];
+      for (let i = 0; i < orderItems.length; i++) {
+        const item = orderItems[i];
+        await fetch(`${endpoint}/${item._id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sortOrder: i + 1 })
+        });
+      }
+      alert('تم حفظ ترتيب المنتجات بنجاح');
+    } catch (e) {
+      console.error('Error saving order', e);
+      alert('حدث خطأ أثناء حفظ الترتيب');
+    }
   };
 
   // دالة لضغط الصورة قبل التحميل باستخدام WebP
@@ -806,6 +862,50 @@ export default function AddProductPage() {
                 {loading ? 'جاري الإضافة...' : 'إضافة المنتج'}
               </button>
             </form>
+          </div>
+
+          {/* ترتيب المنتجات */}
+          <div className="product-form-section">
+            <h3>ترتيب المنتجات</h3>
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="orderCategory">القسم</label>
+                <select id="orderCategory" value={orderCategory} onChange={(e) => setOrderCategory(e.target.value)}>
+                  {categories.map(cat => (
+                    <option key={cat.value} value={cat.value}>{cat.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <label>&nbsp;</label>
+                <button type="button" className="add-btn" onClick={loadOrderItems}>تحميل القائمة</button>
+              </div>
+            </div>
+
+            {orderLoading ? (
+              <div style={{padding:'8px', color:'var(--text-muted)'}}>جاري التحميل...</div>
+            ) : (
+              <div className="form-group">
+                {orderItems.length === 0 ? (
+                  <div style={{padding:'8px', color:'var(--text-muted)'}}>لا توجد منتجات لعرضها</div>
+                ) : (
+                  orderItems.map((item, index) => (
+                    <div key={item._id} className="array-input" style={{alignItems:'center'}}>
+                      <div style={{flex:1}}>
+                        <div style={{fontWeight:600}}>{item.name}</div>
+                        <div style={{fontSize:'0.9rem', color:'var(--text-muted)'}}>{item.company?.name || '—'}</div>
+                      </div>
+                      <div style={{display:'flex', gap:'8px'}}>
+                        <button type="button" className="add-btn" onClick={() => moveItem(index, -1)}>↑</button>
+                        <button type="button" className="add-btn" onClick={() => moveItem(index, 1)}>↓</button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            <button type="button" className="submit-btn" onClick={saveOrder}>حفظ الترتيب</button>
           </div>
 
           {/* نموذج إضافة شركة جديدة */}

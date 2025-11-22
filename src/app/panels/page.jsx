@@ -59,7 +59,27 @@ const SolarPanels = () => {
     const s3 = specs[3];
     const priceText = product?.price ? `${product.price}${product?.currency ? ' ' + product.currency : ''}` : '—';
 
-    return (
+    const groups = (() => {
+    const acc = products.reduce((acc, p) => {
+      const id = p?.company?._id || 'other';
+      if (!acc[id]) acc[id] = { company: p?.company, items: [] };
+      acc[id].items.push(p);
+      return acc;
+    }, {});
+    const arr = Object.values(acc);
+    for (let i = 0; i < arr.length; i++) {
+      arr[i].items.sort((a, b) => {
+        const av = typeof a.sortOrder === 'number' ? a.sortOrder : Number.MAX_SAFE_INTEGER;
+        const bv = typeof b.sortOrder === 'number' ? b.sortOrder : Number.MAX_SAFE_INTEGER;
+        if (av !== bv) return av - bv;
+        const ad = new Date(a.createdAt || 0).getTime();
+        const bd = new Date(b.createdAt || 0).getTime();
+        return bd - ad;
+      });
+    }
+    return arr;
+  })();
+  return (
       <div className="product-card">
         <div className="product-image-container">
           <img
@@ -73,7 +93,7 @@ const SolarPanels = () => {
               e.target.alt = 'Image not available';
             }}
           />
-          <div className="product-badge">Premium Quality</div>
+          {/* <div className="product-badge">Premium Quality</div> */}
         </div>
 
         <div className="product-content">
@@ -153,6 +173,27 @@ const SolarPanels = () => {
     return <Loader full label=" Loading..." />;
   }
 
+  const groups = (() => {
+    const acc = products.reduce((acc, p) => {
+      const id = p?.company?._id || 'other';
+      if (!acc[id]) acc[id] = { company: p?.company, items: [] };
+      acc[id].items.push(p);
+      return acc;
+    }, {});
+    const arr = Object.values(acc);
+    for (let i = 0; i < arr.length; i++) {
+      arr[i].items.sort((a, b) => {
+        const av = typeof a.sortOrder === 'number' ? a.sortOrder : Number.MAX_SAFE_INTEGER;
+        const bv = typeof b.sortOrder === 'number' ? b.sortOrder : Number.MAX_SAFE_INTEGER;
+        if (av !== bv) return av - bv;
+        const ad = new Date(a.createdAt || 0).getTime();
+        const bd = new Date(b.createdAt || 0).getTime();
+        return bd - ad;
+      });
+    }
+    return arr;
+  })();
+
   return (
 
     <>
@@ -184,14 +225,7 @@ const SolarPanels = () => {
           {products.length === 0 ? (
             <div className="empty-state">No solar panels found.</div>
           ) : (
-            (() => {
-              const groups = products.reduce((acc, p) => {
-                const id = p?.company?._id || 'other';
-                if (!acc[id]) acc[id] = { company: p?.company, items: [] };
-                acc[id].items.push(p);
-                return acc;
-              }, {});
-              return Object.values(groups).map((group, idx) => (
+            groups.map((group, idx) => (
                 <section key={group?.company?._id || `other-${idx}`} className="company-section" style={{ marginBottom: '32px' }}>
                   <div className="company-header" style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '8px 0 16px' }}>
                     {group?.company?.logo && (
@@ -211,8 +245,7 @@ const SolarPanels = () => {
                     ))}
                   </div>
                 </section>
-              ));
-            })()
+            ))
           )}
         </div>
 

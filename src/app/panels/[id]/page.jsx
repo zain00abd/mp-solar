@@ -122,7 +122,7 @@ const PanelDetail = async ({ params }) => {
             <img 
               src={product.image || '/Solar Energy.jpg'} 
               alt={product.name || 'Solar Panel'} 
-              className="mx-auto w-full max-w-[320px] rounded-xl bg-gray-700 shadow-2xl ring-2 ring-[var(--primary)] ring-opacity-20 lg:max-w-none lg:w-auto" 
+              className="mx-auto w-full max-w-[300px] rounded-xl bg-gray-700 shadow-2xl ring-2 ring-[var(--primary)] ring-opacity-20 lg:max-w-[650px]" 
             />
           </div>
           

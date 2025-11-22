@@ -34,6 +34,7 @@ const PanelSchema = new mongoose.Schema({
   features: [{ type: String, trim: true, maxlength: [200, 'Feature cannot exceed 200 characters'] }],
   models: [{ type: String, trim: true, maxlength: [200, 'Model name cannot exceed 200 characters'] }],
   specs: [SpecSchema],
+  sortOrder: { type: Number, default: 0, index: true },
   isActive: { type: Boolean, default: true },
   tags: [{ type: String, trim: true, lowercase: true }],
   warranty: {
