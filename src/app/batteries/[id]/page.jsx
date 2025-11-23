@@ -6,6 +6,24 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { headers } from 'next/headers';
 
+export async function generateMetadata({ params }) {
+  const { id } = await params;
+  const product = await fetchBattery(id);
+  const base = process.env.NEXT_PUBLIC_SITE_URL || 'https://mbsolarpower.com';
+  const title = product?.name ? `${product.name} | MB Solar Power` : 'Solar Battery | MB Solar Power';
+  const description = product?.description ? String(product.description).slice(0, 160) : 'Advanced lithium battery for solar energy storage with long lifespan.';
+  const url = `${base}/batteries/${id}`;
+  const image = product?.image || '/batter.png';
+  return {
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: { title, description, url, siteName: 'MB Solar Power', type: 'product', images: [{ url: image }] },
+    twitter: { card: 'summary_large_image', title, description, images: [image] },
+    keywords: ['Solar Battery','MB Solar Power','بطاريات ليثيوم','طاقة شمسية']
+  };
+}
+
 async function fetchBattery(id) {
   try {
     const h = await headers();
