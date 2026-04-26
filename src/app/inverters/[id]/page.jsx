@@ -5,6 +5,7 @@ import './style.css';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { headers } from 'next/headers';
+import { getMockInverterById } from '@/lib/mockInverters';
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
@@ -18,34 +19,34 @@ export async function generateMetadata({ params }) {
     title,
     description,
     alternates: { canonical: url },
-    openGraph: { title, description, url, siteName: 'MB Solar Power', type: 'product', images: [{ url: image }] },
+    openGraph: { title, description, url, siteName: 'MB Solar Power', type: 'website', images: [{ url: image }] },
     twitter: { card: 'summary_large_image', title, description, images: [image] },
     keywords: ['Solar Inverter','MB Solar Power','عاكسات شمسية','طاقة شمسية']
   };
 }
 
 async function fetchInverter(id) {
+  if (id.startsWith('mock-')) {
+    return getMockInverterById(id);
+  }
   try {
     const h = await headers();
     const host = h.get('x-forwarded-host') ?? h.get('host');
     const proto = h.get('x-forwarded-proto') ?? 'http';
     const base = host ? `${proto}://${host}` : (process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000');
     const res = await fetch(`${base}/api/inverters/${id}`, { next: { revalidate: 600 } });
-    if (!res.ok) return null;
+    if (!res.ok) return getMockInverterById(id);
     const json = await res.json();
-    console.log(json.data.company.color1)
-
-    return json?.data || null;
+    return json?.data || getMockInverterById(id);
   } catch (e) {
     console.error('Failed to fetch inverter', e);
-    return null;
+    return getMockInverterById(id);
   }
 }
 
 const InverterDetail = async ({ params }) => {
   const { id } = await params;
   const product = await fetchInverter(id);
-  console.log(product)
 
   if (!product) {
     return (

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
+import { MOCK_INVERTERS } from '@/lib/mockInverters';
 import './style.css';
 
 const Inverters = () => {
@@ -20,6 +21,7 @@ const Inverters = () => {
     try {
       const CACHE_KEY = 'cache:inverters:list';
       const CACHE_TTL = 600000;
+      if (typeof window !== 'undefined') localStorage.removeItem(CACHE_KEY);
       const raw = typeof window !== 'undefined' ? localStorage.getItem(CACHE_KEY) : null;
       if (raw) {
         try {
@@ -34,16 +36,19 @@ const Inverters = () => {
       const response = await fetch('/api/inverters?limit=100');
       if (response.ok) {
         const data = await response.json();
-        const list = data?.data || [];
+        const list = data?.data?.length ? data.data : MOCK_INVERTERS;
         setProducts(list);
-        if (typeof window !== 'undefined') {
+        if (typeof window !== 'undefined' && data?.data?.length) {
           try {
             localStorage.setItem(CACHE_KEY, JSON.stringify({ exp: Date.now() + CACHE_TTL, data: list }));
           } catch {}
         }
+      } else {
+        setProducts(MOCK_INVERTERS);
       }
     } catch (error) {
       console.error('Failed to fetch inverters:', error);
+      setProducts(MOCK_INVERTERS);
     } finally {
       setLoading(false);
     }
