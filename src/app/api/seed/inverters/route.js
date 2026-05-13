@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
-import Company from '@/models/Company';
-import Inverter from '@/models/Inverter';
+import { getDb, COL, findDuplicateCompanyName, findDuplicateNameForCompany, serverTimestampsNew, docWithId } from '@/lib/firestore';
 
 const companiesSeed = [
   {
     name: 'Huawei Solar',
     country: 'China',
     logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e9/Huawei_Standard_logo.svg/320px-Huawei_Standard_logo.svg.png',
-    description: 'Huawei is a global leader in smart photovoltaic and energy storage solutions, delivering reliable and efficient solar inverters worldwide.',
+    description:
+      'Huawei is a global leader in smart photovoltaic and energy storage solutions, delivering reliable and efficient solar inverters worldwide.',
     website: 'https://solar.huawei.com',
     established: 2000,
     color1: 'rgba(220, 38, 38, 1)',
@@ -19,7 +18,8 @@ const companiesSeed = [
     name: 'SMA Solar Technology',
     country: 'Germany',
     logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/SMA_Solar_Technology_AG_Logo.svg/320px-SMA_Solar_Technology_AG_Logo.svg.png',
-    description: 'SMA Solar Technology AG is one of the world\'s largest manufacturers of solar inverters, known for quality, performance and reliability.',
+    description:
+      "SMA Solar Technology AG is one of the world's largest manufacturers of solar inverters, known for quality, performance and reliability.",
     website: 'https://www.sma.de',
     established: 1981,
     color1: 'rgba(22, 163, 74, 1)',
@@ -29,13 +29,14 @@ const companiesSeed = [
 ];
 
 const invertersSeed = [
-  // Huawei inverters (index 0 => company index 0)
   {
     companyIndex: 0,
     name: 'Huawei SUN2000-5KTL-M3',
     image: '/inverter3.png',
-    pdfUrl: 'https://solar.huawei.com/en-GB/download?p=/dam/jcr:c9e62e6b-7e47-4a29-a2e1-abcde12345678/SUN2000-5KTL-M3-Datasheet.pdf',
-    description: 'The SUN2000-5KTL-M3 is a high-efficiency residential string inverter from Huawei featuring advanced MPPT tracking, built-in arc fault detection, and seamless integration with the FusionSolar monitoring platform.',
+    pdfUrl:
+      'https://solar.huawei.com/en-GB/download?p=/dam/jcr:c9e62e6b-7e47-4a29-a2e1-abcde12345678/SUN2000-5KTL-M3-Datasheet.pdf',
+    description:
+      'The SUN2000-5KTL-M3 is a high-efficiency residential string inverter from Huawei featuring advanced MPPT tracking, built-in arc fault detection, and seamless integration with the FusionSolar monitoring platform.',
     features: [
       'Dual MPPT for flexible system design',
       'Built-in DC switch and arc fault detection',
@@ -58,8 +59,10 @@ const invertersSeed = [
     companyIndex: 0,
     name: 'Huawei SUN2000-100KTL-M2',
     image: '/inverter3.png',
-    pdfUrl: 'https://solar.huawei.com/en-GB/download?p=/dam/jcr:c9e62e6b-7e47-4a29-a2e1-abcde87654321/SUN2000-100KTL-M2-Datasheet.pdf',
-    description: 'The SUN2000-100KTL-M2 is a commercial-grade three-phase string inverter designed for large-scale solar power plants, offering high power density and intelligent IV curve diagnostics to maximize energy yield.',
+    pdfUrl:
+      'https://solar.huawei.com/en-GB/download?p=/dam/jcr:c9e62e6b-7e47-4a29-a2e1-abcde87654321/SUN2000-100KTL-M2-Datasheet.pdf',
+    description:
+      'The SUN2000-100KTL-M2 is a commercial-grade three-phase string inverter designed for large-scale solar power plants, offering high power density and intelligent IV curve diagnostics to maximize energy yield.',
     features: [
       '12 MPPTs for complex rooftops',
       'Smart IV curve diagnostics',
@@ -78,13 +81,13 @@ const invertersSeed = [
     warranty: { years: 10, type: 'product' },
     sortOrder: 2,
   },
-  // SMA inverters (index 1 => company index 1)
   {
     companyIndex: 1,
     name: 'SMA Sunny Boy 5.0',
     image: '/inverter3.png',
     pdfUrl: 'https://files.sma.de/downloads/SB5.0-1AV-41-DS-en-24W.pdf',
-    description: 'The Sunny Boy 5.0 is a compact, lightweight single-phase inverter from SMA, perfect for residential rooftop solar systems. It features OptiTracks® global peak tracking and Secure Power Supply for off-grid emergency operation.',
+    description:
+      'The Sunny Boy 5.0 is a compact, lightweight single-phase inverter from SMA, perfect for residential rooftop solar systems. It features OptiTracks® global peak tracking and Secure Power Supply for off-grid emergency operation.',
     features: [
       'OptiTracks® global peak MPPT',
       'Secure Power Supply during grid outage',
@@ -108,7 +111,8 @@ const invertersSeed = [
     name: 'SMA Sunny Tripower 25000TL',
     image: '/inverter3.png',
     pdfUrl: 'https://files.sma.de/downloads/STP25000TL-30-DS-en-25.pdf',
-    description: 'The Sunny Tripower 25000TL is a three-phase commercial string inverter from SMA featuring six MPP trackers, OptiTracks® technology, and an integrated DC switch for commercial and industrial rooftop installations.',
+    description:
+      'The Sunny Tripower 25000TL is a three-phase commercial string inverter from SMA featuring six MPP trackers, OptiTracks® technology, and an integrated DC switch for commercial and industrial rooftop installations.',
     features: [
       'Six MPP trackers for shade tolerance',
       'OptiTracks® global peak detection',
@@ -131,37 +135,46 @@ const invertersSeed = [
 
 export async function POST() {
   try {
-    await connectDB();
-
+    const db = getDb();
     const results = { companies: [], inverters: [], skipped: [] };
-
-    // Insert companies (skip if name already exists)
     const companyDocs = [];
+
     for (const c of companiesSeed) {
-      let doc = await Company.findOne({ name: c.name });
-      if (!doc) {
-        doc = await Company.create(c);
-        results.companies.push(`Created: ${doc.name}`);
+      const existing = await findDuplicateCompanyName(db, c.name, null);
+      let id;
+      if (existing) {
+        results.skipped.push(`Company already exists: ${c.name}`);
+        id = existing._id;
       } else {
-        results.skipped.push(`Company already exists: ${doc.name}`);
+        const ref = db.collection(COL.companies).doc();
+        await ref.set({ ...c, ...serverTimestampsNew() });
+        const created = docWithId(ref.id, (await ref.get()).data());
+        id = created._id;
+        results.companies.push(`Created: ${c.name}`);
       }
-      companyDocs.push(doc);
+      companyDocs.push({ _id: id });
     }
 
-    // Insert inverters (skip if name + company already exists)
     for (const inv of invertersSeed) {
       const company = companyDocs[inv.companyIndex];
       if (!company) continue;
       const { companyIndex, ...inverterData } = inv;
 
-      const exists = await Inverter.findOne({ name: inverterData.name, company: company._id });
+      const exists = await findDuplicateNameForCompany(db, COL.inverters, company._id, inverterData.name, null);
       if (exists) {
         results.skipped.push(`Inverter already exists: ${inverterData.name}`);
         continue;
       }
 
-      const doc = await Inverter.create({ ...inverterData, company: company._id, category: 'inverters', isActive: true });
-      results.inverters.push(`Created: ${doc.name} (${company.name})`);
+      const ref = db.collection(COL.inverters).doc();
+      await ref.set({
+        ...inverterData,
+        company: company._id,
+        category: 'inverters',
+        isActive: true,
+        ...serverTimestampsNew(),
+      });
+      results.inverters.push(`Created: ${inverterData.name}`);
     }
 
     return NextResponse.json({ success: true, results });

@@ -3,9 +3,7 @@ import React, { useState, useEffect } from 'react';
 import './style.css';
 import Header from '@/app/components/Header';
 import { LanguageContext } from '@/app/contexts/LanguageContext';
-// import 'bootstrap/dist/css/bootstrap.min.css';
 
-// Translations
 const translations = {
   en: {
     header: {
@@ -16,80 +14,111 @@ const translations = {
       contact: "Contact"
     },
     hero: {
-      title: "Power Your Future with",
-      titleHighlight: "Clean Energy",
-      description: "Transform your home or business with premium solar solutions. Experience energy independence, reduce costs, and contribute to a sustainable future.",
-      getStarted: "Get started",
-      exploreMore: "Explore more"
+      discoverMore: "Discover More",
+      slides: [
+        { title: "Pioneering Solar Energy Solutions", subtitle: "For a Resilient and Prosperous World" },
+        { title: "Advanced Energy Storage Systems", subtitle: "Power Independence for Home and Business" },
+        { title: "Smart Solar Technology", subtitle: "Maximize Efficiency, Minimize Costs" }
+      ]
     },
-    about: {
-      title: "About MB",
-      titleHighlight: "Solar Power",
-      description1: "With over 14 years of experience in the renewable energy industry, MB Solar Power has established itself as a leading provider of solar energy solutions. Our commitment to quality, innovation, and customer satisfaction sets us apart.",
-      description2: "We specialize in designing and installing customized solar systems that maximize energy production and return on investment for our clients.",
-      features: {
-        expert: {
-          title: "Expert Team",
-          description: "Certified professionals with extensive solar industry experience"
-        },
-        quality: {
-          title: "Quality Products",
-          description: "We use only premium components from trusted manufacturers"
-        },
-        service: {
-          title: "Full Service",
-          description: "From consultation to installation and maintenance"
-        }
+    news: {
+      label: "NEWS",
+      heading: "Advancing Clean Energy",
+      subheading: "Get to know our latest initiatives and updates",
+      viewAll: "All Updates +",
+      items: [
+        { category: "Product News", date: "15 Apr 2026", title: "MB Solar Launches New 600W High-Efficiency Solar Panel Series" },
+        { category: "Company News", date: "01 Apr 2026", title: "MB Solar Completes Major 500kW Commercial Installation in Riyadh" },
+        { category: "Product News", date: "20 Mar 2026", title: "New Hybrid Inverter Series Now Available with 10-Year Warranty" },
+        { category: "Company News", date: "05 Mar 2026", title: "MB Solar Partners with Leading Manufacturers for Enhanced Storage Solutions" },
+        { category: "Technical", date: "20 Feb 2026", title: "Advanced MPPT Technology Improves Energy Yield by Up to 30%" }
+      ]
+    },
+    solutions: {
+      label: "PRODUCTS",
+      heading: "Our Products",
+      subheading: "Premium solar equipment for residential and commercial installations",
+      browse: "Browse Products",
+      items: [
+        { title: "Solar Panels", description: "High-efficiency monocrystalline panels with 25-year performance warranty, ideal for any installation" },
+        { title: "Inverters", description: "Smart hybrid inverters with MPPT technology for maximum energy conversion and grid independence" },
+        { title: "Batteries", description: "Lithium-ion storage systems delivering reliable backup power and round-the-clock energy independence" },
+      ]
+    },
+    featured: {
+      badge: "New Hybrid Inverter",
+      category: "Three Phase Hybrid Inverter",
+      name: "MB-H3-25K-SG",
+      specs: [
+        "25kW output power with 100% unbalanced load support",
+        "Compatible with lithium-ion and lead-acid batteries",
+        "Max. 6 units parallel for on-grid and off-grid operation",
+        "Built-in WiFi and 4G real-time monitoring",
+        "Maximum MPPT efficiency of 99.9%",
+        "10-year product warranty included"
+      ]
+    },
+    platform: {
+      label: "PLATFORM",
+      heading: "MB Solar Platform",
+      description: "With MB Solar products you get real-time monitoring and intelligent control. Protecting your investment and maximizing your system's lifetime performance.",
+      cta1: "Learn More",
+      cta2: "Get Started"
+    },
+    tech: {
+      label: "TECHNOLOGY",
+      badge: "Smart Technology",
+      heading: "Improving Business Benefits",
+      subheading: "Intelligent energy management for commercial and industrial solar systems",
+      description: "MB Solar's intelligent energy management system optimizes solar generation, storage, and consumption in real-time. With smart grid compatibility and demand response capabilities, our systems reduce energy costs and improve reliability for commercial and industrial customers."
+    },
+    contact: {
+      label: "CONTACT",
+      heading: "Global Online Service",
+      emailLabel: "Email (Sales):",
+      email: "info@mbsolarpower.com",
+      phoneLabel: "Phone (Sales):",
+      phone: "+966-XX-XXX-XXXX",
+      address: "Riyadh, Saudi Arabia",
+      form: {
+        name: "Name *",
+        phone: "Telephone *",
+        company: "Company *",
+        address: "Address *",
+        email: "Email *",
+        message: "Message *",
+        send: "SEND"
       }
-    },
-    products: {
-      title: "Our",
-      titleHighlight: "Products",
-      subtitle: "Discover a wide range of high-quality solar energy products",
-      browseProducts: "Browse Products",
-      availableFrom: "Available from",
-      categories: {
-        solarPanels: {
-          title: "Solar Panels",
-          description: "High-efficiency solar panels with a 25-year warranty, perfect for residential and commercial use"
-        },
-        inverters: {
-          title: "Inverters",
-          description: "Smart hybrid inverters with MPPT technology for maximum efficiency and exceptional performance"
-        },
-        batteries: {
-          title: "Batteries",
-          description: "Lithium-ion batteries for energy storage with a lifespan of over 10 years"
-        }
-      }
-    },
-    projects: {
-      title: "Completed",
-      titleHighlight: "Projects",
-      subtitle: "Explore some of our successful solar installations for residential and commercial clients",
-      systemCapacity: "System Capacity:"
-    },
-    whyChoose: {
-      title: "Why Choose",
-      titleHighlight: "MB Solar?",
-      description: "With decades of combined experience, industry-leading technology, and a commitment to customer satisfaction, we deliver solar solutions that exceed expectations. Our end-to-end service ensures a seamless transition to clean energy.",
-      stats: {
-        satisfaction: "Satisfaction",
-        support: "Support",
-        warranty: "Warranty",
-        rated: "Rated"
-      }
-    },
-    cta: {
-      title: "Ready to Go Solar?",
-      description: "Contact us today for a free consultation and quote. Our experts will help you design the perfect solar solution for your needs.",
-      button: "Contact Us Now"
     },
     footer: {
       tagline: "Professional solar energy solutions for a sustainable future.",
-      ourProducts: "Our Products",
-      contactUs: "Contact Us",
-      copyright: "© 2023 MB Solar Power. All rights reserved."
+      products: "Products",
+      productLinks: [
+        { label: "Solar Panels", href: "/panels" },
+        { label: "Inverters", href: "/inverters" },
+        { label: "Batteries", href: "/batteries" },
+        { label: "Accessories", href: "#" }
+      ],
+      solutions: "Solutions",
+      solutionLinks: [
+        { label: "Commercial Solar", href: "#" },
+        { label: "Commercial Storage", href: "#" },
+        { label: "Residential Solar", href: "#" },
+        { label: "Residential Storage", href: "#" }
+      ],
+      support: "Support",
+      supportLinks: [
+        { label: "Downloads", href: "#" },
+        { label: "Service", href: "#" },
+        { label: "FAQ", href: "#" }
+      ],
+      about: "About Us",
+      aboutLinks: [
+        { label: "About MB Solar", href: "#" },
+        { label: "Contact Us", href: "#contact" },
+        { label: "Join Us", href: "#" }
+      ],
+      copyright: "© 2026 MB Solar Power. All rights reserved."
     }
   },
   ar: {
@@ -101,691 +130,426 @@ const translations = {
       contact: "اتصل بنا"
     },
     hero: {
-      title: "شغّل مستقبلك بـ",
-      titleHighlight: "الطاقة النظيفة",
-      description: "حوّل منزلك أو عملك بحلول الطاقة الشمسية المميزة. استمتع بالاستقلال في الطاقة، قلل التكاليف، وساهم في مستقبل مستدام.",
-      getStarted: "ابدأ الآن",
-      exploreMore: "استكشف المزيد"
+      discoverMore: "اكتشف المزيد",
+      slides: [
+        { title: "حلول الطاقة الشمسية الرائدة", subtitle: "لعالم مستدام ومزدهر" },
+        { title: "أنظمة تخزين الطاقة المتقدمة", subtitle: "استقلالية الطاقة للمنازل والأعمال" },
+        { title: "تقنية الطاقة الشمسية الذكية", subtitle: "أقصى كفاءة وأقل تكاليف" }
+      ]
     },
-    about: {
-      title: "حول",
-      titleHighlight: "MB Solar Power",
-      description1: "مع أكثر من 14 سنوات من الخبرة في صناعة الطاقة المتجددة، أصبحت MB Solar Power مزودًا رائدًا لحلول الطاقة الشمسية. التزامنا بالجودة والابتكار ورضا العملاء يميزنا عن الآخرين.",
-      description2: "نتخصص في تصميم وتركيب أنظمة الطاقة الشمسية المخصصة التي تعظم إنتاج الطاقة والعائد على الاستثمار لعملائنا.",
-      features: {
-        expert: {
-          title: "فريق خبير",
-          description: "محترفون معتمدون بخبرة واسعة في صناعة الطاقة الشمسية"
-        },
-        quality: {
-          title: "منتجات عالية الجودة",
-          description: "نستخدم فقط مكونات مميزة من مصنعين موثوقين"
-        },
-        service: {
-          title: "خدمة كاملة",
-          description: "من الاستشارة إلى التركيب والصيانة"
-        }
+    news: {
+      label: "أخبار",
+      heading: "دفع التحول للطاقة النظيفة",
+      subheading: "تعرف على آخر مبادراتنا ومستجداتنا",
+      viewAll: "جميع الأخبار +",
+      items: [
+        { category: "أخبار المنتجات", date: "١٥ أبريل ٢٠٢٦", title: "MB Solar تطلق سلسلة جديدة من الألواح الشمسية عالية الكفاءة 600W" },
+        { category: "أخبار الشركة", date: "١ أبريل ٢٠٢٦", title: "MB Solar تُكمل تركيب منظومة تجارية كبرى بقدرة 500 كيلوواط في الرياض" },
+        { category: "أخبار المنتجات", date: "٢٠ مارس ٢٠٢٦", title: "سلسلة المحولات الهجينة الجديدة متوفرة الآن بضمان 10 سنوات" },
+        { category: "أخبار الشركة", date: "٥ مارس ٢٠٢٦", title: "MB Solar تتعاون مع كبار المصنعين لتطوير حلول التخزين المتكاملة" },
+        { category: "تقني", date: "٢٠ فبراير ٢٠٢٦", title: "تقنية MPPT المتقدمة تحسن إنتاج الطاقة بنسبة تصل إلى 30%" }
+      ]
+    },
+    solutions: {
+      label: "منتجات",
+      heading: "منتجاتنا",
+      subheading: "معدات طاقة شمسية متميزة للتركيبات السكنية والتجارية",
+      browse: "تصفح المنتجات",
+      items: [
+        { title: "الألواح الشمسية", description: "ألواح أحادية البلورة عالية الكفاءة بضمان أداء 25 عاماً، مثالية لأي تركيب" },
+        { title: "المحولات", description: "محولات هجينة ذكية بتقنية MPPT لأقصى تحويل للطاقة والاستقلالية عن الشبكة" },
+        { title: "البطاريات", description: "أنظمة تخزين ليثيوم أيون توفر طاقة احتياطية موثوقة واستقلالية طاقة على مدار الساعة" },
+      ]
+    },
+    featured: {
+      badge: "محول هجين جديد",
+      category: "محول هجين ثلاثي الطور",
+      name: "MB-H3-25K-SG",
+      specs: [
+        "طاقة إخراج 25 كيلوواط مع دعم 100% للأحمال غير المتوازنة",
+        "متوافق مع بطاريات الليثيوم أيون والرصاص الحمضي",
+        "توصيل حتى 6 وحدات للعمل المتزامن على الشبكة وخارجها",
+        "واي فاي و4G مدمج للمراقبة الفورية",
+        "أقصى كفاءة MPPT بنسبة 99.9%",
+        "ضمان المنتج لمدة 10 سنوات كاملة"
+      ]
+    },
+    platform: {
+      label: "منصة",
+      heading: "منصة MB Solar",
+      description: "مع منتجات MB Solar تحصل على مراقبة وتحكم فوري وذكي. حماية استثمارك وتعظيم أداء نظامك على مدى الحياة.",
+      cta1: "تعرف أكثر",
+      cta2: "ابدأ الآن"
+    },
+    tech: {
+      label: "تقنية",
+      badge: "تقنية ذكية",
+      heading: "تحسين الفوائد التجارية",
+      subheading: "إدارة طاقة ذكية لأنظمة الطاقة الشمسية التجارية والصناعية",
+      description: "يقوم نظام إدارة الطاقة الذكي من MB Solar بتحسين توليد الطاقة الشمسية والتخزين والاستهلاك في الوقت الفعلي. مع توافق الشبكة الذكية وقدرات الاستجابة للطلب، تقلل أنظمتنا تكاليف الطاقة وتحسن موثوقية العملاء التجاريين والصناعيين."
+    },
+    contact: {
+      label: "تواصل",
+      heading: "خدمة عالمية",
+      emailLabel: "البريد الإلكتروني (المبيعات):",
+      email: "info@mbsolarpower.com",
+      phoneLabel: "هاتف (المبيعات):",
+      phone: "+966-XX-XXX-XXXX",
+      address: "الرياض، المملكة العربية السعودية",
+      form: {
+        name: "الاسم *",
+        phone: "الهاتف *",
+        company: "الشركة *",
+        address: "العنوان *",
+        email: "البريد الإلكتروني *",
+        message: "الرسالة *",
+        send: "إرسال"
       }
-    },
-    products: {
-      title: "منتجاتنا",
-      titleHighlight: "",
-      subtitle: "اكتشف مجموعة واسعة من منتجات الطاقة الشمسية عالية الجودة",
-      browseProducts: "تصفح المنتجات",
-      availableFrom: "متوفر من",
-      categories: {
-        solarPanels: {
-          title: "الألواح الشمسية",
-          description: "ألواح شمسية عالية الكفاءة بضمان 25 عامًا، مثالية للاستخدام السكني والتجاري"
-        },
-        inverters: {
-          title: "العاكسات",
-          description: "عاكسات هجينة ذكية بتقنية MPPT لأقصى كفاءة وأداء استثنائي"
-        },
-        batteries: {
-          title: "البطاريات",
-          description: "بطاريات ليثيوم أيون لتخزين الطاقة بعمر افتراضي يزيد عن 10 سنوات"
-        }
-      }
-    },
-    projects: {
-      title: "المشاريع",
-      titleHighlight: "المكتملة",
-      subtitle: "استكشف بعض منشآتنا الشمسية الناجحة للعملاء السكنيين والتجاريين",
-      systemCapacity: "سعة النظام:"
-    },
-    whyChoose: {
-      title: "لماذا تختار",
-      titleHighlight: "MB Solar؟",
-      description: "مع عقود من الخبرة المشتركة، والتكنولوجيا الرائدة في الصناعة، والالتزام برضا العملاء، نقدم حلول الطاقة الشمسية التي تتجاوز التوقعات. خدمتنا الشاملة تضمن انتقالًا سلسًا إلى الطاقة النظيفة.",
-      stats: {
-        satisfaction: "رضا",
-        support: "دعم",
-        warranty: "ضمان",
-        rated: "تقييم"
-      }
-    },
-    cta: {
-      title: "هل أنت مستعد للتحول للطاقة الشمسية؟",
-      description: "اتصل بنا اليوم للحصول على استشارة مجانية وعرض أسعار. سيساعدك خبراؤنا في تصميم الحل الشمسي المثالي لاحتياجاتك.",
-      button: "اتصل بنا الآن"
     },
     footer: {
       tagline: "حلول الطاقة الشمسية المهنية لمستقبل مستدام.",
-      ourProducts: "منتجاتنا",
-      contactUs: "اتصل بنا",
-      copyright: "© 2023 MB Solar Power. جميع الحقوق محفوظة."
+      products: "المنتجات",
+      productLinks: [
+        { label: "الألواح الشمسية", href: "/panels" },
+        { label: "المحولات", href: "/inverters" },
+        { label: "البطاريات", href: "/batteries" },
+        { label: "الملحقات", href: "#" }
+      ],
+      solutions: "الحلول",
+      solutionLinks: [
+        { label: "الطاقة الشمسية التجارية", href: "#" },
+        { label: "التخزين التجاري", href: "#" },
+        { label: "الطاقة الشمسية السكنية", href: "#" },
+        { label: "التخزين السكني", href: "#" }
+      ],
+      support: "الدعم",
+      supportLinks: [
+        { label: "التنزيلات", href: "#" },
+        { label: "الخدمة", href: "#" },
+        { label: "الأسئلة الشائعة", href: "#" }
+      ],
+      about: "من نحن",
+      aboutLinks: [
+        { label: "حول MB Solar", href: "#" },
+        { label: "اتصل بنا", href: "#contact" },
+        { label: "انضم إلينا", href: "#" }
+      ],
+      copyright: "© ٢٠٢٦ MB Solar Power. جميع الحقوق محفوظة."
     }
   }
 };
 
-// Header Component
-// const Header = ({ mobileMenuOpen, setMobileMenuOpen, scrolled }) => {
-//   const handleMenuClick = () => {
-//     setMobileMenuOpen(!mobileMenuOpen);
-//     document.body.style.overflow = !mobileMenuOpen ? 'hidden' : '';
-//   };
-
-//   return (
-// <Header />
-//   );
-// };
-
-// Language Switcher Component
-const LanguageSwitcher = ({ language, setLanguage }) => {
+/* ─── Section Heading: watermark (data-label) + subtitle; title visible only if hideTitle=false ─ */
+const SectionHeading = ({ label, title, subtitle, hideTitle = true }) => {
+  const dupA11y = Boolean(
+    hideTitle && title && subtitle != null && String(subtitle) === String(title)
+  );
   return (
-    <div className="language-switcher" style={{
-      position: 'fixed',
-      top: '100px',
-      right: language === 'ar' ? 'auto' : '20px',
-      left: language === 'ar' ? '20px' : 'auto',
-      zIndex: 1000,
-      background: 'rgba(0, 0, 0, 0.8)',
-      borderRadius: '25px',
-      padding: '8px',
-      display: 'flex',
-      gap: '5px',
-      backdropFilter: 'blur(10px)',
-      border: '1px solid rgba(255, 255, 255, 0.1)'
-    }}>
-      <button
-        onClick={() => setLanguage('en')}
-        style={{
-          padding: '8px 16px',
-          borderRadius: '20px',
-          border: 'none',
-          background: language === 'en' ? 'rgba(59, 130, 246, 0.8)' : 'transparent',
-          color: 'white',
-          cursor: 'pointer',
-          fontSize: '14px',
-          fontWeight: language === 'en' ? 'bold' : 'normal',
-          transition: 'all 0.3s ease'
-        }}
-      >
-        EN
-      </button>
-      <button
-        onClick={() => setLanguage('ar')}
-        style={{
-          padding: '8px 16px',
-          borderRadius: '20px',
-          border: 'none',
-          background: language === 'ar' ? 'rgba(59, 130, 246, 0.8)' : 'transparent',
-          color: 'white',
-          cursor: 'pointer',
-          fontSize: '14px',
-          fontWeight: language === 'ar' ? 'bold' : 'normal',
-          transition: 'all 0.3s ease'
-        }}
-      >
-        AR
-      </button>
+    <div
+      className={`mb-sec-heading mb-sec-heading--outer${hideTitle ? ' mb-sec-heading--label-only' : ''}`}
+      data-label={label ?? ''}
+    >
+      {hideTitle && (title || label) && (
+        <h2 className="mb-sr-only">{title || label}</h2>
+      )}
+      {!hideTitle && title != null && title !== '' && (
+        <h2 className="mb-sec-title">{title}</h2>
+      )}
+      {subtitle != null && subtitle !== '' && (
+        <p className="mb-sec-sub" aria-hidden={dupA11y || undefined}>
+          {subtitle}
+        </p>
+      )}
     </div>
   );
 };
 
-// Modern Hero Component with Grid Animation
-const ModernHero = ({ t }) => {
+/* ─── Hero Slider ─────────────────────────────────── */
+const HeroSlider = ({ t }) => {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const slides = t.hero.slides;
+  const bgImages = [
+    'https://images.unsplash.com/photo-1611365892117-00ac5ef43c90?auto=format&fit=crop&w=1920&q=90',
+    'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=1920&q=90',
+    'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=1920&q=90'
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => setActiveSlide(p => (p + 1) % slides.length), 6000);
+    return () => clearInterval(timer);
+  }, [slides.length]);
+
   return (
-    <section className="modern-hero-new" id="home">
-      {/* Animated Grid Background */}
-      <div className="hero-grid-background">
-        <svg aria-hidden="true" className="hero-grid-svg">
-          <defs>
-            <pattern id="grid-pattern" width="200" height="200" x="50%" y="-1" patternUnits="userSpaceOnUse">
-              <path d="M.5 200V.5H200" fill="none"></path>
-            </pattern>
-          </defs>
-          <svg x="50%" y="-1" className="grid-overflow">
-            <path d="M-200 0h201v201h-201Z M600 0h201v201h-201Z M-400 600h201v201h-201Z M200 800h201v201h-201Z" strokeWidth="0"></path>
-          </svg>
-          <rect width="100%" height="100%" fill="url(#grid-pattern)" strokeWidth="0"></rect>
-        </svg>
-        
-        {/* Gradient Blob */}
-        <div className="gradient-blob"></div>
+    <section className="mb-hero" id="home">
+      {bgImages.map((src, i) => (
+        <div
+          key={i}
+          className={`mb-hero-bg${i === activeSlide ? ' active' : ''}`}
+          style={{ backgroundImage: `url(${src})` }}
+        />
+      ))}
+      <div className="mb-hero-overlay" />
+      <div className="mb-hero-content">
+        <h1 key={`t-${activeSlide}`} className="mb-hero-title">{slides[activeSlide].title}</h1>
+        <p key={`s-${activeSlide}`} className="mb-hero-subtitle">{slides[activeSlide].subtitle}</p>
+        <a href="#contact" className="mb-hero-cta">{t.hero.discoverMore}</a>
       </div>
-
-      {/* Main Content */}
-      <div className="hero-main-container">
-        <div className="hero-content-grid">
-          {/* Left Content */}
-          <div className="hero-text-content">
-            <h1 className="hero-main-title">
-              {t.hero.title}
-              <span className="gradient-text"> {t.hero.titleHighlight}</span>
-            </h1>
-            <p className="hero-main-description">
-              {t.hero.description}
-            </p>
-            <div className="hero-action-buttons">
-              <a href="#products" className="btn-get-started">{t.hero.getStarted}</a>
-              <a href="#about" className="btn-live-demo">
-                {t.hero.exploreMore} <span aria-hidden="true">→</span>
-              </a>
-            </div>
-          </div>
-
-          {/* Right Images Grid - Random Layout */}
-          <div className="hero-images-grid">
-            <div className="image-column column-1">
-              <div className="hero-img-wrapper img-size-2">
-                <img 
-                  src="batter.png" 
-                  alt="Solar Installation 1" 
-                  className="hero-grid-img"
-                />
-                <div className="img-ring"></div>
-              </div>
-            </div>
-            <div className="image-column column-2">
-              <div className="hero-img-wrapper img-size-1">
-                <img 
-                  src="panelsf.jpg" 
-                  alt="Solar Installation 2" 
-                  className="hero-grid-img"
-                />
-                <div className="img-ring"></div>
-              </div>
-              <div className="hero-img-wrapper img-size-3">
-                <img 
-                  src="inverter3.png" 
-                  alt="Solar Installation 3" 
-                  className="hero-grid-img"
-                />
-                <div className="img-ring"></div>
-              </div>
-            </div>
-            <div className="image-column column-3">
-              <div className="hero-img-wrapper img-size-3">
-                <img 
-                  src="https://attaqa.net/wp-content/uploads/2022/11/90e8deaf21bf5c11130f56a2dadf17da.jpg" 
-                  alt="Solar Installation 4" 
-                  className="hero-grid-img"
-                />
-                <div className="img-ring"></div>
-              </div>
-              <div className="hero-img-wrapper img-size-2">
-                <img 
-                  src="https://cdn.salla.sa/ZYRdwl/fba59b50-2826-4382-8453-db3106c26575-1000x566.92913385827-TODMv3mK2bsf8dNHvAo0lLS4oX8ZFrASx4vxiuFu.jpg" 
-                  alt="Solar Installation 5" 
-                  className="hero-grid-img"
-                />
-                <div className="img-ring"></div>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="mb-hero-nav">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            className={`mb-hero-dot${i === activeSlide ? ' active' : ''}`}
+            onClick={() => setActiveSlide(i)}
+            aria-label={`Slide ${i + 1}`}
+          />
+        ))}
       </div>
     </section>
   );
 };
 
-// About Section Component
-const AboutSection = ({ t }) => {
-  return (
-    <section className="about" id="about">
-      <div className="home-container">
-        <div className="about-content">
-          <div className="about-text">
-            <h2>{t.about.title}<span className="gradient-text"> {t.about.titleHighlight}</span></h2>
-            <p>{t.about.description1}</p>
-            <p>{t.about.description2}</p>
-            
-            <div className="about-features">
-              <div className="feature">
-                <div className="feature-icon">✓</div>
-                <div className="feature-text">
-                  <h4>{t.about.features.expert.title}</h4>
-                  <p>{t.about.features.expert.description}</p>
-                </div>
+/* ─── News Section ────────────────────────────────── */
+const NewsSection = ({ t }) => (
+  <section className="mb-news" id="about">
+    <SectionHeading label={t.news.label} title={t.news.heading} subtitle={t.news.subheading} />
+    <div className="mb-container">
+      <div className="mb-news-layout">
+        <div className="mb-news-header">
+          <a href="#" className="mb-news-all">{t.news.viewAll}</a>
+        </div>
+        <div className="mb-news-list">
+          {t.news.items.map((item, i) => (
+            <article key={i} className="mb-news-card">
+              <div className="mb-news-meta">
+                <span className="mb-news-cat">{item.category}</span>
+                <span className="mb-news-date">{item.date}</span>
               </div>
-              <div className="feature">
-                <div className="feature-icon">☀️</div>
-                <div className="feature-text">
-                  <h4>{t.about.features.quality.title}</h4>
-                  <p>{t.about.features.quality.description}</p>
-                </div>
-              </div>
-              <div className="feature">
-                <div className="feature-icon">🔧</div>
-                <div className="feature-text">
-                  <h4>{t.about.features.service.title}</h4>
-                  <p>{t.about.features.service.description}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="about-image">
-            <img src="Solar Energy.jpg" alt="Solar Installation" />
-          </div>
+              <h3>{item.title}</h3>
+              <span className="mb-news-more">READ MORE +</span>
+            </article>
+          ))}
         </div>
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
-// Category Card Component
-const CategoryCard = ({ category, index, t }) => {
+/* ─── Solutions Section ───────────────────────────── */
+const SolutionsSection = ({ t }) => {
+  const categories = [
+    {
+      img: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=85',
+      href: '/panels',
+      title: t.solutions.items[0].title,
+      description: t.solutions.items[0].description,
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1497440001374-f26997328c1b?auto=format&fit=crop&w=900&q=85',
+      href: '/inverters',
+      title: t.solutions.items[1].title,
+      description: t.solutions.items[1].description,
+    },
+    {
+      img: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=900&q=85',
+      href: '/batteries',
+      title: t.solutions.items[2].title,
+      description: t.solutions.items[2].description,
+    },
+  ];
+
   return (
-    <div className="category-card" id={category.id}>
-      <div 
-        className="category-image" 
-        style={{ backgroundImage: `url('${category.image}')` }}
+    <section className="mb-solutions" id="products">
+      <SectionHeading
+        label={t.solutions.label}
+        title={t.solutions.heading}
+        subtitle={t.solutions.subheading}
       />
-      <div className="category-content">
-        <h3>
-          <span className={`category-icon ${category.iconClass}`}>{category.icon}</span>
-          <span>{category.title}</span>
-        </h3>
-        <p>{category.description}</p>
-        
-        <div className="category-brands">
-          <span className="category-brands-label">{t.products.availableFrom}</span>
-          {category.brands.map((brand, idx) => (
-            <div key={idx} className="brand-logo">
-              <img src={brand} alt={`Brand ${idx + 1}`} />
+      <div className="mb-sol-grid">
+        {categories.map((cat, i) => (
+          <a key={i} href={cat.href} className="mb-sol-card">
+            {/* Background image */}
+            <div
+              className="mb-sol-bg"
+              style={{ backgroundImage: `url(${cat.img})` }}
+            />
+            {/* Gradient overlay */}
+            <div className="mb-sol-overlay" />
+            {/* Text content */}
+            <div className="mb-sol-content">
+              <h3 className="mb-sol-title">
+                {cat.title}
+                <span className="mb-sol-arrow">›</span>
+              </h3>
+              <p className="mb-sol-desc">{cat.description}</p>
             </div>
-          ))}
-        </div>
-        
-        <a href={category.link} className="category-btn">{t.products.browseProducts}</a>
-      </div>
-    </div>
-  );
-};
-
-// Products Section Component
-const ProductsSection = ({ t, categoriesData }) => {
-  // Generate particles
-  const floatingParticles = [
-    { duration: '15s', delay: '0s', drift: '20px', left: '10%' },
-    { duration: '18s', delay: '2s', drift: '-15px', left: '25%' },
-    { duration: '20s', delay: '4s', drift: '25px', left: '40%' },
-    { duration: '16s', delay: '1s', drift: '-20px', left: '55%' },
-    { duration: '19s', delay: '3s', drift: '15px', left: '70%' },
-    { duration: '17s', delay: '5s', drift: '-25px', left: '85%' },
-    { duration: '21s', delay: '2.5s', drift: '18px', left: '15%' },
-    { duration: '16s', delay: '4.5s', drift: '-18px', left: '50%' },
-    { duration: '18s', delay: '1.5s', drift: '22px', left: '75%' },
-    { duration: '20s', delay: '3.5s', drift: '-22px', left: '35%' },
-    { duration: '19s', delay: '0.5s', drift: '12px', left: '60%' },
-    { duration: '17s', delay: '5.5s', drift: '-12px', left: '90%' }
-  ];
-
-  const fallingParticles = [
-    { duration: '14s', delay: '0s', drift: '-18px', left: '12%' },
-    { duration: '17s', delay: '1.5s', drift: '22px', left: '28%' },
-    { duration: '19s', delay: '3s', drift: '-15px', left: '45%' },
-    { duration: '15s', delay: '2s', drift: '20px', left: '58%' },
-    { duration: '18s', delay: '4s', drift: '-25px', left: '72%' },
-    { duration: '16s', delay: '0.5s', drift: '16px', left: '88%' },
-    { duration: '20s', delay: '3.5s', drift: '-20px', left: '20%' },
-    { duration: '15s', delay: '5s', drift: '18px', left: '38%' },
-    { duration: '17s', delay: '1s', drift: '-22px', left: '65%' },
-    { duration: '19s', delay: '2.5s', drift: '14px', left: '80%' }
-  ];
-
-  return (
-    <section className="products" id="products">
-      {/* Floating Particles */}
-      {floatingParticles.map((particle, idx) => (
-        <div
-          key={`float-${idx}`}
-          className="floating-particle"
-          style={{
-            '--duration': particle.duration,
-            '--delay': particle.delay,
-            '--drift': particle.drift,
-            left: particle.left,
-            bottom: 0
-          }}
-        />
-      ))}
-      
-      {/* Falling Particles */}
-      {fallingParticles.map((particle, idx) => (
-        <div
-          key={`fall-${idx}`}
-          className="falling-particle"
-          style={{
-            '--duration': particle.duration,
-            '--delay': particle.delay,
-            '--drift': particle.drift,
-            left: particle.left,
-            top: 0
-          }}
-        />
-      ))}
-      
-      <div className="home-container">
-        <div className="section-title">
-          <h2>
-            {t.products.title}
-            {t.products.titleHighlight && <span className="gradient-text"> {t.products.titleHighlight}</span>}
-          </h2>
-          <p>{t.products.subtitle}</p>
-        </div>
-        
-        <div className="categories-grid">
-          {categoriesData.map((category, index) => (
-            <CategoryCard key={category.id} category={category} index={index} t={t} />
-          ))}
-        </div>
+          </a>
+        ))}
       </div>
     </section>
   );
 };
 
-// Project Card Component
-const ProjectCard = ({ project, t }) => {
-  return (
-    <div className="project-card">
-      <div 
-        className="project-image" 
-        style={{ backgroundImage: `url('${project.image}')` }}
-      >
-        <div className="project-badge">{project.capacity}</div>
-      </div>
-      <div className="project-content">
-        <h3>{project.title}</h3>
-        <p>{project.description}</p>
-        <div className="project-details">
-          <div className="project-detail-item">
-            <span className="project-icon location">◉</span>
-            <span>{project.location}</span>
-          </div>
-          <div className="project-detail-item">
-            <span className="project-icon date">◷</span>
-            <span>{project.date}</span>
-          </div>
-          <div className="project-detail-item">
-            <span className="project-icon capacity">⚡︎</span>
-            <span>{t.projects.systemCapacity} {project.capacity}</span>
-          </div>
+/* ─── Featured Product ────────────────────────────── */
+const FeaturedSection = ({ t }) => (
+  <section className="mb-featured" id="projects">
+    <div className="mb-container">
+      <div className="mb-featured-layout">
+        <div className="mb-featured-text">
+          <span className="mb-feat-badge">{t.featured.badge}</span>
+          <span className="mb-feat-category">{t.featured.category}</span>
+          <h2 className="mb-feat-name">{t.featured.name}</h2>
+          <ul className="mb-feat-specs">
+            {t.featured.specs.map((s, i) => <li key={i}>{s}</li>)}
+          </ul>
+        </div>
+        <div className="mb-featured-img">
+          <img src="/inverter3.png" alt="Featured Inverter" />
         </div>
       </div>
     </div>
-  );
-};
+  </section>
+);
 
-// Projects Section Component
-const ProjectsSection = ({ t, projectsData }) => {
-  return (
-    <section className="projects" id="projects">
-      <div className="home-container">
-        <div className="section-title">
-          <h2>
-            {t.projects.title}
-            {t.projects.titleHighlight && <span className="gradient-text"> {t.projects.titleHighlight}</span>}
-          </h2>
-          <p>{t.projects.subtitle}</p>
+/* ─── Platform Section ────────────────────────────── */
+const PlatformSection = ({ t }) => (
+  <section className="mb-platform">
+    <SectionHeading label={t.platform.label} title={t.platform.heading} subtitle={t.platform.description} />
+    <div className="mb-platform-inner">
+      <div className="mb-platform-btns">
+        <a href="#contact" className="mb-plat-btn-primary">{t.platform.cta2}</a>
+        <a href="#about" className="mb-plat-btn-outline">{t.platform.cta1}</a>
+      </div>
+    </div>
+  </section>
+);
+
+/* ─── Tech Section ────────────────────────────────── */
+const TechSection = ({ t }) => (
+  <section className="mb-tech">
+    <SectionHeading label={t.tech.label} title={t.tech.heading} subtitle={t.tech.subheading} />
+    <div className="mb-container">
+      <div className="mb-tech-layout">
+        <div className="mb-tech-visual">
+          <img src="/Solar Energy.jpg" alt="Smart Solar Technology" />
         </div>
-        <div className="projects-grid">
-          {projectsData.map((project) => (
-            <ProjectCard key={project.id} project={project} t={t} />
-          ))}
+        <div className="mb-tech-copy">
+          <span className="mb-tech-badge">{t.tech.badge}</span>
+          <p className="mb-tech-desc">{t.tech.description}</p>
         </div>
       </div>
-    </section>
-  );
-};
+    </div>
+  </section>
+);
 
-// Why Choose Us Section Component
-const WhyChooseSection = ({ t, statsData }) => {
+/* ─── Contact Section ─────────────────────────────── */
+const ContactSection = ({ t }) => {
+  const [form, setForm] = useState({
+    name: '', phone: '', company: '', address: '', email: '', message: ''
+  });
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+
   return (
-    <section className="why-choose">
-      <div className="home-container">
-        <div className="why-choose-header">
-          <h2>{t.whyChoose.title} <span className="gradient-text">{t.whyChoose.titleHighlight}</span></h2>
-          <p>{t.whyChoose.description}</p>
-        </div>
-        
-        <div className="stats-grid">
-          {statsData.map((stat, index) => (
-            <div key={index} className="stat-card">
-              <span className="stat-number">{stat.number}</span>
-              <span className="stat-label">{stat.label}</span>
+    <section className="mb-contact" id="contact">
+      <SectionHeading label={t.contact.label} title={t.contact.heading} subtitle={t.contact.heading} />
+      <div className="mb-container">
+        <div className="mb-contact-layout">
+          <div className="mb-contact-info">
+            <div className="mb-contact-item">
+              <span className="mb-ci-icon">✉</span>
+              <div>
+                <p className="mb-ci-label">{t.contact.emailLabel}</p>
+                <p className="mb-ci-value">{t.contact.email}</p>
+              </div>
             </div>
-          ))}
+            <div className="mb-contact-item">
+              <span className="mb-ci-icon">☎</span>
+              <div>
+                <p className="mb-ci-label">{t.contact.phoneLabel}</p>
+                <p className="mb-ci-value">{t.contact.phone}</p>
+              </div>
+            </div>
+            <div className="mb-contact-item">
+              <span className="mb-ci-icon">◉</span>
+              <div>
+                <p className="mb-ci-value">{t.contact.address}</p>
+              </div>
+            </div>
+          </div>
+          <form className="mb-contact-form" onSubmit={e => e.preventDefault()}>
+            <div className="mb-form-row">
+              <input name="name" value={form.name} onChange={handleChange} placeholder={t.contact.form.name} required />
+              <input name="phone" value={form.phone} onChange={handleChange} placeholder={t.contact.form.phone} required />
+            </div>
+            <input name="company" value={form.company} onChange={handleChange} placeholder={t.contact.form.company} />
+            <input name="address" value={form.address} onChange={handleChange} placeholder={t.contact.form.address} />
+            <input name="email" type="email" value={form.email} onChange={handleChange} placeholder={t.contact.form.email} required />
+            <textarea name="message" value={form.message} onChange={handleChange} placeholder={t.contact.form.message} rows={5} />
+            <button type="submit">{t.contact.form.send}</button>
+          </form>
         </div>
       </div>
     </section>
   );
 };
 
-// CTA Section Component
-const CTASection = ({ t }) => {
-  return (
-    <section className="cta" id="contact">
-      <div className="home-container">
-        <h2>{t.cta.title}</h2>
-        <p>{t.cta.description}</p>
-        <a href="#" className="btn">{t.cta.button}</a>
-      </div>
-    </section>
-  );
-};
-
-// Footer Component
-const Footer = ({ t }) => {
-  return (
-    <footer>
-      <div className="home-container">
-        <div className="footer-grid">
-          <div className="footer-column">
-            <h3>MB Solar Power</h3>
-            <p>{t.footer.tagline}</p>
-          </div>
-          <div className="footer-column">
-            <h3>{t.footer.ourProducts}</h3>
+/* ─── Footer ──────────────────────────────────────── */
+const FooterSection = ({ t }) => (
+  <footer className="mb-footer">
+    <div className="mb-container">
+      <div className="mb-footer-grid">
+        <div className="mb-footer-brand">
+          <img src="/logo22.png" alt="MB Solar" className="mb-footer-logo" />
+          <p>{t.footer.tagline}</p>
+        </div>
+        {[
+          { title: t.footer.products, links: t.footer.productLinks },
+          { title: t.footer.solutions, links: t.footer.solutionLinks },
+          { title: t.footer.support, links: t.footer.supportLinks },
+          { title: t.footer.about, links: t.footer.aboutLinks }
+        ].map((col, i) => (
+          <div key={i} className="mb-footer-col">
+            <h4>{col.title}</h4>
             <ul>
-              <li><a href="#solar-panels">{t.products.categories.solarPanels.title}</a></li>
-              <li><a href="#inverters">{t.products.categories.inverters.title}</a></li>
-              <li><a href="#batteries">{t.products.categories.batteries.title}</a></li>
-              <li><a href="#projects">{t.projects.title}</a></li>
+              {col.links.map((link, j) => (
+                <li key={j}><a href={link.href}>{link.label}</a></li>
+              ))}
             </ul>
           </div>
-          <div className="footer-column">
-            <h3>{t.footer.contactUs}</h3>
-            <ul>
-              <li>Phone: (555) 123-4567</li>
-              <li>Email: info@mbsolarpower.com</li>
-              <li>Address: 123 Solar Street, Energy City</li>
-            </ul>
-          </div>
-        </div>
-        <div className="copyright">
-          <p>{t.footer.copyright}</p>
-        </div>
+        ))}
       </div>
-    </footer>
-  );
-};
+      <div className="mb-footer-bottom">
+        <p>{t.footer.copyright}</p>
+      </div>
+    </div>
+  </footer>
+);
 
-// Main Component
+/* ─── Main Page ───────────────────────────────────── */
 const MainPage = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [language, setLanguage] = useState('en');
-
   const t = translations[language];
+  const langCtx = { language, setLanguage, translations };
 
-  // Language context value
-  const languageContextValue = {
-    language,
-    setLanguage,
-    translations: translations
-  };
-
-  // Dynamic categories data based on language
-  const categoriesData = [
-    {
-      id: 'solar-panels',
-      icon: '☀',
-      iconClass: 'icon-solar',
-      title: t.products.categories.solarPanels.title,
-      description: t.products.categories.solarPanels.description,
-      image: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
-      link: '/panels',
-      brands: [
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxSnUnztmtcobBAqB-wMTbL6A8L8igM6VQoA&s',
-        'https://lirp.cdn-website.com/46830114/dms3rep/multi/opt/favicon4-1920w.png',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJHIuMM-NiQzORXQ3pOkqkhsPIv_KYaTQo0w&s',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBU_5kHbqGvQQJVVZ9K5v0LXKCVqhLZPqKkQ&s'
-      ]
-    },
-    {
-      id: 'inverters',
-      icon: '⚡︎',
-      iconClass: 'icon-inverter',
-      title: t.products.categories.inverters.title,
-      description: t.products.categories.inverters.description,
-      image: 'inverter3.png',
-      link: '/inverters',
-      brands: [
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxSnUnztmtcobBAqB-wMTbL6A8L8igM6VQoA&s',
-        'https://lirp.cdn-website.com/46830114/dms3rep/multi/opt/favicon4-1920w.png',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJHIuMM-NiQzORXQ3pOkqkhsPIv_KYaTQo0w&s',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBU_5kHbqGvQQJVVZ9K5v0LXKCVqhLZPqKkQ&s'
-      ]
-    },
-    {
-      id: 'batteries',
-      icon: '🔋︎',
-      iconClass: 'icon-battery',
-      title: t.products.categories.batteries.title,
-      description: t.products.categories.batteries.description,
-      image: 'batter.png',
-      link: '/batteries',
-      brands: [
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxSnUnztmtcobBAqB-wMTbL6A8L8igM6VQoA&s',
-        'https://lirp.cdn-website.com/46830114/dms3rep/multi/opt/favicon4-1920w.png',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJHIuMM-NiQzORXQ3pOkqkhsPIv_KYaTQo0w&s',
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTBU_5kHbqGvQQJVVZ9K5v0LXKCVqhLZPqKkQ&s'
-      ]
-    }
-  ];
-
-  // Projects data (keeping static data but can be translated if needed)
-  const projectsData = [
-    {
-      id: 1,
-      title: language === 'ar' ? 'تركيب سقف سكني' : 'Residential Rooftop Installation',
-      description: language === 'ar' ? 'تركيب كامل للألواح الشمسية مع تخزين البطاريات لمنزل عائلي حديث.' : 'Complete solar panel installation with battery storage for a modern family home.',
-      capacity: '12 kW',
-      location: language === 'ar' ? 'سان دييغو، كاليفورنيا' : 'San Diego, CA',
-      date: language === 'ar' ? 'مارس 2024' : 'March 2024',
-      image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-    },
-    {
-      id: 2,
-      title: language === 'ar' ? 'مبنى مكتبي تجاري' : 'Commercial Office Building',
-      description: language === 'ar' ? 'تركيب تجاري واسع النطاق يقلل تكاليف الطاقة التشغيلية بنسبة 65%.' : 'Large-scale commercial installation reducing operational energy costs by 65%.',
-      capacity: '50 kW',
-      location: language === 'ar' ? 'أوستن، تكساس' : 'Austin, TX',
-      date: language === 'ar' ? 'فبراير 2024' : 'February 2024',
-      image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-    },
-    {
-      id: 3,
-      title: language === 'ar' ? 'مجمع مستودعات صناعي' : 'Industrial Warehouse Complex',
-      description: language === 'ar' ? 'مجموعة شمسية ضخمة تغذي منشأة مستودع كاملة بالطاقة الخضراء.' : 'Massive solar array powering an entire warehouse facility with green energy.',
-      capacity: '200 kW',
-      location: language === 'ar' ? 'فينيكس، أريزونا' : 'Phoenix, AZ',
-      date: language === 'ar' ? 'يناير 2024' : 'January 2024',
-      image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
-    }
-  ];
-
-  // Statistics data
-  const statsData = [
-    { number: '100%', label: t.whyChoose.stats.satisfaction },
-    { number: '24/7', label: t.whyChoose.stats.support },
-    { number: '25yr', label: t.whyChoose.stats.warranty },
-    { number: 'A+', label: t.whyChoose.stats.rated }
-  ];
-
-  // Apply RTL direction when Arabic is selected
   useEffect(() => {
     document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
     document.documentElement.lang = language;
   }, [language]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const heroSection = document.querySelector('.hero-slider');
-      if (heroSection) {
-        const heroHeight = heroSection.offsetHeight;
-        setScrolled(window.scrollY > heroHeight - 100);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Smooth scroll for anchor links
-  useEffect(() => {
-    const handleAnchorClick = (e) => {
-      const href = e.target.getAttribute('href');
-      if (href && href.startsWith('#') && href !== '#') {
-        e.preventDefault();
-        const targetElement = document.querySelector(href);
-        if (targetElement) {
-          window.scrollTo({
-            top: targetElement.offsetTop - 120,
-            behavior: 'smooth'
-          });
-          
-          // Close mobile menu if open
-          if (mobileMenuOpen) {
-            setMobileMenuOpen(false);
-            document.body.style.overflow = '';
-          }
-        }
-      }
-    };
-
-    document.addEventListener('click', handleAnchorClick);
-    return () => document.removeEventListener('click', handleAnchorClick);
-  }, [mobileMenuOpen]);
-
   return (
-    <LanguageContext.Provider value={languageContextValue}>
-      <div className="main-page" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+    <LanguageContext.Provider value={langCtx}>
+      <div className="mb-page" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <Header />
-        <ModernHero t={t} />
-        <AboutSection t={t} />
-        <ProductsSection t={t} categoriesData={categoriesData} />
-        <ProjectsSection t={t} projectsData={projectsData} />
-        <WhyChooseSection t={t} statsData={statsData} />
-        <CTASection t={t} />
-        <Footer t={t} />
+        <HeroSlider t={t} />
+        <NewsSection t={t} />
+        <SolutionsSection t={t} />
+        <FeaturedSection t={t} />
+        <PlatformSection t={t} />
+        <TechSection t={t} />
+        <ContactSection t={t} />
+        <FooterSection t={t} />
       </div>
     </LanguageContext.Provider>
   );
 };
 
 export default MainPage;
-

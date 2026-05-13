@@ -33,6 +33,13 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# Firebase Admin private keys (never commit — أي نسخة داخل المشروع)
+*-firebase-adminsdk-*.json
+**/firebase-adminsdk*.json
+mb-solar-firebase-adminsdk*.json
+serviceAccount*.json
+**/secrets/
+
 # vercel
 .vercel
 

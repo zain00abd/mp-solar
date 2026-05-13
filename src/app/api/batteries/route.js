@@ -1,55 +1,54 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
-import Battery from '@/models/Battery';
-import Company from '@/models/Company';
-import mongoose from 'mongoose';
+import {
+  getDb,
+  COL,
+  isValidDocumentId,
+  fetchCollectionRows,
+  sortDocuments,
+  attachCompany,
+  findDuplicateNameForCompany,
+  serverTimestampsNew,
+  docWithId,
+} from '@/lib/firestore';
 
-// GET - جلب جميع بطاريات القسم
+const COLLECTION = COL.batteries;
+const PRODUCT_FIELDS = ['name', 'company', 'image', 'pdfUrl', 'description', 'features', 'models', 'specs', 'tags', 'warranty', 'category', 'sortOrder', 'isActive'];
+
+function pickBody(body) {
+  const out = {};
+  for (const k of PRODUCT_FIELDS) {
+    if (body[k] !== undefined) out[k] = body[k];
+  }
+  return out;
+}
+
 export async function GET(request) {
   try {
-    await connectDB();
+    const db = getDb();
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page')) || 1;
-    const limit = parseInt(searchParams.get('limit')) || 12;
+    const page = parseInt(searchParams.get('page'), 10) || 1;
+    const limit = parseInt(searchParams.get('limit'), 10) || 12;
     const company = searchParams.get('company') || '';
     const search = searchParams.get('search') || '';
     const sortBy = searchParams.get('sortBy') || 'createdAt';
     const sortOrder = searchParams.get('sortOrder') || 'desc';
 
-    let filter = { isActive: true };
-    if (company && mongoose.Types.ObjectId.isValid(company)) {
-      filter.company = company;
-    }
-    if (search) {
-      filter.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } },
-        { tags: { $in: [new RegExp(search, 'i')] } }
-      ];
-    }
-    // لم يعد هناك فلترة حسب السعر
-
+    const rows = await fetchCollectionRows(db, COLLECTION, {
+      company: company && isValidDocumentId(company) ? company : '',
+      search,
+      activeOnly: true,
+    });
+    const sorted = sortDocuments(rows, sortBy, sortOrder);
+    const total = sorted.length;
     const skip = (page - 1) * limit;
-    const sort = {}; sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
-
-    const batteries = await Battery.find(filter)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit)
-      .populate('company', 'name country logo color1 color2 color3');
-
-    const total = await Battery.countDocuments(filter);
-
-    const stats = await Battery.aggregate([
-      { $match: filter },
-      { $group: { _id: null, totalProducts: { $sum: 1 } } }
-    ]);
+    const pageRows = sorted.slice(skip, skip + limit);
+    const data = await attachCompany(db, pageRows);
 
     return NextResponse.json({
       success: true,
-      data: batteries,
-      pagination: { page, limit, total, pages: Math.ceil(total / limit) },
-      stats: stats[0] || { totalProducts: 0 }
+      data,
+      pagination: { page, limit, total, pages: Math.ceil(total / limit) || 0 },
+      stats: { totalProducts: total },
     });
   } catch (error) {
     console.error('Error fetching batteries:', error);
@@ -57,42 +56,59 @@ export async function GET(request) {
   }
 }
 
-// POST - إضافة بطارية جديدة
 export async function POST(request) {
   try {
-    await connectDB();
+    const db = getDb();
     const body = await request.json();
     const { name, company, image, pdfUrl, description, features, models, specs, tags, warranty } = body;
 
     if (!name || !company || !image || !pdfUrl || !description) {
-      return NextResponse.json({ success: false, error: 'Name, company, image, pdfUrl, and description are required' }, { status: 400 });
+      return NextResponse.json(
+        { success: false, error: 'Name, company, image, pdfUrl, and description are required' },
+        { status: 400 }
+      );
     }
 
-    if (!mongoose.Types.ObjectId.isValid(company)) {
+    if (!isValidDocumentId(company)) {
       return NextResponse.json({ success: false, error: 'Invalid company ID' }, { status: 400 });
     }
 
-    const companyExists = await Company.findById(company);
-    if (!companyExists) {
+    const cSnap = await db.collection(COL.companies).doc(company).get();
+    if (!cSnap.exists) {
       return NextResponse.json({ success: false, error: 'Company not found' }, { status: 404 });
     }
 
-    const duplicate = await Battery.findOne({ name: { $regex: new RegExp(`^${name}$`, 'i') }, company });
-    if (duplicate) {
+    const dup = await findDuplicateNameForCompany(db, COLLECTION, company, name, null);
+    if (dup) {
       return NextResponse.json({ success: false, error: 'Battery with this name already exists for this company' }, { status: 409 });
     }
 
-    const battery = new Battery({ name, company, image, pdfUrl, description, features: features || [], models: models || [], specs: specs || [], tags: tags || [], warranty: warranty || {}, category: 'batteries' });
-    await battery.save();
+    const ref = db.collection(COLLECTION).doc();
+    const payload = {
+      ...pickBody({
+        name,
+        company,
+        image,
+        pdfUrl,
+        description,
+        features: features || [],
+        models: models || [],
+        specs: specs || [],
+        tags: tags || [],
+        warranty: warranty || {},
+        category: 'batteries',
+        isActive: true,
+        sortOrder: body.sortOrder ?? 0,
+      }),
+      ...serverTimestampsNew(),
+    };
+    await ref.set(payload);
 
-    const populatedBattery = await Battery.findById(battery._id).populate('company', 'name country logo color1 color2 color3');
-    return NextResponse.json({ success: true, data: populatedBattery, message: 'Battery created successfully' }, { status: 201 });
+    const created = docWithId(ref.id, (await ref.get()).data());
+    const [populated] = await attachCompany(db, [created]);
+    return NextResponse.json({ success: true, data: populated, message: 'Battery created successfully' }, { status: 201 });
   } catch (error) {
     console.error('Error creating battery:', error);
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
-      return NextResponse.json({ success: false, error: 'Validation failed', details: errors }, { status: 400 });
-    }
     return NextResponse.json({ success: false, error: 'Failed to create battery' }, { status: 500 });
   }
 }

@@ -1,15 +1,39 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import '../../components/shared.css';
 import './style.css';
+
+const PRODUCT_ENDPOINTS = {
+  products: '/api/products-panels',
+  inverters: '/api/inverters',
+  batteries: '/api/batteries',
+};
+
+const CATEGORY_PUBLIC_PATH = {
+  products: '/panels',
+  inverters: '/inverters',
+  batteries: '/batteries',
+};
+
+function buildWarrantyFromInput(warrantyField) {
+  if (warrantyField == null || typeof warrantyField !== 'string') {
+    return typeof warrantyField === 'object' && warrantyField !== null ? warrantyField : {};
+  }
+  const t = warrantyField.trim();
+  if (!t) return {};
+  const years = parseInt(String(t).replace(/[^\d]/g, ''), 10);
+  return Number.isFinite(years) && years > 0 ? { years, type: 'product' } : { type: 'product' };
+}
 
 export default function AddProductPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [companies, setCompanies] = useState([]);
-  const [showCompanyForm, setShowCompanyForm] = useState(false);
+  /** تبويب رئيسي: منتج | شركة | ترتيب */
+  const [activeSection, setActiveSection] = useState('product');
   
   const [productData, setProductData] = useState({
     name: '',
@@ -69,15 +93,21 @@ export default function AddProductPage() {
 
   const fetchCompanies = async () => {
     try {
-      const response = await fetch('/api/companies');
+      const response = await fetch('/api/companies?page=1&limit=500');
       const result = await response.json();
-      if (result.success) {
+      if (result.success && Array.isArray(result.data)) {
         setCompanies(result.data);
       }
     } catch (error) {
       console.error('Error fetching companies:', error);
     }
   };
+
+  useEffect(() => {
+    if (activeSection !== 'order') return;
+    loadOrderItems();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- نحمّل عند تغيير التبويب أو القسم فقط
+  }, [activeSection, orderCategory]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -129,16 +159,10 @@ export default function AddProductPage() {
     }));
   };
 
-  const endpointMap = {
-    products: '/api/products-panels',
-    inverters: '/api/inverters',
-    batteries: '/api/batteries'
-  };
-
   const loadOrderItems = async () => {
     setOrderLoading(true);
     try {
-      const endpoint = endpointMap[orderCategory];
+      const endpoint = PRODUCT_ENDPOINTS[orderCategory];
       const res = await fetch(`${endpoint}?limit=100&sortBy=sortOrder&sortOrder=asc`);
       if (res.ok) {
         const json = await res.json();
@@ -165,7 +189,7 @@ export default function AddProductPage() {
 
   const saveOrder = async () => {
     try {
-      const endpoint = endpointMap[orderCategory];
+      const endpoint = PRODUCT_ENDPOINTS[orderCategory];
       for (let i = 0; i < orderItems.length; i++) {
         const item = orderItems[i];
         await fetch(`${endpoint}/${item._id}`, {
@@ -427,14 +451,21 @@ export default function AddProductPage() {
     setLoading(true);
 
     try {
-      // تحويل الألوان إلى RGBA قبل الإرسال
       const dataToSend = {
-        ...companyData,
+        name: companyData.name.trim(),
+        country: companyData.country.trim(),
+        logo: (companyData.logo || '').trim(),
+        description: (companyData.description || '').trim(),
+        website: (companyData.website || '').trim(),
         color1: getColorWithOpacity('color1'),
         color2: getColorWithOpacity('color2'),
-        color3: getColorWithOpacity('color3')
+        color3: getColorWithOpacity('color3'),
       };
-      
+      const est = companyData.established;
+      if (est !== '' && est != null && !Number.isNaN(Number(est))) {
+        dataToSend.established = Number(est);
+      }
+
       const response = await fetch('/api/companies', {
         method: 'POST',
         headers: {
@@ -462,9 +493,9 @@ export default function AddProductPage() {
           opacity3: 100
         });
         setLogoPreview('');
-        setShowCompanyForm(false);
-        fetchCompanies(); // إعادة جلب الشركات
-        setProductData(prev => ({ ...prev, company: result.data._id }));
+        setActiveSection('product');
+        fetchCompanies();
+        setProductData((prev) => ({ ...prev, company: result.data._id }));
       } else {
         alert('خطأ في إضافة الشركة: ' + result.error);
       }
@@ -478,6 +509,22 @@ export default function AddProductPage() {
 
   const handleSubmitProduct = async (e) => {
     e.preventDefault();
+
+    const img = (productData.image || '').trim();
+    if (!img) {
+      alert('يرجى إضافة صورة للمنتج (رفع أو رابط).');
+      return;
+    }
+    if (img.startsWith('data:')) {
+      alert('الصورة ما زالت بصيغة محلية. أضف NEXT_PUBLIC_IMGBB_API_KEY في .env.local للرفع السحابي، أو أدخل رابط صورة يبدأ بـ https');
+      return;
+    }
+    const pdf = (productData.pdfUrl || '').trim();
+    if (!/^https?:\/\//i.test(pdf)) {
+      alert('رابط ملف PDF يجب أن يبدأ بـ http:// أو https://');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -489,19 +536,14 @@ export default function AddProductPage() {
       const cleanedData = {
         ...productData,
         specs: specsArray,
-        features: productData.features.filter(f => f.trim() !== ''),
-        models: productData.models.filter(m => m.trim() !== ''),
-        tags: productData.tags.filter(t => t.trim() !== ''),
-        pdfUrl: (productData.pdfUrl || '').trim()
+        features: productData.features.filter((f) => f.trim() !== ''),
+        models: productData.models.filter((m) => m.trim() !== ''),
+        tags: productData.tags.filter((t) => t.trim() !== ''),
+        pdfUrl: (productData.pdfUrl || '').trim(),
+        warranty: buildWarrantyFromInput(productData.warranty),
       };
 
-      // تحديد المسار الصحيح حسب القسم
-      const endpointMap = {
-        products: '/api/products-panels',
-        inverters: '/api/inverters',
-        batteries: '/api/batteries',
-      };
-      const endpoint = endpointMap[productData.category] || '/api/products';
+      const endpoint = PRODUCT_ENDPOINTS[productData.category] || '/api/products';
 
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -515,7 +557,8 @@ export default function AddProductPage() {
 
       if (result.success) {
         alert('تم إضافة المنتج بنجاح!');
-        router.push(`/${productData.category}`);
+        const path = CATEGORY_PUBLIC_PATH[productData.category] || '/products';
+        router.push(path);
       } else {
         alert('خطأ في إضافة المنتج: ' + result.error);
       }
@@ -532,15 +575,91 @@ export default function AddProductPage() {
   return (
     <div className="add-product-page">
       <div className="container">
-        <div className="page-header">
-          <h1>إضافة منتج جديد</h1>
-          <p>أضف منتجاً جديداً إلى متجر الطاقة الشمسية</p>
-        </div>
+        <header className="page-header">
+          <h1>إدارة الكتالوج</h1>
+          <p>إضافة شركات ومنتجات، وضبط ترتيب الظهور في الموقع</p>
+        </header>
 
+        <nav className="admin-tabs" aria-label="أقسام الإدارة">
+          <button
+            type="button"
+            className={`admin-tab${activeSection === 'product' ? ' admin-tab--active' : ''}`}
+            onClick={() => setActiveSection('product')}
+          >
+            منتج جديد
+          </button>
+          <button
+            type="button"
+            className={`admin-tab${activeSection === 'company' ? ' admin-tab--active' : ''}`}
+            onClick={() => setActiveSection('company')}
+          >
+            شركة جديدة
+          </button>
+          <button
+            type="button"
+            className={`admin-tab${activeSection === 'order' ? ' admin-tab--active' : ''}`}
+            onClick={() => setActiveSection('order')}
+          >
+            ترتيب المنتجات
+          </button>
+        </nav>
+
+        {activeSection === 'product' && (
         <div className="forms-container">
-          {/* نموذج إضافة المنتج */}
           <div className="product-form-section">
+            <h2 className="admin-section-title">إضافة منتج</h2>
+            <p className="admin-section-hint">
+              في صفحة <Link href="/products">المنتجات</Link> تُعرض البطاقات بنفس الشكل السابق، لكن مُجمّعة{' '}
+              <strong>حسب الشركة</strong> ثم داخل كل شركة أقسام <strong>ألواح / محولات / بطاريات</strong> حسب ما
+              تملكه الشركة. اختر الشركة والفئة بعناية؛ يمكن لشركة واحدة أن تضم أكثر من صنف.
+            </p>
             <form onSubmit={handleSubmitProduct} className="product-form">
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="category">الفئة *</label>
+                  <select
+                    id="category"
+                    name="category"
+                    value={productData.category}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    {categories.map((cat) => (
+                      <option key={cat.value} value={cat.value}>
+                        {cat.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="company">الشركة المصنعة *</label>
+                  <div className="company-select-container">
+                    <select
+                      id="company"
+                      name="company"
+                      value={productData.company}
+                      onChange={handleInputChange}
+                      required
+                    >
+                      <option value="">اختر الشركة</option>
+                      {companies.map((company) => (
+                        <option key={company._id} value={company._id}>
+                          {company.name} — {company.country}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      className="add-company-btn"
+                      onClick={() => setActiveSection('company')}
+                    >
+                      إضافة شركة
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <div className="form-group">
                 <label htmlFor="name">اسم المنتج *</label>
                 <input
@@ -554,7 +673,6 @@ export default function AddProductPage() {
                 />
               </div>
 
-              {/* الموديلات */}
               <div className="form-group">
                 <label>الموديلات</label>
                 {productData.models.map((model, index) => (
@@ -574,63 +692,10 @@ export default function AddProductPage() {
                     </button>
                   </div>
                 ))}
-                <button
-                  type="button"
-                  onClick={() => addArrayItem('models')}
-                  className="add-btn"
-                >
+                <button type="button" onClick={() => addArrayItem('models')} className="add-btn">
                   إضافة موديل
                 </button>
               </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="category">الفئة *</label>
-                  <select
-                    id="category"
-                    name="category"
-                    value={productData.category}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    {categories.map(cat => (
-                      <option key={cat.value} value={cat.value}>
-                        {cat.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="company">الشركة المصنعة *</label>
-                  <div className="company-select-container">
-                    <select
-                      id="company"
-                      name="company"
-                      value={productData.company}
-                      onChange={handleInputChange}
-                      required
-                    >
-                      <option value="">اختر الشركة</option>
-                      {companies.map(company => (
-                        <option key={company._id} value={company._id}>
-                          {company.name} - {company.country}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      className="add-company-btn"
-                      onClick={() => setShowCompanyForm(!showCompanyForm)}
-                    >
-                      إضافة شركة جديدة
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              
-
               <div className="form-group image-upload-section">
                 <label>صورة المنتج *</label>
                 
@@ -863,41 +928,53 @@ export default function AddProductPage() {
               </button>
             </form>
           </div>
+        </div>
+        )}
 
-          {/* ترتيب المنتجات */}
+        {activeSection === 'order' && (
+        <div className="forms-container">
           <div className="product-form-section">
-            <h3>ترتيب المنتجات</h3>
+            <h2 className="admin-section-title">ترتيب الظهور في الموقع</h2>
+            <p className="admin-section-hint">اختر القسم، رتّب العناصر بالأعلى/الأسفل، ثم احفظ. يتم تحميل القائمة تلقائياً عند تغيير القسم أو فتح التبويب.</p>
             <div className="form-row">
               <div className="form-group">
                 <label htmlFor="orderCategory">القسم</label>
                 <select id="orderCategory" value={orderCategory} onChange={(e) => setOrderCategory(e.target.value)}>
-                  {categories.map(cat => (
-                    <option key={cat.value} value={cat.value}>{cat.label}</option>
+                  {categories.map((cat) => (
+                    <option key={cat.value} value={cat.value}>
+                      {cat.label}
+                    </option>
                   ))}
                 </select>
               </div>
               <div className="form-group">
-                <label>&nbsp;</label>
-                <button type="button" className="add-btn" onClick={loadOrderItems}>تحميل القائمة</button>
+                <label htmlFor="order-refresh">تحديث</label>
+                <button type="button" id="order-refresh" className="add-btn" onClick={loadOrderItems}>
+                  إعادة تحميل القائمة
+                </button>
               </div>
             </div>
 
             {orderLoading ? (
-              <div style={{padding:'8px', color:'var(--text-muted)'}}>جاري التحميل...</div>
+              <div className="admin-order-loading">جاري التحميل...</div>
             ) : (
               <div className="form-group">
                 {orderItems.length === 0 ? (
-                  <div style={{padding:'8px', color:'var(--text-muted)'}}>لا توجد منتجات لعرضها</div>
+                  <div className="admin-order-empty">لا توجد منتجات في هذا القسم.</div>
                 ) : (
                   orderItems.map((item, index) => (
-                    <div key={item._id} className="array-input" style={{alignItems:'center'}}>
-                      <div style={{flex:1}}>
-                        <div style={{fontWeight:600}}>{item.name}</div>
-                        <div style={{fontSize:'0.9rem', color:'var(--text-muted)'}}>{item.company?.name || '—'}</div>
+                    <div key={item._id} className="array-input admin-order-row">
+                      <div className="admin-order-row-main">
+                        <div className="admin-order-name">{item.name}</div>
+                        <div className="admin-order-company">{item.company?.name || '—'}</div>
                       </div>
-                      <div style={{display:'flex', gap:'8px'}}>
-                        <button type="button" className="add-btn" onClick={() => moveItem(index, -1)}>↑</button>
-                        <button type="button" className="add-btn" onClick={() => moveItem(index, 1)}>↓</button>
+                      <div className="admin-order-actions">
+                        <button type="button" className="add-btn" onClick={() => moveItem(index, -1)} aria-label="لأعلى">
+                          ↑
+                        </button>
+                        <button type="button" className="add-btn" onClick={() => moveItem(index, 1)} aria-label="لأسفل">
+                          ↓
+                        </button>
                       </div>
                     </div>
                   ))
@@ -905,15 +982,23 @@ export default function AddProductPage() {
               </div>
             )}
 
-            <button type="button" className="submit-btn" onClick={saveOrder}>حفظ الترتيب</button>
+            <button type="button" className="submit-btn" onClick={saveOrder}>
+              حفظ الترتيب
+            </button>
           </div>
+        </div>
+        )}
 
-          {/* نموذج إضافة شركة جديدة */}
-          {showCompanyForm && (
+        {activeSection === 'company' && (
+        <div className="forms-container">
             <div className="company-form-section">
               <form onSubmit={handleSubmitCompany} className="company-form">
-                <h3>إضافة شركة جديدة</h3>
-                
+                <h2 className="admin-section-title">إضافة شركة</h2>
+                <p className="admin-section-hint">
+                  بعد إنشاء الشركة يمكنك إضافة لها منتجات من أنواع مختلفة (ألواح، محولات، بطاريات) من تبويب «منتج
+                  جديد». كل ذلك يظهر تحت اسم الشركة في صفحة المنتجات العامة.
+                </p>
+
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="company-name">اسم الشركة *</label>
@@ -1240,15 +1325,15 @@ export default function AddProductPage() {
                   <button
                     type="button"
                     className="cancel-btn"
-                    onClick={() => setShowCompanyForm(false)}
+                    onClick={() => setActiveSection('product')}
                   >
                     إلغاء
                   </button>
                 </div>
               </form>
             </div>
-          )}
         </div>
+        )}
       </div>
     </div>
   );

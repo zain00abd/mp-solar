@@ -1,119 +1,116 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
-import Product from '@/models/Product';
-import Company from '@/models/Company';
-import mongoose from 'mongoose';
+import {
+  getDb,
+  COL,
+  isValidDocumentId,
+  docWithId,
+  attachCompany,
+  findDuplicateProductNameInCategory,
+  serverTimestampUpdate,
+} from '@/lib/firestore';
 
-// GET - جلب منتج واحد
-export async function GET(request, { params }) {
+const PRODUCT_FIELDS = [
+  'name',
+  'category',
+  'company',
+  'image',
+  'pdfUrl',
+  'description',
+  'features',
+  'models',
+  'specs',
+  'tags',
+  'warranty',
+  'isActive',
+];
+
+function pickBody(body) {
+  const out = {};
+  for (const k of PRODUCT_FIELDS) {
+    if (body[k] !== undefined) out[k] = body[k];
+  }
+  return out;
+}
+
+export async function GET(_request, { params }) {
   try {
-    await connectDB();
-    
-    const { id } = params;
+    const { id } = await params;
 
-    // التحقق من صحة معرف المنتج
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid product ID' },
-        { status: 400 }
-      );
+    if (!isValidDocumentId(id)) {
+      return NextResponse.json({ success: false, error: 'Invalid product ID' }, { status: 400 });
     }
 
-    const product = await Product.findById(id).populate('company', 'name country logo color1 color2 color3');
-
-    if (!product) {
-      return NextResponse.json(
-        { success: false, error: 'Product not found' },
-        { status: 404 }
-      );
+    const db = getDb();
+    const ref = db.collection(COL.products).doc(id);
+    const snap = await ref.get();
+    if (!snap.exists) {
+      return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
     }
 
-    // جلب منتجات مشابهة من نفس الشركة أو الفئة
-    const relatedProducts = await Product.find({
-      $and: [
-        { _id: { $ne: id } },
-        { isActive: true },
-        {
-          $or: [
-            { company: product.company._id },
-            { category: product.category }
-          ]
-        }
-      ]
-    })
-    .limit(4)
-    .populate('company', 'name logo');
+    const product = docWithId(snap.id, snap.data());
+    const [populated] = await attachCompany(db, [product]);
+    const companyId =
+      typeof populated.company === 'object' ? populated.company?._id : populated.company;
+    const cat = populated.category;
+
+    const activeSnap = await db.collection(COL.products).where('isActive', '==', true).get();
+    const relatedProducts = activeSnap.docs
+      .map((d) => docWithId(d.id, d.data()))
+      .filter(
+        (r) =>
+          r._id !== id &&
+          (r.company === companyId || (cat && r.category === cat))
+      )
+      .slice(0, 4);
+
+    const relatedPopulated = await attachCompany(db, relatedProducts, ['name', 'logo']);
 
     return NextResponse.json({
       success: true,
       data: {
-        ...product.toObject(),
-        relatedProducts
-      }
+        ...populated,
+        relatedProducts: relatedPopulated,
+      },
     });
-
   } catch (error) {
     console.error('Error fetching product:', error);
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch product' },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: 'Failed to fetch product' }, { status: 500 });
   }
 }
 
-// PUT - تحديث منتج
 export async function PUT(request, { params }) {
   try {
-    await connectDB();
-    
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
-    // التحقق من صحة معرف المنتج
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid product ID' },
-        { status: 400 }
-      );
+    if (!isValidDocumentId(id)) {
+      return NextResponse.json({ success: false, error: 'Invalid product ID' }, { status: 400 });
     }
 
-    // التحقق من وجود المنتج
-    const existingProduct = await Product.findById(id);
-    if (!existingProduct) {
-      return NextResponse.json(
-        { success: false, error: 'Product not found' },
-        { status: 404 }
-      );
+    const db = getDb();
+    const ref = db.collection(COL.products).doc(id);
+    const existing = await ref.get();
+    if (!existing.exists) {
+      return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
     }
 
-    // التحقق من صحة معرف الشركة (إذا تم تغييرها)
-    if (body.company && !mongoose.Types.ObjectId.isValid(body.company)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid company ID' },
-        { status: 400 }
-      );
+    const ex = existing.data();
+
+    if (body.company && !isValidDocumentId(body.company)) {
+      return NextResponse.json({ success: false, error: 'Invalid company ID' }, { status: 400 });
     }
 
-    // التحقق من وجود الشركة (إذا تم تغييرها)
-    if (body.company && body.company !== existingProduct.company.toString()) {
-      const companyExists = await Company.findById(body.company);
-      if (!companyExists) {
-        return NextResponse.json(
-          { success: false, error: 'Company not found' },
-          { status: 404 }
-        );
+    if (body.company && body.company !== ex?.company) {
+      const cSnap = await db.collection(COL.companies).doc(body.company).get();
+      if (!cSnap.exists) {
+        return NextResponse.json({ success: false, error: 'Company not found' }, { status: 404 });
       }
     }
 
-    // التحقق من عدم تكرار الاسم (إذا تم تغييره)
-    if (body.name && body.name !== existingProduct.name) {
-      const duplicateProduct = await Product.findOne({ 
-        name: { $regex: new RegExp(`^${body.name}$`, 'i') },
-        category: body.category || existingProduct.category,
-        _id: { $ne: id }
-      });
-      
-      if (duplicateProduct) {
+    const cat = body.category || ex?.category;
+    if (body.name && body.name !== ex?.name) {
+      const dup = await findDuplicateProductNameInCategory(db, cat, body.name, id);
+      if (dup) {
         return NextResponse.json(
           { success: false, error: 'Product with this name already exists in this category' },
           { status: 409 }
@@ -121,86 +118,45 @@ export async function PUT(request, { params }) {
       }
     }
 
-    // تحديث المنتج
-    const updatedProduct = await Product.findByIdAndUpdate(
-      id,
-      { $set: body },
-      { new: true, runValidators: true }
-    ).populate('company', 'name country logo color1 color2 color3');
+    const merged = { ...ex, ...pickBody(body), ...serverTimestampUpdate() };
+    await ref.set(merged, { merge: false });
 
-    return NextResponse.json({
-      success: true,
-      data: updatedProduct,
-      message: 'Product updated successfully'
-    });
-
+    const updatedProduct = docWithId(id, (await ref.get()).data());
+    const [populated] = await attachCompany(db, [updatedProduct]);
+    return NextResponse.json({ success: true, data: populated, message: 'Product updated successfully' });
   } catch (error) {
     console.error('Error updating product:', error);
-    
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
-      return NextResponse.json(
-        { success: false, error: 'Validation failed', details: errors },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json(
-      { success: false, error: 'Failed to update product' },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: 'Failed to update product' }, { status: 500 });
   }
 }
 
-// DELETE - حذف منتج
 export async function DELETE(request, { params }) {
   try {
-    await connectDB();
-    
-    const { id } = params;
+    const { id } = await params;
 
-    // التحقق من صحة معرف المنتج
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid product ID' },
-        { status: 400 }
-      );
+    if (!isValidDocumentId(id)) {
+      return NextResponse.json({ success: false, error: 'Invalid product ID' }, { status: 400 });
     }
 
-    // التحقق من وجود المنتج
-    const product = await Product.findById(id);
-    if (!product) {
-      return NextResponse.json(
-        { success: false, error: 'Product not found' },
-        { status: 404 }
-      );
+    const db = getDb();
+    const ref = db.collection(COL.products).doc(id);
+    const snap = await ref.get();
+    if (!snap.exists) {
+      return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 });
     }
 
-    // حذف المنتج (أو تعطيله بدلاً من الحذف الفعلي)
     const { searchParams } = new URL(request.url);
     const permanent = searchParams.get('permanent') === 'true';
 
     if (permanent) {
-      // حذف نهائي
-      await Product.findByIdAndDelete(id);
-      return NextResponse.json({
-        success: true,
-        message: 'Product permanently deleted'
-      });
-    } else {
-      // تعطيل المنتج فقط
-      await Product.findByIdAndUpdate(id, { isActive: false });
-      return NextResponse.json({
-        success: true,
-        message: 'Product deactivated successfully'
-      });
+      await ref.delete();
+      return NextResponse.json({ success: true, message: 'Product permanently deleted' });
     }
 
+    await ref.set({ ...snap.data(), isActive: false, ...serverTimestampUpdate() }, { merge: true });
+    return NextResponse.json({ success: true, message: 'Product deactivated successfully' });
   } catch (error) {
     console.error('Error deleting product:', error);
-    return NextResponse.json(
-      { success: false, error: 'Failed to delete product' },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: 'Failed to delete product' }, { status: 500 });
   }
 }

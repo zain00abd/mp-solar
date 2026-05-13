@@ -9,6 +9,7 @@ import { LanguageContext } from '@/app/contexts/LanguageContext';
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   
@@ -25,37 +26,36 @@ const Header = () => {
     setMenuOpen(false);
   }, [pathname]);
 
+  // Track scroll position for transparent → solid header transition
+  useEffect(() => {
+    const handleScrolled = () => setScrolled(window.scrollY > 60);
+    window.addEventListener('scroll', handleScrolled);
+    handleScrolled();
+    return () => window.removeEventListener('scroll', handleScrolled);
+  }, []);
+
   // Track active section based on scroll position
   useEffect(() => {
     const handleScroll = () => {
       if (pathname === '/') {
         const sections = ['home', 'about', 'products', 'projects', 'contact'];
-        const scrollPosition = window.scrollY + 100; // Add offset for better detection
-        
+        const scrollPosition = window.scrollY + 120;
         let currentSection = 'home';
-        
         for (const section of sections) {
           const element = document.getElementById(section);
-          if (element) {
-            const offsetTop = element.offsetTop;
-            if (scrollPosition >= offsetTop) {
-              currentSection = section;
-            }
+          if (element && scrollPosition >= element.offsetTop) {
+            currentSection = section;
           }
         }
-        
         setActiveSection(currentSection);
       }
     };
 
     if (pathname === '/') {
       window.addEventListener('scroll', handleScroll);
-      handleScroll(); // Call once to set initial state
+      handleScroll();
     }
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [pathname]);
 
   // Smooth scroll on homepage, navigate otherwise
@@ -112,17 +112,18 @@ const Header = () => {
   };
 
   return (
-    <header className="shared-header">
+    <header className={`shared-header${scrolled ? ' scrolled' : ''}`}>
       <div className="shared-container header-container">
         <div className="logo">
           <Link href="/">
-            <img src="/logo22.png" alt="MB Solar Power Logo" className="logo-image" />
+            <img src="/mbsolarlogo.png" alt="MB Solar Power Logo" className="logo-image" />
+            <span className="logo-company-name">MB Solar</span>
           </Link>
         </div>
         <nav className={menuOpen ? 'menu-open' : ''}>
           <ul>
             <li><Link href="/" onClick={handleNavClick} className={getNavItemClass('home')}>{headerT.home || 'Home'}</Link></li>
-            <li><Link href="/#about" onClick={handleNavClick} className={getNavItemClass('about')}>{headerT.about || 'About'}</Link></li>
+            <li><Link href="/about" onClick={handleNavClick} className={pathname === '/about' ? 'active' : getNavItemClass('about')}>{headerT.about || 'About'}</Link></li>
             <li><Link href="/#products" onClick={handleNavClick} className={getNavItemClass('products')}>{headerT.products || 'Products'}</Link></li>
             <li><Link href="/#projects" onClick={handleNavClick} className={getNavItemClass('projects')}>{headerT.projects || 'Projects'}</Link></li>
             <li><Link href="/#contact" onClick={handleNavClick} className={getNavItemClass('contact')}>{headerT.contact || 'Contact'}</Link></li>

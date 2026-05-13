@@ -1,8 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // External packages for server components
-  serverExternalPackages: ['mongoose'],
-  
   // Webpack configuration to prevent module issues
   webpack: (config, { isServer }) => {
     // Fix for webpack module resolution issues (client-side only)

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Loader from '../components/Loader';
+import { MOCK_PANELS } from '@/lib/mockPanels';
 import './style.css';
 
 const SolarPanels = () => {
@@ -34,16 +35,19 @@ const SolarPanels = () => {
       const response = await fetch('/api/products-panels?isActive=true');
       if (response.ok) {
         const data = await response.json();
-        const list = data?.data || [];
+        const list = data?.data?.length ? data.data : MOCK_PANELS;
         setProducts(list);
-        if (typeof window !== 'undefined') {
+        if (typeof window !== 'undefined' && data?.data?.length) {
           try {
             localStorage.setItem(CACHE_KEY, JSON.stringify({ exp: Date.now() + CACHE_TTL, data: list }));
           } catch {}
         }
+      } else {
+        setProducts(MOCK_PANELS);
       }
     } catch (error) {
       console.error('Failed to fetch solar panels:', error);
+      setProducts(MOCK_PANELS);
     } finally {
       setLoading(false);
     }

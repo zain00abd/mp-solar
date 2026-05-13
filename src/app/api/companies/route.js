@@ -1,148 +1,119 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
-import Company from '@/models/Company';
-import Battery from '@/models/Battery';
-import Inverter from '@/models/Inverter';
-import Panel from '@/models/Panel';
+import {
+  getDb,
+  COL,
+  sortDocuments,
+  escapeRegExp,
+  countActiveByCompany,
+  findDuplicateCompanyName,
+  serverTimestampsNew,
+  docWithId,
+  isFirestoreDatabaseMissing,
+  firestoreSetupJsonResponse,
+} from '@/lib/firestore';
 
-// GET - جلب جميع الشركات
+const COMPANY_FIELDS = ['name', 'country', 'logo', 'description', 'website', 'established', 'color1', 'color2', 'color3'];
+
+function pickCompanyBody(body) {
+  const out = {};
+  for (const k of COMPANY_FIELDS) {
+    if (body[k] !== undefined) out[k] = body[k];
+  }
+  return out;
+}
+
 export async function GET(request) {
   try {
-    await connectDB();
-    
+    const db = getDb();
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page')) || 1;
-    const limit = parseInt(searchParams.get('limit')) || 10;
+    const page = parseInt(searchParams.get('page'), 10) || 1;
+    const limit = parseInt(searchParams.get('limit'), 10) || 10;
     const search = searchParams.get('search') || '';
     const country = searchParams.get('country') || '';
     const includeCounts = (searchParams.get('includeCounts') || 'false').toLowerCase() === 'true';
 
-    // بناء فلتر البحث
-    let filter = {};
+    const snap = await db.collection(COL.companies).get();
+    let rows = snap.docs.map((d) => docWithId(d.id, d.data()));
+
     if (search) {
-      filter.name = { $regex: search, $options: 'i' };
+      const re = new RegExp(escapeRegExp(search), 'i');
+      rows = rows.filter((c) => re.test(c.name || ''));
     }
     if (country) {
-      filter.country = { $regex: country, $options: 'i' };
+      const re = new RegExp(escapeRegExp(country), 'i');
+      rows = rows.filter((c) => re.test(c.country || ''));
     }
 
-    // حساب التخطي
+    rows = sortDocuments(rows, 'createdAt', 'desc');
+    const total = rows.length;
     const skip = (page - 1) * limit;
+    let pageRows = rows.slice(skip, skip + limit);
 
-    // جلب الشركات مع التصفح
-    const companies = await Company.find(filter)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    // حساب العدد الإجمالي
-    const total = await Company.countDocuments(filter);
-
-    let resultCompanies = companies;
-
-    // في حال طلب ملخص المنتجات، نجلب الأعداد من كل مجموعة
     if (includeCounts) {
-      resultCompanies = await Promise.all(
-        companies.map(async (company) => {
+      pageRows = await Promise.all(
+        pageRows.map(async (company) => {
+          const id = company._id;
           const [batteryCount, inverterCount, panelCount] = await Promise.all([
-            Battery.countDocuments({ company: company._id, isActive: true }),
-            Inverter.countDocuments({ company: company._id, isActive: true }),
-            Panel.countDocuments({ company: company._id, isActive: true }),
+            countActiveByCompany(db, COL.batteries, id),
+            countActiveByCompany(db, COL.inverters, id),
+            countActiveByCompany(db, COL.panels, id),
           ]);
           const totalProducts = batteryCount + inverterCount + panelCount;
-          const obj = company.toObject();
-          obj.productsSummary = {
-            batteries: batteryCount,
-            inverters: inverterCount,
-            panels: panelCount,
-            total: totalProducts,
+          return {
+            ...company,
+            productsSummary: {
+              batteries: batteryCount,
+              inverters: inverterCount,
+              panels: panelCount,
+              total: totalProducts,
+            },
           };
-          return obj;
         })
       );
     }
 
     return NextResponse.json({
       success: true,
-      data: resultCompanies,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit)
-      }
+      data: pageRows,
+      pagination: { page, limit, total, pages: Math.ceil(total / limit) || 0 },
     });
-
   } catch (error) {
     console.error('Error fetching companies:', error);
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch companies' },
-      { status: 500 }
-    );
+    if (isFirestoreDatabaseMissing(error)) {
+      return NextResponse.json(firestoreSetupJsonResponse(), { status: 503 });
+    }
+    return NextResponse.json({ success: false, error: 'Failed to fetch companies' }, { status: 500 });
   }
 }
 
-// POST - إضافة شركة جديدة
 export async function POST(request) {
   try {
-    await connectDB();
-    
+    const db = getDb();
     const body = await request.json();
     const { name, country, logo, description, website, established, color1, color2, color3 } = body;
 
-    // التحقق من البيانات المطلوبة
     if (!name || !country || !logo) {
-      return NextResponse.json(
-        { success: false, error: 'Name, country, and logo are required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ success: false, error: 'Name, country, and logo are required' }, { status: 400 });
     }
 
-    // التحقق من عدم وجود شركة بنفس الاسم
-    const existingCompany = await Company.findOne({ name: { $regex: new RegExp(`^${name}$`, 'i') } });
-    if (existingCompany) {
-      return NextResponse.json(
-        { success: false, error: 'Company with this name already exists' },
-        { status: 409 }
-      );
+    const dup = await findDuplicateCompanyName(db, name, null);
+    if (dup) {
+      return NextResponse.json({ success: false, error: 'Company with this name already exists' }, { status: 409 });
     }
 
-    // إنشاء الشركة الجديدة
-    const company = new Company({
-      name,
-      country,
-      logo,
-      description,
-      website,
-      established,
-      color1,
-      color2,
-      color3
+    const ref = db.collection(COL.companies).doc();
+    await ref.set({
+      ...pickCompanyBody({ name, country, logo, description, website, established, color1, color2, color3 }),
+      ...serverTimestampsNew(),
     });
 
-    await company.save();
-
-    return NextResponse.json({
-      success: true,
-      data: company,
-      message: 'Company created successfully'
-    }, { status: 201 });
-
+    const created = docWithId(ref.id, (await ref.get()).data());
+    return NextResponse.json({ success: true, data: created, message: 'Company created successfully' }, { status: 201 });
   } catch (error) {
     console.error('Error creating company:', error);
-    
-    // التعامل مع أخطاء التحقق
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map(err => err.message);
-      return NextResponse.json(
-        { success: false, error: 'Validation failed', details: errors },
-        { status: 400 }
-      );
+    if (isFirestoreDatabaseMissing(error)) {
+      return NextResponse.json(firestoreSetupJsonResponse(), { status: 503 });
     }
-
-    return NextResponse.json(
-      { success: false, error: 'Failed to create company' },
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: 'Failed to create company' }, { status: 500 });
   }
 }
