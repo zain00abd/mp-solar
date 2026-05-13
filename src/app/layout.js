@@ -1,5 +1,20 @@
 import './globals.css'
 import Script from 'next/script'
+import { Inter, Noto_Sans_Arabic } from 'next/font/google'
+
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-inter',
+})
+
+const notoSansArabic = Noto_Sans_Arabic({
+  subsets: ['arabic'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-noto-arabic',
+})
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://mbsolarpower.com'),
@@ -38,9 +53,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ar" suppressHydrationWarning>
+    <html lang="ar" suppressHydrationWarning className={`${inter.variable} ${notoSansArabic.variable}`}>
       <head>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet" />
         <Script src="https://cdn.tailwindcss.com" strategy="beforeInteractive" />
         <Script id="org-jsonld" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({

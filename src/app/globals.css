@@ -14,7 +14,7 @@ html {
 }
 
 body {
-  font-family: 'Inter', 'Noto Sans Arabic', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--font-inter), var(--font-noto-arabic), system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.6;
   color: #333;
   overflow-x: hidden;

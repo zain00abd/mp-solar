@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import './style.css';
 import Header from '@/app/components/Header';
 import { LanguageContext } from '@/app/contexts/LanguageContext';
@@ -403,7 +404,7 @@ const FeaturedSection = ({ t }) => (
           </ul>
         </div>
         <div className="mb-featured-img">
-          <img src="/inverter3.png" alt="Featured Inverter" />
+          <Image src="/inverter3.png" alt="Featured Inverter" width={500} height={400} style={{ objectFit: 'contain', maxWidth: '100%', height: 'auto' }} />
         </div>
       </div>
     </div>
@@ -430,7 +431,7 @@ const TechSection = ({ t }) => (
     <div className="mb-container">
       <div className="mb-tech-layout">
         <div className="mb-tech-visual">
-          <img src="/Solar Energy.jpg" alt="Smart Solar Technology" />
+          <Image src="/Solar Energy.jpg" alt="Smart Solar Technology" width={600} height={450} style={{ objectFit: 'cover', maxWidth: '100%', height: 'auto' }} />
         </div>
         <div className="mb-tech-copy">
           <span className="mb-tech-badge">{t.tech.badge}</span>
@@ -498,7 +499,7 @@ const FooterSection = ({ t }) => (
     <div className="mb-container">
       <div className="mb-footer-grid">
         <div className="mb-footer-brand">
-          <img src="/logo22.png" alt="MB Solar" className="mb-footer-logo" />
+          <Image src="/logo22.png" alt="MB Solar" className="mb-footer-logo" width={150} height={60} style={{ objectFit: 'contain' }} />
           <p>{t.footer.tagline}</p>
         </div>
         {[
