@@ -1,6 +1,7 @@
 import './globals.css'
 import Script from 'next/script'
 import { Inter, Noto_Sans_Arabic } from 'next/font/google'
+import Providers from './providers'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -55,6 +56,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="ar" suppressHydrationWarning className={`${inter.variable} ${notoSansArabic.variable}`}>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var l=localStorage.getItem('mb-solar-lang');if(l==='en'||l==='ar'){document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';}}catch(e){}})();`,
+          }}
+        />
         <Script src="https://cdn.tailwindcss.com" strategy="beforeInteractive" />
         <Script id="org-jsonld" type="application/ld+json" strategy="afterInteractive">
           {JSON.stringify({
@@ -68,7 +74,7 @@ export default function RootLayout({ children }) {
         </Script>
       </head>
       <body suppressHydrationWarning>
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   )

@@ -17,6 +17,7 @@ const PRODUCT_FIELDS = [
   'category',
   'company',
   'image',
+  'gallery',
   'pdfUrl',
   'description',
   'features',
@@ -123,6 +124,11 @@ export async function POST(request) {
         specs: specs || [],
         tags: tags || [],
         warranty: warranty || {},
+        gallery: Array.isArray(body.gallery)
+          ? body.gallery
+              .filter((u) => typeof u === 'string' && /^https?:\/\//i.test(String(u).trim()) && !String(u).trim().startsWith('data:'))
+              .map((u) => String(u).trim())
+          : undefined,
         isActive: true,
       }),
       ...serverTimestampsNew(),

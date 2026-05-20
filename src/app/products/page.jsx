@@ -1,11 +1,15 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import Header from '@/app/components/Header';
 import Footer from '@/app/components/Footer';
 import Loader from '@/app/components/Loader';
-import { LanguageContext } from '@/app/contexts/LanguageContext';
+import {
+  LanguageTranslationsProvider,
+  useLanguage,
+} from '@/app/contexts/LanguageContext';
 import { MOCK_INVERTERS } from '@/lib/mockInverters';
 import { MOCK_PANELS }    from '@/lib/mockPanels';
 import { MOCK_BATTERIES } from '@/lib/mockBatteries';
@@ -76,6 +80,7 @@ async function loadCached(key, url) {
 }
 
 const CAT_ORDER = ['panels', 'inverters', 'batteries'];
+const VALID_CATS = new Set(['all', 'panels', 'inverters', 'batteries']);
 
 function companyIdFromProduct(p) {
   const c = p.company;
@@ -147,8 +152,9 @@ function ProductCard({ product, href }) {
 }
 
 /* ─── Page ───────────────────────────────────────────────────── */
-export default function ProductsHub() {
-  const [lang, setLang] = useState('ar');
+function ProductsHubInner() {
+  const searchParams = useSearchParams();
+  const { language: lang } = useLanguage();
   const [activeCat, setActiveCat] = useState('all');
   const [panels,    setPanels]    = useState([]);
   const [inverters, setInverters] = useState([]);
@@ -158,6 +164,13 @@ export default function ProductsHub() {
 
   const t   = T[lang];
   const dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+  useEffect(() => {
+    const cat = searchParams.get('cat');
+    if (cat && VALID_CATS.has(cat)) {
+      setActiveCat(cat);
+    }
+  }, [searchParams]);
 
   /* fetch all three product types in parallel, fall back to mock data */
   useEffect(() => {
@@ -201,28 +214,11 @@ export default function ProductsHub() {
     return '#';
   };
 
-  const langCtx = { language: lang, setLanguage: setLang, translations: { en: { header: T.en.header }, ar: { header: T.ar.header } } };
-
   if (loading) return <Loader full label={t.loading} />;
 
   return (
-    <LanguageContext.Provider value={langCtx}>
       <div className="phub-page" dir={dir}>
         <Header />
-
-        {/* ── Hero / Page Title ── */}
-        <section className="phub-hero">
-          <div className="phub-hero-bg" aria-hidden="true" />
-          <div className="phub-hero-inner phub-container">
-            <nav className="phub-breadcrumb" aria-label="breadcrumb">
-              <Link href="/">{lang === 'ar' ? 'الرئيسية' : 'Home'}</Link>
-              <span aria-hidden="true">›</span>
-              <span>{t.title}</span>
-            </nav>
-            <h1>{t.title}</h1>
-            <p>{t.subtitle}</p>
-          </div>
-        </section>
 
         {/* ── Category Tabs ── */}
         <div className="phub-cats-wrap">
@@ -302,6 +298,20 @@ export default function ProductsHub() {
 
         <Footer />
       </div>
-    </LanguageContext.Provider>
+  );
+}
+
+export default function ProductsHub() {
+  const pageTranslations = {
+    en: { header: T.en.header },
+    ar: { header: T.ar.header },
+  };
+
+  return (
+    <LanguageTranslationsProvider translations={pageTranslations}>
+      <Suspense fallback={<Loader full label={T.ar.loading} />}>
+        <ProductsHubInner />
+      </Suspense>
+    </LanguageTranslationsProvider>
   );
 }

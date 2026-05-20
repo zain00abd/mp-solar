@@ -40,6 +40,7 @@ export default function AddProductPage() {
     category: 'products', // default to solar panels
     company: '',
     image: '',
+    gallery: [],
     pdfUrl: '',
     description: '',
     features: [''],
@@ -55,6 +56,17 @@ export default function AddProductPage() {
   const [logoUploadMethod, setLogoUploadMethod] = useState('file'); // 'file' or 'url'
   const [compressingImage, setCompressingImage] = useState(false);
   const [uploadingToImgbb, setUploadingToImgbb] = useState(false);
+  const [galleryUploadMethod, setGalleryUploadMethod] = useState('file');
+  const [galleryUrlInput, setGalleryUrlInput] = useState('');
+  const [galleryCompressing, setGalleryCompressing] = useState(false);
+  const [galleryUploading, setGalleryUploading] = useState(false);
+
+  const GALLERY_MAX = 12;
+
+  const sanitizeGalleryUrls = (urls) =>
+    (Array.isArray(urls) ? urls : [])
+      .map((u) => (typeof u === 'string' ? u.trim() : ''))
+      .filter((u) => u && /^https?:\/\//i.test(u) && !u.startsWith('data:'));
 
   // مفتاح API من ImgBB - احصل عليه من https://api.imgbb.com/
   // ضع المفتاح في ملف .env.local بهذا الشكل: NEXT_PUBLIC_IMGBB_API_KEY=your_key_here
@@ -310,6 +322,7 @@ export default function AddProductPage() {
         // رفع الصورة إلى ImgBB
         const imageUrl = await uploadToImgBB(compressedImage);
         
+        setImagePreview(imageUrl);
         setProductData(prev => ({
           ...prev,
           image: imageUrl
@@ -347,6 +360,94 @@ export default function AddProductPage() {
     // إعادة تعيين input file
     const fileInput = document.getElementById('image-file');
     if (fileInput) fileInput.value = '';
+  };
+
+  const validateImageFile = (file) => {
+    if (!file.type.startsWith('image/')) {
+      alert('الرجاء اختيار ملف صورة فقط');
+      return false;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert('حجم الصورة كبير جداً. الرجاء اختيار صورة أقل من 5MB');
+      return false;
+    }
+    return true;
+  };
+
+  const uploadImageFile = async (file, maxWidth = 800, maxHeight = 800, quality = 0.85) => {
+    const compressedImage = await compressImage(file, maxWidth, maxHeight, quality);
+    return uploadToImgBB(compressedImage);
+  };
+
+  const handleGalleryFilesChange = async (e) => {
+    const files = Array.from(e.target.files || []);
+    e.target.value = '';
+    if (!files.length) return;
+
+    const currentCount = (productData.gallery || []).length;
+    if (currentCount + files.length > GALLERY_MAX) {
+      alert(`يمكنك إضافة ${GALLERY_MAX} صورة كحد أقصى في المعرض`);
+      return;
+    }
+
+    const uploaded = [];
+    try {
+      setGalleryCompressing(true);
+      for (const file of files) {
+        if (!validateImageFile(file)) continue;
+        if (currentCount + uploaded.length >= GALLERY_MAX) break;
+
+        setGalleryCompressing(false);
+        setGalleryUploading(true);
+        const imageUrl = await uploadImageFile(file, 1200, 1200, 0.85);
+        if (imageUrl.startsWith('data:')) {
+          alert('فشل رفع إحدى الصور. أضف NEXT_PUBLIC_IMGBB_API_KEY أو استخدم روابط https');
+          continue;
+        }
+        uploaded.push(imageUrl);
+      }
+
+      if (uploaded.length) {
+        setProductData((prev) => ({
+          ...prev,
+          gallery: [...(prev.gallery || []), ...uploaded],
+        }));
+      }
+    } catch (error) {
+      console.error('Error processing gallery images:', error);
+      alert('حدث خطأ أثناء معالجة صور المعرض: ' + error.message);
+    } finally {
+      setGalleryCompressing(false);
+      setGalleryUploading(false);
+    }
+  };
+
+  const handleAddGalleryUrl = () => {
+    const url = galleryUrlInput.trim();
+    if (!/^https?:\/\//i.test(url)) {
+      alert('رابط الصورة يجب أن يبدأ بـ http:// أو https://');
+      return;
+    }
+    if ((productData.gallery || []).length >= GALLERY_MAX) {
+      alert(`يمكنك إضافة ${GALLERY_MAX} صورة كحد أقصى في المعرض`);
+      return;
+    }
+    if ((productData.gallery || []).includes(url)) {
+      alert('هذا الرابط مضاف مسبقاً');
+      return;
+    }
+    setProductData((prev) => ({
+      ...prev,
+      gallery: [...(prev.gallery || []), url],
+    }));
+    setGalleryUrlInput('');
+  };
+
+  const removeGalleryImage = (index) => {
+    setProductData((prev) => ({
+      ...prev,
+      gallery: (prev.gallery || []).filter((_, i) => i !== index),
+    }));
   };
 
   const handleLogoFileChange = async (e) => {
@@ -516,9 +617,18 @@ export default function AddProductPage() {
       return;
     }
     if (img.startsWith('data:')) {
-      alert('الصورة ما زالت بصيغة محلية. أضف NEXT_PUBLIC_IMGBB_API_KEY في .env.local للرفع السحابي، أو أدخل رابط صورة يبدأ بـ https');
+      alert('الصورة الأساسية ما زالت بصيغة محلية. أضف NEXT_PUBLIC_IMGBB_API_KEY في .env.local للرفع السحابي، أو أدخل رابط صورة يبدأ بـ https');
       return;
     }
+
+    const rawGallery = productData.gallery || [];
+    const badGallery = rawGallery.some((u) => typeof u === 'string' && u.trim().startsWith('data:'));
+    if (badGallery) {
+      alert('إحدى الصور الإضافية ما زالت بصيغة محلية. أضف مفتاح ImgBB أو استخدم روابط https');
+      return;
+    }
+    const galleryUrls = sanitizeGalleryUrls(rawGallery);
+
     const pdf = (productData.pdfUrl || '').trim();
     if (!/^https?:\/\//i.test(pdf)) {
       alert('رابط ملف PDF يجب أن يبدأ بـ http:// أو https://');
@@ -541,6 +651,7 @@ export default function AddProductPage() {
         tags: productData.tags.filter((t) => t.trim() !== ''),
         pdfUrl: (productData.pdfUrl || '').trim(),
         warranty: buildWarrantyFromInput(productData.warranty),
+        gallery: galleryUrls,
       };
 
       const endpoint = PRODUCT_ENDPOINTS[productData.category] || '/api/products';
@@ -696,8 +807,9 @@ export default function AddProductPage() {
                   إضافة موديل
                 </button>
               </div>
-              <div className="form-group image-upload-section">
-                <label>صورة المنتج *</label>
+              <div className="form-group image-upload-section image-upload-section--primary">
+                <label>الصورة الأساسية *</label>
+                <p className="field-hint">تظهر في بطاقة المنتج وكأول صورة في صفحة التفاصيل</p>
                 
                 {/* خيارات رفع الصورة */}
                 <div className="image-upload-methods">
@@ -783,6 +895,116 @@ export default function AddProductPage() {
                 </div>
               )}
             </div>
+
+              <div className="form-group image-upload-section gallery-upload-section">
+                <label>
+                  صور إضافية للمعرض{' '}
+                  <span className="optional-label">(اختياري)</span>
+                </label>
+                <p className="field-hint">
+                  صور ثانوية تظهر في معرض صفحة التفاصيل (حتى {GALLERY_MAX} صورة)
+                </p>
+
+                <div className="image-upload-methods">
+                  <button
+                    type="button"
+                    className={`method-btn ${galleryUploadMethod === 'file' ? 'active' : ''}`}
+                    onClick={() => setGalleryUploadMethod('file')}
+                  >
+                    رفع من الجهاز
+                  </button>
+                  <button
+                    type="button"
+                    className={`method-btn ${galleryUploadMethod === 'url' ? 'active' : ''}`}
+                    onClick={() => setGalleryUploadMethod('url')}
+                  >
+                    إدخال رابط
+                  </button>
+                </div>
+
+                {galleryUploadMethod === 'file' && (
+                  <div className="file-upload-container">
+                    <input
+                      type="file"
+                      id="gallery-files"
+                      accept="image/*"
+                      multiple
+                      onChange={handleGalleryFilesChange}
+                      className="file-input"
+                      disabled={(productData.gallery || []).length >= GALLERY_MAX || galleryCompressing || galleryUploading}
+                    />
+                    <label htmlFor="gallery-files" className="file-input-label file-input-label--secondary">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                      </svg>
+                      <span>اختر صوراً متعددة أو اسحبها هنا</span>
+                      <span className="file-hint">
+                        WebP تلقائياً — {(productData.gallery || []).length}/{GALLERY_MAX}
+                      </span>
+                    </label>
+                  </div>
+                )}
+
+                {galleryUploadMethod === 'url' && (
+                  <div className="gallery-url-row">
+                    <input
+                      type="url"
+                      value={galleryUrlInput}
+                      onChange={(e) => setGalleryUrlInput(e.target.value)}
+                      placeholder="https://example.com/gallery-image.jpg"
+                      className="url-input"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleAddGalleryUrl();
+                        }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="add-btn gallery-url-add-btn"
+                      onClick={handleAddGalleryUrl}
+                      disabled={(productData.gallery || []).length >= GALLERY_MAX}
+                    >
+                      إضافة
+                    </button>
+                  </div>
+                )}
+
+                {galleryCompressing && (
+                  <div className="compressing-message">
+                    <div className="spinner"></div>
+                    <span>جاري ضغط صور المعرض...</span>
+                  </div>
+                )}
+
+                {galleryUploading && (
+                  <div className="compressing-message uploading">
+                    <div className="spinner"></div>
+                    <span>جاري رفع صور المعرض إلى السحابة...</span>
+                  </div>
+                )}
+
+                {(productData.gallery || []).length > 0 && (
+                  <ul className="gallery-preview-grid" aria-label="صور المعرض">
+                    {(productData.gallery || []).map((url, index) => (
+                      <li key={`${url}-${index}`} className="gallery-preview-item">
+                        <img src={url} alt={`صورة معرض ${index + 1}`} className="gallery-preview-thumb" />
+                        <button
+                          type="button"
+                          className="clear-image-btn gallery-remove-btn"
+                          onClick={() => removeGalleryImage(index)}
+                          title="حذف الصورة"
+                        >
+                          ✕
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
 
             {/* رابط ملف PDF للمنتج */}
             <div className="form-group">

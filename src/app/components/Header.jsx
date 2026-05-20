@@ -1,115 +1,173 @@
 'use client';
 
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import './shared.css';
 import { LanguageContext } from '@/app/contexts/LanguageContext';
 
+const HEADER_FALLBACK = {
+  en: {
+    home: 'Home',
+    about: 'About',
+    products: 'Products',
+    projects: 'Projects',
+    contact: 'Contact',
+  },
+  ar: {
+    home: 'الرئيسية',
+    about: 'من نحن',
+    products: 'المنتجات',
+    projects: 'المشاريع',
+    contact: 'اتصل بنا',
+  },
+};
+
+/** أقسام الصفحة الرئيسية للتمرير (بما فيها معاينة «من نحن») */
+const HOME_SCROLL_SECTIONS = ['home', 'about', 'products', 'projects', 'contact'];
+
+const isProductsPath = (path) =>
+  path === '/products' ||
+  path?.startsWith('/panels') ||
+  path?.startsWith('/inverters') ||
+  path?.startsWith('/batteries');
+
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
+  const [homeSection, setHomeSection] = useState('home');
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  
-  // Get language context (only on home page)
-  const languageContext = useContext(LanguageContext);
-  const language = languageContext?.language || 'en';
-  const setLanguage = languageContext?.setLanguage || (() => {});
-  const translations = languageContext?.translations || { en: {}, ar: {} };
-  const t = translations[language] || {};
-  const headerT = t.header || {};
 
-  // Close menu when route changes
+  const languageContext = useContext(LanguageContext);
+  const language = languageContext?.language || 'ar';
+  const setLanguage = languageContext?.setLanguage;
+  const translations = languageContext?.translations;
+  const headerT =
+    translations?.[language]?.header ||
+    HEADER_FALLBACK[language] ||
+    HEADER_FALLBACK.ar;
+
+  const isHome = pathname === '/';
+
+  const navClass = useCallback(
+    (item) => {
+      switch (item) {
+        case 'home':
+          return isHome && homeSection === 'home' ? 'active' : '';
+        case 'about':
+          if (pathname === '/about') return 'active';
+          return isHome && homeSection === 'about' ? 'active' : '';
+        case 'products':
+          if (isProductsPath(pathname)) return 'active';
+          return isHome && homeSection === 'products' ? 'active' : '';
+        case 'projects':
+          return isHome && homeSection === 'projects' ? 'active' : '';
+        case 'contact':
+          return isHome && homeSection === 'contact' ? 'active' : '';
+        default:
+          return '';
+      }
+    },
+    [isHome, homeSection, pathname]
+  );
+
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
 
-  // Track scroll position for transparent → solid header transition
   useEffect(() => {
     const handleScrolled = () => setScrolled(window.scrollY > 60);
-    window.addEventListener('scroll', handleScrolled);
+    window.addEventListener('scroll', handleScrolled, { passive: true });
     handleScrolled();
     return () => window.removeEventListener('scroll', handleScrolled);
   }, []);
 
-  // Track active section based on scroll position
-  useEffect(() => {
-    const handleScroll = () => {
-      if (pathname === '/') {
-        const sections = ['home', 'about', 'products', 'projects', 'contact'];
-        const scrollPosition = window.scrollY + 120;
-        let currentSection = 'home';
-        for (const section of sections) {
-          const element = document.getElementById(section);
-          if (element && scrollPosition >= element.offsetTop) {
-            currentSection = section;
-          }
-        }
-        setActiveSection(currentSection);
+  const updateHomeSectionFromScroll = useCallback(() => {
+    const offset = window.scrollY + 120;
+    let current = 'home';
+    for (const id of HOME_SCROLL_SECTIONS) {
+      const el = document.getElementById(id);
+      if (el && offset >= el.offsetTop) {
+        current = id;
       }
-    };
-
-    if (pathname === '/') {
-      window.addEventListener('scroll', handleScroll);
-      handleScroll();
     }
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [pathname]);
+    setHomeSection(current);
+  }, []);
 
-  // Smooth scroll on homepage, navigate otherwise
+  const applyHashSection = useCallback(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash && HOME_SCROLL_SECTIONS.includes(hash)) {
+      setHomeSection(hash);
+      const el = document.getElementById(hash);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } else {
+      setHomeSection('home');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!isHome) return undefined;
+
+    setHomeSection('home');
+    applyHashSection();
+
+    const onScroll = () => updateHomeSectionFromScroll();
+    const onHashChange = () => applyHashSection();
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('hashchange', onHashChange);
+    onScroll();
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('hashchange', onHashChange);
+    };
+  }, [isHome, applyHashSection, updateHomeSectionFromScroll]);
+
   const handleNavClick = (e) => {
     const href = e.currentTarget.getAttribute('href');
-
     if (!href) return;
 
-    // Handle anchor links like /#about
-    if (href.startsWith('/#')) {
-      const isHome = pathname === '/';
-      const hash = href.split('#')[1];
+    setMenuOpen(false);
 
+    if (href.startsWith('/#')) {
+      const hash = href.split('#')[1];
       if (isHome) {
         e.preventDefault();
         const target = document.getElementById(hash);
         if (target) {
-          window.scrollTo({ top: target.offsetTop - 80, behavior: 'smooth' });
-          setMenuOpen(false);
-          setActiveSection(hash);
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (HOME_SCROLL_SECTIONS.includes(hash)) {
+            setHomeSection(hash);
+          }
+          window.history.replaceState(null, '', `/#${hash}`);
         }
       } else {
-        // Navigate to homepage with hash
-        setMenuOpen(false);
         router.push(href);
       }
-    } else {
-      // Non-anchor links: just close menu
-      setMenuOpen(false);
-      if (href === '/') {
-        setActiveSection('home');
-      }
+    } else if (href === '/' && isHome) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setHomeSection('home');
+      window.history.replaceState(null, '', '/');
     }
   };
 
-  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       const nav = document.querySelector('nav');
       const mobileMenu = document.querySelector('.mobile-menu');
-      if (menuOpen && nav && !nav.contains(event.target) && !mobileMenu.contains(event.target)) {
+      if (menuOpen && nav && !nav.contains(event.target) && !mobileMenu?.contains(event.target)) {
         setMenuOpen(false);
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [menuOpen]);
-
-  const getNavItemClass = (section) => {
-    return activeSection === section ? 'active' : '';
-  };
 
   const nextLang = language === 'ar' ? 'en' : 'ar';
 
@@ -124,14 +182,34 @@ const Header = () => {
         </div>
         <nav className={menuOpen ? 'menu-open' : ''}>
           <ul>
-            <li><Link href="/" onClick={handleNavClick} className={getNavItemClass('home')}>{headerT.home || 'Home'}</Link></li>
-            <li><Link href="/about" onClick={handleNavClick} className={pathname === '/about' ? 'active' : getNavItemClass('about')}>{headerT.about || 'About'}</Link></li>
-            <li><Link href="/#products" onClick={handleNavClick} className={getNavItemClass('products')}>{headerT.products || 'Products'}</Link></li>
-            <li><Link href="/#projects" onClick={handleNavClick} className={getNavItemClass('projects')}>{headerT.projects || 'Projects'}</Link></li>
-            <li><Link href="/#contact" onClick={handleNavClick} className={getNavItemClass('contact')}>{headerT.contact || 'Contact'}</Link></li>
+            <li>
+              <Link href="/" onClick={handleNavClick} className={navClass('home')}>
+                {headerT.home || 'Home'}
+              </Link>
+            </li>
+            <li>
+              <Link href="/about" className={navClass('about')}>
+                {headerT.about || 'About'}
+              </Link>
+            </li>
+            <li>
+              <Link href="/products" className={navClass('products')}>
+                {headerT.products || 'Products'}
+              </Link>
+            </li>
+            <li>
+              <Link href="/#projects" onClick={handleNavClick} className={navClass('projects')}>
+                {headerT.projects || 'Projects'}
+              </Link>
+            </li>
+            <li>
+              <Link href="/#contact" onClick={handleNavClick} className={navClass('contact')}>
+                {headerT.contact || 'Contact'}
+              </Link>
+            </li>
           </ul>
         </nav>
-        {languageContext && (
+        {setLanguage && (
           <div className="language-switcher-header">
             <button
               type="button"
@@ -139,8 +217,12 @@ const Header = () => {
               onClick={() => setLanguage(nextLang)}
               aria-label={
                 nextLang === 'en'
-                  ? (language === 'ar' ? 'التبديل إلى الإنجليزية' : 'Switch to English')
-                  : (language === 'ar' ? 'التبديل إلى العربية' : 'Switch to Arabic')
+                  ? language === 'ar'
+                    ? 'التبديل إلى الإنجليزية'
+                    : 'Switch to English'
+                  : language === 'ar'
+                    ? 'التبديل إلى العربية'
+                    : 'Switch to Arabic'
               }
             >
               {nextLang.toUpperCase()}
@@ -161,12 +243,3 @@ const Header = () => {
 };
 
 export default Header;
-
-
-
-
-
-
-
-
-

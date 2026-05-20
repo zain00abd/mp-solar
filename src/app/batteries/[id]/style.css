@@ -1,8 +1,1 @@
-
-.grid-pattern {
-  background-color: var(--dark-surface);
-  background-image: 
-    linear-gradient(rgba(74, 144, 226, 0.12) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(74, 144, 226, 0.12) 1px, transparent 1px);
-  background-size: 80px 80px;
-}
+/* Styles live in @/app/components/product-detail.css */

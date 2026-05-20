@@ -4,7 +4,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import './style.css';
 import Header from '@/app/components/Header';
-import { LanguageContext } from '@/app/contexts/LanguageContext';
+import Footer from '@/app/components/Footer';
+import {
+  LanguageTranslationsProvider,
+  useLanguage,
+} from '@/app/contexts/LanguageContext';
 
 const translations = {
   en: {
@@ -300,7 +304,7 @@ const HeroSlider = ({ t }) => {
 
 /* ─── About Preview Section ───────────────────────── */
 const AboutSection = ({ t }) => (
-  <section className="mb-about" id="about">
+  <section className="mb-about mb-snap-intro" id="about">
     <SectionHeading label={t.about.label} title={t.about.title} subtitle={t.about.sub} />
     <div className="mb-container">
       <div className="mb-about-layout">
@@ -322,7 +326,7 @@ const AboutSection = ({ t }) => (
 
 /* ─── News Section ────────────────────────────────── */
 const NewsSection = ({ t }) => (
-  <section className="mb-news" id="news">
+  <section className="mb-news mb-snap-free" id="news">
     <SectionHeading label={t.news.label} title={t.news.heading} subtitle={t.news.subheading} />
     <div className="mb-container">
       <div className="mb-news-layout">
@@ -350,20 +354,20 @@ const NewsSection = ({ t }) => (
 const SolutionsSection = ({ t }) => {
   const categories = [
     {
-      img: 'https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=85',
-      href: '/panels',
+      id: 'panels',
+      href: '/products?cat=panels',
       title: t.solutions.items[0].title,
       description: t.solutions.items[0].description,
     },
     {
-      img: 'https://images.unsplash.com/photo-1497440001374-f26997328c1b?auto=format&fit=crop&w=900&q=85',
-      href: '/inverters',
+      id: 'inverters',
+      href: '/products?cat=inverters',
       title: t.solutions.items[1].title,
       description: t.solutions.items[1].description,
     },
     {
-      img: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=900&q=85',
-      href: '/batteries',
+      id: 'batteries',
+      href: '/products?cat=batteries',
       title: t.solutions.items[2].title,
       description: t.solutions.items[2].description,
     },
@@ -377,16 +381,13 @@ const SolutionsSection = ({ t }) => {
         subtitle={t.solutions.subheading}
       />
       <div className="mb-sol-grid">
-        {categories.map((cat, i) => (
-          <a key={i} href={cat.href} className="mb-sol-card">
-            {/* Background image */}
-            <div
-              className="mb-sol-bg"
-              style={{ backgroundImage: `url(${cat.img})` }}
-            />
-            {/* Gradient overlay */}
-            <div className="mb-sol-overlay" />
-            {/* Text content */}
+        {categories.map((cat) => (
+          <Link
+            key={cat.id}
+            href={cat.href}
+            className={`mb-sol-card mb-sol-card--${cat.id}`}
+          >
+            <div className="mb-sol-overlay" aria-hidden="true" />
             <div className="mb-sol-content">
               <h3 className="mb-sol-title">
                 {cat.title}
@@ -394,7 +395,7 @@ const SolutionsSection = ({ t }) => {
               </h3>
               <p className="mb-sol-desc">{cat.description}</p>
             </div>
-          </a>
+          </Link>
         ))}
       </div>
     </section>
@@ -556,93 +557,36 @@ const ContactSection = ({ t }) => {
   );
 };
 
-/* ─── Footer ──────────────────────────────────────── */
-const FooterSection = ({ t }) => (
-  <footer className="mb-footer">
-    <div className="mb-container">
-      <div className="mb-footer-main">
-        <div className="mb-footer-brand">
-          <Link href="/" className="mb-footer-logo-link" aria-label="MB Solar — Home">
-            <Image
-              src="/mbsolarlogo.png"
-              alt="MB Solar Power"
-              className="mb-footer-logo"
-              width={200}
-              height={88}
-              style={{ objectFit: 'contain', width: 'auto', height: '72px', maxWidth: '100%' }}
-            />
-          </Link>
-          <p className="mb-footer-tagline">{t.footer.tagline}</p>
-          <a href="#contact" className="mb-footer-cta">{t.footer.contactLink}</a>
-        </div>
-
-        <div className="mb-footer-col mb-footer-contact">
-          <h4>{t.footer.contactTitle}</h4>
-          <ul className="mb-footer-contact-list">
-            <li>
-              <span className="mb-footer-contact-label">{t.contact.emailLabel}</span>
-              <a href={`mailto:${t.contact.email}`} className="mb-footer-contact-value">
-                {t.contact.email}
-              </a>
-            </li>
-            <li>
-              <span className="mb-footer-contact-label">{t.contact.phoneLabel}</span>
-              <a href={`tel:${t.contact.phone.replace(/\s/g, '')}`} className="mb-footer-contact-value">
-                {t.contact.phone}
-              </a>
-            </li>
-            <li>
-              <span className="mb-footer-contact-label">{t.footer.locationTitle}</span>
-              <span className="mb-footer-contact-value">{t.contact.address}</span>
-            </li>
-          </ul>
-        </div>
-
-        <nav className="mb-footer-col mb-footer-support" aria-label={t.footer.support}>
-          <h4>{t.footer.support}</h4>
-          <ul>
-            {t.footer.supportLinks.map((link, j) => (
-              <li key={j}>
-                <a href={link.href}>{link.label}</a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-      <div className="mb-footer-bottom">
-        <p>{t.footer.copyright}</p>
-      </div>
-    </div>
-  </footer>
-);
-
 /* ─── Main Page ───────────────────────────────────── */
-const MainPage = () => {
-  const [language, setLanguage] = useState('en');
+const MainPageContent = () => {
+  const { language } = useLanguage();
   const t = translations[language];
-  const langCtx = { language, setLanguage, translations };
 
   useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-    document.documentElement.lang = language;
-  }, [language]);
+    document.documentElement.classList.add('mb-home-snap');
+    return () => document.documentElement.classList.remove('mb-home-snap');
+  }, []);
 
   return (
-    <LanguageContext.Provider value={langCtx}>
-      <div className="mb-page" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-        <Header />
-        <HeroSlider t={t} />
-        <AboutSection t={t} />
-        <NewsSection t={t} />
-        <SolutionsSection t={t} />
-        <HybridInverterSection t={t} />
-        <TechSection t={t} />
-        <ProductShowcaseSection t={t} />
-        <ContactSection t={t} />
-        <FooterSection t={t} />
-      </div>
-    </LanguageContext.Provider>
+    <div className="mb-page mb-page--intro-snap" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+      <Header />
+      <HeroSlider t={t} />
+      <AboutSection t={t} />
+      <NewsSection t={t} />
+      <SolutionsSection t={t} />
+      <HybridInverterSection t={t} />
+      <TechSection t={t} />
+      <ProductShowcaseSection t={t} />
+      <ContactSection t={t} />
+        <Footer />
+    </div>
   );
 };
+
+const MainPage = () => (
+  <LanguageTranslationsProvider translations={translations}>
+    <MainPageContent />
+  </LanguageTranslationsProvider>
+);
 
 export default MainPage;

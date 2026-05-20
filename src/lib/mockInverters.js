@@ -2,9 +2,11 @@ export const MOCK_INVERTERS = [
   {
     _id: 'mock-001',
     name: 'Huawei SUN2000-5KTL-M3',
+    subtitle: 'String Inverter | 5 kW | Dual MPPT | Residential',
     description:
       'The SUN2000-5KTL-M3 is a high-efficiency residential string inverter from Huawei featuring advanced MPPT tracking, built-in arc fault detection, and seamless integration with the FusionSolar monitoring platform.',
     image: '/inverter3.png',
+    gallery: ['/inverter3.png', '/inverter3.png', '/inverter3.png'],
     pdfUrl: 'https://solar.huawei.com/en-GB/download',
     features: [
       'Dual MPPT for flexible system design',

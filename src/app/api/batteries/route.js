@@ -12,7 +12,7 @@ import {
 } from '@/lib/firestore';
 
 const COLLECTION = COL.batteries;
-const PRODUCT_FIELDS = ['name', 'company', 'image', 'pdfUrl', 'description', 'features', 'models', 'specs', 'tags', 'warranty', 'category', 'sortOrder', 'isActive'];
+const PRODUCT_FIELDS = ['name', 'company', 'image', 'gallery', 'pdfUrl', 'description', 'features', 'models', 'specs', 'tags', 'warranty', 'category', 'sortOrder', 'isActive'];
 
 function pickBody(body) {
   const out = {};
@@ -96,6 +96,11 @@ export async function POST(request) {
         specs: specs || [],
         tags: tags || [],
         warranty: warranty || {},
+        gallery: Array.isArray(body.gallery)
+          ? body.gallery
+              .filter((u) => typeof u === 'string' && /^https?:\/\//i.test(String(u).trim()) && !String(u).trim().startsWith('data:'))
+              .map((u) => String(u).trim())
+          : undefined,
         category: 'batteries',
         isActive: true,
         sortOrder: body.sortOrder ?? 0,

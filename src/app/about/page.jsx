@@ -1,9 +1,13 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Header from '@/app/components/Header';
-import { LanguageContext } from '@/app/contexts/LanguageContext';
+import Footer from '@/app/components/Footer';
+import {
+  LanguageTranslationsProvider,
+  useLanguage,
+} from '@/app/contexts/LanguageContext';
 import {
   Home, Building2, Tractor, PenTool, Wrench, Ship,
   Eye, Target, Trophy, Zap, ShieldCheck, Headphones, Globe,
@@ -213,19 +217,12 @@ const SectionHeading = ({ label, title, subtitle }) => (
 );
 
 /* ─── Page ─────────────────────────────────────────────────── */
-export default function AboutPage() {
-  const [lang, setLang] = useState('ar');
+function AboutPageContent() {
+  const { language: lang } = useLanguage();
   const t = translations[lang];
   const dir = lang === 'ar' ? 'rtl' : 'ltr';
 
-  const langCtxValue = {
-    language: lang,
-    setLanguage: setLang,
-    translations: { en: translations.en, ar: translations.ar },
-  };
-
   return (
-    <LanguageContext.Provider value={langCtxValue}>
       <div className="about-page" dir={dir}>
         <Header />
 
@@ -415,7 +412,17 @@ export default function AboutPage() {
           </div>
         </section>
 
+        <Footer />
       </div>
-    </LanguageContext.Provider>
+  );
+}
+
+export default function AboutPage() {
+  return (
+    <LanguageTranslationsProvider
+      translations={{ en: translations.en, ar: translations.ar }}
+    >
+      <AboutPageContent />
+    </LanguageTranslationsProvider>
   );
 }

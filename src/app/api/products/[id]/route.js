@@ -14,6 +14,7 @@ const PRODUCT_FIELDS = [
   'category',
   'company',
   'image',
+  'gallery',
   'pdfUrl',
   'description',
   'features',

@@ -10,7 +10,7 @@ import {
 } from '@/lib/firestore';
 
 const COLLECTION = COL.batteries;
-const PRODUCT_FIELDS = ['name', 'company', 'image', 'pdfUrl', 'description', 'features', 'models', 'specs', 'tags', 'warranty', 'category', 'sortOrder', 'isActive'];
+const PRODUCT_FIELDS = ['name', 'company', 'image', 'gallery', 'pdfUrl', 'description', 'features', 'models', 'specs', 'tags', 'warranty', 'category', 'sortOrder', 'isActive'];
 
 function pickBody(body) {
   const out = {};
