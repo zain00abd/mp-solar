@@ -52,7 +52,7 @@ export function LanguageProvider({ children }) {
   }, [language, hydrated]);
 
   const value = useMemo(
-    () => ({ language, setLanguage, hydrated }),
+    () => ({ language: hydrated ? language : 'ar', setLanguage, hydrated }),
     [language, setLanguage, hydrated]
   );
 
