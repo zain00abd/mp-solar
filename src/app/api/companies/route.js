@@ -8,8 +8,7 @@ import {
   findDuplicateCompanyName,
   serverTimestampsNew,
   docWithId,
-  isFirestoreDatabaseMissing,
-  firestoreSetupJsonResponse,
+  resolveApiError,
 } from '@/lib/firestore';
 
 const COMPANY_FIELDS = ['name', 'country', 'logo', 'description', 'website', 'established', 'color1', 'color2', 'color3'];
@@ -79,10 +78,8 @@ export async function GET(request) {
     });
   } catch (error) {
     console.error('Error fetching companies:', error);
-    if (isFirestoreDatabaseMissing(error)) {
-      return NextResponse.json(firestoreSetupJsonResponse(), { status: 503 });
-    }
-    return NextResponse.json({ success: false, error: 'Failed to fetch companies' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to fetch companies');
+    return NextResponse.json(body, { status });
   }
 }
 
@@ -111,9 +108,7 @@ export async function POST(request) {
     return NextResponse.json({ success: true, data: created, message: 'Company created successfully' }, { status: 201 });
   } catch (error) {
     console.error('Error creating company:', error);
-    if (isFirestoreDatabaseMissing(error)) {
-      return NextResponse.json(firestoreSetupJsonResponse(), { status: 503 });
-    }
-    return NextResponse.json({ success: false, error: 'Failed to create company' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to create company');
+    return NextResponse.json(body, { status });
   }
 }

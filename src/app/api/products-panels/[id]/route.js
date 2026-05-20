@@ -7,6 +7,7 @@ import {
   attachCompany,
   findDuplicateNameForCompany,
   serverTimestampUpdate,
+  resolveApiError,
 } from '@/lib/firestore';
 
 const COLLECTION = COL.panels;
@@ -47,7 +48,8 @@ export async function GET(_request, { params }) {
     return NextResponse.json({ success: true, data: populated, related });
   } catch (error) {
     console.error('Error fetching panel:', error);
-    return NextResponse.json({ success: false, error: 'Failed to fetch panel' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to fetch panel');
+    return NextResponse.json(body, { status });
   }
 }
 
@@ -94,7 +96,8 @@ export async function PUT(request, { params }) {
     return NextResponse.json({ success: true, data: populated, message: 'Panel updated successfully' });
   } catch (error) {
     console.error('Error updating panel:', error);
-    return NextResponse.json({ success: false, error: 'Failed to update panel' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to update panel');
+    return NextResponse.json(body, { status });
   }
 }
 
@@ -129,6 +132,7 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ success: true, message: 'Panel deactivated successfully', data: disabled });
   } catch (error) {
     console.error('Error deleting panel:', error);
-    return NextResponse.json({ success: false, error: 'Failed to delete panel' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to delete panel');
+    return NextResponse.json(body, { status });
   }
 }

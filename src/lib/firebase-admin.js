@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { isAbsolute, resolve } from 'node:path';
 import admin from 'firebase-admin';
+import { parseServiceAccountFromEnv } from '@/lib/parse-service-account';
 
 /**
  * Initializes Firebase Admin once. Use one of:
@@ -31,9 +32,11 @@ export function getAdminApp() {
     return fromPath(pathEnv);
   }
 
-  const raw = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
+  const raw =
+    process.env.FIREBASE_SERVICE_ACCOUNT_KEY ||
+    process.env.FIREBASE_SERVICE_ACCOUNT_KEY_BASE64;
   if (raw?.trim()) {
-    const parsed = JSON.parse(raw);
+    const parsed = parseServiceAccountFromEnv(raw);
     admin.initializeApp({
       credential: admin.credential.cert(parsed),
     });

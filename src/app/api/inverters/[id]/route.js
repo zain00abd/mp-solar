@@ -7,6 +7,7 @@ import {
   attachCompany,
   findDuplicateNameForCompany,
   serverTimestampUpdate,
+  resolveApiError,
 } from '@/lib/firestore';
 
 const COLLECTION = COL.inverters;
@@ -47,7 +48,8 @@ export async function GET(_request, { params }) {
     return NextResponse.json({ success: true, data: populated, related });
   } catch (error) {
     console.error('Error fetching inverter:', error);
-    return NextResponse.json({ success: false, error: 'Failed to fetch inverter' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to fetch inverter');
+    return NextResponse.json(body, { status });
   }
 }
 
@@ -94,7 +96,8 @@ export async function PUT(request, { params }) {
     return NextResponse.json({ success: true, data: populated, message: 'Inverter updated successfully' });
   } catch (error) {
     console.error('Error updating inverter:', error);
-    return NextResponse.json({ success: false, error: 'Failed to update inverter' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to update inverter');
+    return NextResponse.json(body, { status });
   }
 }
 
@@ -129,6 +132,7 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ success: true, message: 'Inverter deactivated successfully', data: disabled });
   } catch (error) {
     console.error('Error deleting inverter:', error);
-    return NextResponse.json({ success: false, error: 'Failed to delete inverter' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to delete inverter');
+    return NextResponse.json(body, { status });
   }
 }

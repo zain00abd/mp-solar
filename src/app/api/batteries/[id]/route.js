@@ -7,6 +7,7 @@ import {
   attachCompany,
   findDuplicateNameForCompany,
   serverTimestampUpdate,
+  resolveApiError,
 } from '@/lib/firestore';
 
 const COLLECTION = COL.batteries;
@@ -47,7 +48,8 @@ export async function GET(_request, { params }) {
     return NextResponse.json({ success: true, data: populated, related });
   } catch (error) {
     console.error('Error fetching battery:', error);
-    return NextResponse.json({ success: false, error: 'Failed to fetch battery' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to fetch battery');
+    return NextResponse.json(body, { status });
   }
 }
 
@@ -94,7 +96,8 @@ export async function PUT(request, { params }) {
     return NextResponse.json({ success: true, data: populated, message: 'Battery updated successfully' });
   } catch (error) {
     console.error('Error updating battery:', error);
-    return NextResponse.json({ success: false, error: 'Failed to update battery' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to update battery');
+    return NextResponse.json(body, { status });
   }
 }
 
@@ -129,6 +132,7 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ success: true, message: 'Battery deactivated successfully', data: disabled });
   } catch (error) {
     console.error('Error deleting battery:', error);
-    return NextResponse.json({ success: false, error: 'Failed to delete battery' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to delete battery');
+    return NextResponse.json(body, { status });
   }
 }

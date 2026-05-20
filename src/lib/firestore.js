@@ -37,6 +37,41 @@ export function firestoreSetupJsonResponse() {
   };
 }
 
+/** غالباً: لم تُضف مفاتيح Firebase Admin على الاستضافة */
+export function isFirebaseNotConfigured(error) {
+  if (!error) return false;
+  const msg = String(error.message || '');
+  return (
+    /Firebase Admin is not configured/i.test(msg) ||
+    /service account file not found/i.test(msg) ||
+    /FIREBASE_SERVICE_ACCOUNT_KEY/i.test(msg) ||
+    /Could not load the default credentials/i.test(msg) ||
+    /Unable to detect a Project Id/i.test(msg)
+  );
+}
+
+export function firebaseCredentialsJsonResponse() {
+  return {
+    success: false,
+    error: 'Database credentials are not configured on the server.',
+    hint:
+      'Hosting → Environment Variables → add FIREBASE_SERVICE_ACCOUNT_KEY (full service-account JSON from Firebase Console → Service accounts → Generate new private key). Redeploy after saving.',
+    hintAr:
+      'في لوحة الاستضافة: متغيرات البيئة → أضف FIREBASE_SERVICE_ACCOUNT_KEY (ملف JSON كامل من Firebase → Service accounts → Generate new private key) ثم أعد نشر الموقع.',
+  };
+}
+
+/** يُستخدم في مسارات /api لإرجاع 503 مع رسالة واضحة بدل 500 عام */
+export function resolveApiError(error, fallbackError = 'Request failed') {
+  if (isFirestoreDatabaseMissing(error)) {
+    return { status: 503, body: firestoreSetupJsonResponse() };
+  }
+  if (isFirebaseNotConfigured(error)) {
+    return { status: 503, body: firebaseCredentialsJsonResponse() };
+  }
+  return { status: 500, body: { success: false, error: fallbackError } };
+}
+
 /** Firestore document id: non-empty, no slash. Mongo ObjectIds are valid. */
 export function isValidDocumentId(id) {
   if (typeof id !== 'string' || !id.trim()) return false;

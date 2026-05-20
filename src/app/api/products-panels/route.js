@@ -9,6 +9,7 @@ import {
   findDuplicateNameForCompany,
   serverTimestampsNew,
   docWithId,
+  resolveApiError,
 } from '@/lib/firestore';
 
 const COLLECTION = COL.panels;
@@ -52,7 +53,8 @@ export async function GET(request) {
     });
   } catch (error) {
     console.error('Error fetching panels:', error);
-    return NextResponse.json({ success: false, error: 'Failed to fetch panels' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to fetch panels');
+    return NextResponse.json(body, { status });
   }
 }
 
@@ -114,6 +116,7 @@ export async function POST(request) {
     return NextResponse.json({ success: true, data: populated, message: 'Panel created successfully' }, { status: 201 });
   } catch (error) {
     console.error('Error creating panel:', error);
-    return NextResponse.json({ success: false, error: 'Failed to create panel' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to create panel');
+    return NextResponse.json(body, { status });
   }
 }

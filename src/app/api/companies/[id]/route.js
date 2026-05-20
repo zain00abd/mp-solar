@@ -7,6 +7,7 @@ import {
   countByCompany,
   findDuplicateCompanyName,
   serverTimestampUpdate,
+  resolveApiError,
 } from '@/lib/firestore';
 
 const PICK_FIELDS = ['name', 'image', 'isActive'];
@@ -71,7 +72,8 @@ export async function GET(_request, { params }) {
     });
   } catch (error) {
     console.error('Error fetching company:', error);
-    return NextResponse.json({ success: false, error: 'Failed to fetch company' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to fetch company');
+    return NextResponse.json(body, { status });
   }
 }
 
@@ -107,7 +109,8 @@ export async function PUT(request, { params }) {
     return NextResponse.json({ success: true, data: updatedCompany, message: 'Company updated successfully' });
   } catch (error) {
     console.error('Error updating company:', error);
-    return NextResponse.json({ success: false, error: 'Failed to update company' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to update company');
+    return NextResponse.json(body, { status });
   }
 }
 
@@ -145,6 +148,7 @@ export async function DELETE(_request, { params }) {
     return NextResponse.json({ success: true, message: 'Company deleted successfully' });
   } catch (error) {
     console.error('Error deleting company:', error);
-    return NextResponse.json({ success: false, error: 'Failed to delete company' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to delete company');
+    return NextResponse.json(body, { status });
   }
 }

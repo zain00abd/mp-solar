@@ -9,6 +9,7 @@ import {
   findDuplicateNameForCompany,
   serverTimestampsNew,
   docWithId,
+  resolveApiError,
 } from '@/lib/firestore';
 
 const COLLECTION = COL.inverters;
@@ -52,7 +53,8 @@ export async function GET(request) {
     });
   } catch (error) {
     console.error('Error fetching inverters:', error);
-    return NextResponse.json({ success: false, error: 'Failed to fetch inverters' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to fetch inverters');
+    return NextResponse.json(body, { status });
   }
 }
 
@@ -114,6 +116,7 @@ export async function POST(request) {
     return NextResponse.json({ success: true, data: populated, message: 'Inverter created successfully' }, { status: 201 });
   } catch (error) {
     console.error('Error creating inverter:', error);
-    return NextResponse.json({ success: false, error: 'Failed to create inverter' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to create inverter');
+    return NextResponse.json(body, { status });
   }
 }

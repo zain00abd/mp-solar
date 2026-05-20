@@ -7,6 +7,7 @@ import {
   attachCompany,
   findDuplicateProductNameInCategory,
   serverTimestampUpdate,
+  resolveApiError,
 } from '@/lib/firestore';
 
 const PRODUCT_FIELDS = [
@@ -75,7 +76,8 @@ export async function GET(_request, { params }) {
     });
   } catch (error) {
     console.error('Error fetching product:', error);
-    return NextResponse.json({ success: false, error: 'Failed to fetch product' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to fetch product');
+    return NextResponse.json(body, { status });
   }
 }
 
@@ -127,7 +129,8 @@ export async function PUT(request, { params }) {
     return NextResponse.json({ success: true, data: populated, message: 'Product updated successfully' });
   } catch (error) {
     console.error('Error updating product:', error);
-    return NextResponse.json({ success: false, error: 'Failed to update product' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to update product');
+    return NextResponse.json(body, { status });
   }
 }
 
@@ -158,6 +161,7 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ success: true, message: 'Product deactivated successfully' });
   } catch (error) {
     console.error('Error deleting product:', error);
-    return NextResponse.json({ success: false, error: 'Failed to delete product' }, { status: 500 });
+    const { status, body } = resolveApiError(error, 'Failed to delete product');
+    return NextResponse.json(body, { status });
   }
 }
