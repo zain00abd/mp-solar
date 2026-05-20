@@ -10,7 +10,19 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'storage.googleapis.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.deyeinverter.com',
+      },
     ],
+  },
+
+  turbopack: {
+    resolveAlias: {
+      fs: { browser: './src/lib/empty-module.js' },
+      net: { browser: './src/lib/empty-module.js' },
+      tls: { browser: './src/lib/empty-module.js' },
+    },
   },
 
   webpack: (config, { isServer }) => {
@@ -23,7 +35,7 @@ const nextConfig = {
         tls: false,
       };
     }
-    
+
     return config;
   },
   

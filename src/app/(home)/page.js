@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import './style.css';
 import Header from '@/app/components/Header';
 import { LanguageContext } from '@/app/contexts/LanguageContext';
@@ -21,6 +22,14 @@ const translations = {
         { title: "Advanced Energy Storage Systems", subtitle: "Power Independence for Home and Business" },
         { title: "Smart Solar Technology", subtitle: "Maximize Efficiency, Minimize Costs" }
       ]
+    },
+    about: {
+      label: "ABOUT",
+      title: "Who We Are",
+      sub: "A trusted solar energy pioneer since 2014",
+      p1: "MB Solar was established in 2014 to become a leader in the solar and renewable energy sector — locally and internationally. We focus on delivering innovative and reliable solutions that combine the highest global quality standards with a complete commitment to an exceptional customer experience.",
+      p2: "MB Solar continues to consolidate its position in the local market while executing a gradual expansion toward global markets, staying committed to continuous innovation and the latest technologies to provide effective and sustainable energy solutions.",
+      more: "More +"
     },
     news: {
       label: "NEWS",
@@ -46,25 +55,21 @@ const translations = {
         { title: "Batteries", description: "Lithium-ion storage systems delivering reliable backup power and round-the-clock energy independence" },
       ]
     },
-    featured: {
-      badge: "New Hybrid Inverter",
+    hybridInverter: {
+      title: "New Hybrid Inverter",
       category: "Three Phase Hybrid Inverter",
-      name: "MB-H3-25K-SG",
+      model: "SUN-100/125K-SG02HP3-EU-GM10",
+      badge: "hv",
       specs: [
-        "25kW output power with 100% unbalanced load support",
-        "Compatible with lithium-ion and lead-acid batteries",
-        "Max. 6 units parallel for on-grid and off-grid operation",
-        "Built-in WiFi and 4G real-time monitoring",
-        "Maximum MPPT efficiency of 99.9%",
-        "10-year product warranty included"
-      ]
-    },
-    platform: {
-      label: "PLATFORM",
-      heading: "MB Solar Platform",
-      description: "With MB Solar products you get real-time monitoring and intelligent control. Protecting your investment and maximizing your system's lifetime performance.",
-      cta1: "Learn More",
-      cta2: "Get Started"
+        "100% unbalanced output",
+        "AC couple to retrofit existing solar system",
+        "Max. 10 pcs parallel for on-grid and off-grid operation; Support multiple batteries parallel",
+        "Max. charging/discharging current of 200A",
+        "High voltage battery, higher efficiency",
+        "6 time periods for battery charging/discharging",
+        "Support storing energy from diesel generator",
+      ],
+      imageAlt: "Three phase hybrid inverter",
     },
     tech: {
       label: "TECHNOLOGY",
@@ -72,6 +77,13 @@ const translations = {
       heading: "Improving Business Benefits",
       subheading: "Intelligent energy management for commercial and industrial solar systems",
       description: "MB Solar's intelligent energy management system optimizes solar generation, storage, and consumption in real-time. With smart grid compatibility and demand response capabilities, our systems reduce energy costs and improve reliability for commercial and industrial customers."
+    },
+    productShowcase: {
+      title: "VSG",
+      heading: "Improving Business Benefits",
+      description:
+        "Deye full series string inverter supports VSG application. When grid failure, the string inverter is able to work with diesel generator directly without any additional EMS device. With this frequency droop feature, Deye string inverter is capable of using in poor grid area.",
+      imageAlt: "Hybrid inverter",
     },
     contact: {
       label: "CONTACT",
@@ -93,32 +105,15 @@ const translations = {
     },
     footer: {
       tagline: "Professional solar energy solutions for a sustainable future.",
-      products: "Products",
-      productLinks: [
-        { label: "Solar Panels", href: "/panels" },
-        { label: "Inverters", href: "/inverters" },
-        { label: "Batteries", href: "/batteries" },
-        { label: "Accessories", href: "#" }
-      ],
-      solutions: "Solutions",
-      solutionLinks: [
-        { label: "Commercial Solar", href: "#" },
-        { label: "Commercial Storage", href: "#" },
-        { label: "Residential Solar", href: "#" },
-        { label: "Residential Storage", href: "#" }
-      ],
+      contactTitle: "Contact Us",
+      locationTitle: "Location",
       support: "Support",
       supportLinks: [
         { label: "Downloads", href: "#" },
         { label: "Service", href: "#" },
         { label: "FAQ", href: "#" }
       ],
-      about: "About Us",
-      aboutLinks: [
-        { label: "About MB Solar", href: "#" },
-        { label: "Contact Us", href: "#contact" },
-        { label: "Join Us", href: "#" }
-      ],
+      contactLink: "Send a message",
       copyright: "© 2026 MB Solar Power. All rights reserved."
     }
   },
@@ -137,6 +132,14 @@ const translations = {
         { title: "أنظمة تخزين الطاقة المتقدمة", subtitle: "استقلالية الطاقة للمنازل والأعمال" },
         { title: "تقنية الطاقة الشمسية الذكية", subtitle: "أقصى كفاءة وأقل تكاليف" }
       ]
+    },
+    about: {
+      label: "من نحن",
+      title: "من نحن",
+      sub: "رائد موثوق في الطاقة الشمسية منذ عام 2014",
+      p1: "تأسست شركة المحترف في عام 2014، لتصبح رائدة في قطاع الطاقة الشمسية والطاقة المتجددة على المستوى المحلي والدولي. تركز الشركة على تقديم حلول مبتكرة وموثوقة، تجمع بين أعلى معايير الجودة العالمية والمصداقية، مع التزام كامل بتجربة عملاء استثنائية.",
+      p2: "تعمل شركة المحترف على ترسيخ مكانتها في السوق المحلي، مع خطط توسع تدريجي نحو الأسواق العالمية، مع الالتزام بالابتكار المستمر ومواكبة أحدث التقنيات لضمان تقديم حلول فعالة ومستدامة.",
+      more: "المزيد +"
     },
     news: {
       label: "أخبار",
@@ -162,25 +165,21 @@ const translations = {
         { title: "البطاريات", description: "أنظمة تخزين ليثيوم أيون توفر طاقة احتياطية موثوقة واستقلالية طاقة على مدار الساعة" },
       ]
     },
-    featured: {
-      badge: "محول هجين جديد",
+    hybridInverter: {
+      title: "محول هجين جديد",
       category: "محول هجين ثلاثي الطور",
-      name: "MB-H3-25K-SG",
+      model: "SUN-100/125K-SG02HP3-EU-GM10",
+      badge: "hv",
       specs: [
-        "طاقة إخراج 25 كيلوواط مع دعم 100% للأحمال غير المتوازنة",
-        "متوافق مع بطاريات الليثيوم أيون والرصاص الحمضي",
-        "توصيل حتى 6 وحدات للعمل المتزامن على الشبكة وخارجها",
-        "واي فاي و4G مدمج للمراقبة الفورية",
-        "أقصى كفاءة MPPT بنسبة 99.9%",
-        "ضمان المنتج لمدة 10 سنوات كاملة"
-      ]
-    },
-    platform: {
-      label: "منصة",
-      heading: "منصة MB Solar",
-      description: "مع منتجات MB Solar تحصل على مراقبة وتحكم فوري وذكي. حماية استثمارك وتعظيم أداء نظامك على مدى الحياة.",
-      cta1: "تعرف أكثر",
-      cta2: "ابدأ الآن"
+        "إخراج 100% للأحمال غير المتوازنة",
+        "ربط تيار متردد لتحديث أنظمة الطاقة الشمسية القائمة",
+        "حتى 10 وحدات متوازية للعمل على الشبكة وخارجها؛ دعم توصيل عدة بطاريات",
+        "أقصى تيار شحن/تفريغ 200 أمبير",
+        "بطارية جهد عالي، كفاءة أعلى",
+        "6 فترات زمنية لشحن/تفريغ البطارية",
+        "دعم تخزين الطاقة من مولد الديزل",
+      ],
+      imageAlt: "محول هجين ثلاثي الطور",
     },
     tech: {
       label: "تقنية",
@@ -188,6 +187,13 @@ const translations = {
       heading: "تحسين الفوائد التجارية",
       subheading: "إدارة طاقة ذكية لأنظمة الطاقة الشمسية التجارية والصناعية",
       description: "يقوم نظام إدارة الطاقة الذكي من MB Solar بتحسين توليد الطاقة الشمسية والتخزين والاستهلاك في الوقت الفعلي. مع توافق الشبكة الذكية وقدرات الاستجابة للطلب، تقلل أنظمتنا تكاليف الطاقة وتحسن موثوقية العملاء التجاريين والصناعيين."
+    },
+    productShowcase: {
+      title: "VSG",
+      heading: "تحسين الفوائد التجارية",
+      description:
+        "تدعم سلسلة محولات Deye لتطبيق VSG. عند انقطاع الشبكة، يمكن للمحول العمل مع مولد الديزل مباشرة دون أي جهاز EMS إضافي. بفضل ميزة انخفاض التردد، يمكن استخدام محول Dye في مناطق الشبكة الضعيفة.",
+      imageAlt: "محول هجين",
     },
     contact: {
       label: "تواصل",
@@ -209,32 +215,15 @@ const translations = {
     },
     footer: {
       tagline: "حلول الطاقة الشمسية المهنية لمستقبل مستدام.",
-      products: "المنتجات",
-      productLinks: [
-        { label: "الألواح الشمسية", href: "/panels" },
-        { label: "المحولات", href: "/inverters" },
-        { label: "البطاريات", href: "/batteries" },
-        { label: "الملحقات", href: "#" }
-      ],
-      solutions: "الحلول",
-      solutionLinks: [
-        { label: "الطاقة الشمسية التجارية", href: "#" },
-        { label: "التخزين التجاري", href: "#" },
-        { label: "الطاقة الشمسية السكنية", href: "#" },
-        { label: "التخزين السكني", href: "#" }
-      ],
+      contactTitle: "تواصل معنا",
+      locationTitle: "الموقع",
       support: "الدعم",
       supportLinks: [
         { label: "التنزيلات", href: "#" },
         { label: "الخدمة", href: "#" },
         { label: "الأسئلة الشائعة", href: "#" }
       ],
-      about: "من نحن",
-      aboutLinks: [
-        { label: "حول MB Solar", href: "#" },
-        { label: "اتصل بنا", href: "#contact" },
-        { label: "انضم إلينا", href: "#" }
-      ],
+      contactLink: "أرسل رسالة",
       copyright: "© ٢٠٢٦ MB Solar Power. جميع الحقوق محفوظة."
     }
   }
@@ -309,9 +298,31 @@ const HeroSlider = ({ t }) => {
   );
 };
 
+/* ─── About Preview Section ───────────────────────── */
+const AboutSection = ({ t }) => (
+  <section className="mb-about" id="about">
+    <SectionHeading label={t.about.label} title={t.about.title} subtitle={t.about.sub} />
+    <div className="mb-container">
+      <div className="mb-about-layout">
+        <div className="mb-about-text">
+          <p className="mb-about-p">{t.about.p1}</p>
+          <p className="mb-about-p">{t.about.p2}</p>
+          <Link href="/about" className="mb-about-more">{t.about.more}</Link>
+        </div>
+        <div className="mb-about-visual">
+          <img
+            src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=900&q=80"
+            alt="MB Solar installation"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
 /* ─── News Section ────────────────────────────────── */
 const NewsSection = ({ t }) => (
-  <section className="mb-news" id="about">
+  <section className="mb-news" id="news">
     <SectionHeading label={t.news.label} title={t.news.heading} subtitle={t.news.subheading} />
     <div className="mb-container">
       <div className="mb-news-layout">
@@ -390,39 +401,51 @@ const SolutionsSection = ({ t }) => {
   );
 };
 
-/* ─── Featured Product ────────────────────────────── */
-const FeaturedSection = ({ t }) => (
-  <section className="mb-featured" id="projects">
-    <div className="mb-container">
-      <div className="mb-featured-layout">
-        <div className="mb-featured-text">
-          <span className="mb-feat-badge">{t.featured.badge}</span>
-          <span className="mb-feat-category">{t.featured.category}</span>
-          <h2 className="mb-feat-name">{t.featured.name}</h2>
-          <ul className="mb-feat-specs">
-            {t.featured.specs.map((s, i) => <li key={i}>{s}</li>)}
-          </ul>
-        </div>
-        <div className="mb-featured-img">
-          <Image src="/inverter3.png" alt="Featured Inverter" width={500} height={400} style={{ objectFit: 'contain', maxWidth: '100%', height: 'auto' }} />
-        </div>
-      </div>
-    </div>
-  </section>
-);
+const HYBRID_INVERTER_IMG =
+  'https://www.deyeinverter.com/deyeinverter/2026/01/16/init-4-2.png';
 
-/* ─── Platform Section ────────────────────────────── */
-const PlatformSection = ({ t }) => (
-  <section className="mb-platform">
-    <SectionHeading label={t.platform.label} title={t.platform.heading} subtitle={t.platform.description} />
-    <div className="mb-platform-inner">
-      <div className="mb-platform-btns">
-        <a href="#contact" className="mb-plat-btn-primary">{t.platform.cta2}</a>
-        <a href="#about" className="mb-plat-btn-outline">{t.platform.cta1}</a>
+/* ─── Hybrid Inverter (Deye init-4 style) ───────── */
+const HybridInverterSection = ({ t }) => {
+  const hi = t.hybridInverter;
+
+  return (
+    <section className="mb-init4" id="projects">
+      <div className="mb-container">
+        <div className="mb-init4-grid">
+          <div className="mb-init4-media">
+            <Image
+              src={HYBRID_INVERTER_IMG}
+              alt={hi.imageAlt}
+              width={222}
+              height={341}
+              className="mb-init4-img"
+              sizes="(max-width: 768px) 60vw, 222px"
+            />
+          </div>
+          <div className="mb-init4-copy">
+            <h2 className="mb-init4-title">{hi.title}</h2>
+            <div className="mb-init4-inner">
+              <div className="mb-init4-list">
+                <h6 className="mb-init4-category">{hi.category}</h6>
+                <h5 className="mb-init4-model">
+                  <em>{hi.model}</em>
+                </h5>
+                <ul>
+                  {hi.specs.map((spec, i) => (
+                    <li key={i}>{spec}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="mb-init4-badge">
+                <h2 className="mb-init4-badge-title">{hi.badge}</h2>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 /* ─── Tech Section ────────────────────────────────── */
 const TechSection = ({ t }) => (
@@ -441,6 +464,46 @@ const TechSection = ({ t }) => (
     </div>
   </section>
 );
+
+const PRODUCT_SHOWCASE_IMG =
+  'https://www.deyeinverter.com/template/en/images/init-6-12.png';
+
+/* ─── Product Showcase (Deye-style) ─────────────── */
+const ProductShowcaseSection = ({ t }) => {
+  const ps = t.productShowcase;
+
+  return (
+    <section className="mb-init6">
+      <div className="mb-container">
+        <div className="mb-init6-grid">
+          <div className="mb-init6-left">
+            <h2 className="mb-init6-title">{ps.title}</h2>
+          </div>
+          <div className="mb-init6-right">
+            <div className="mb-init6-inner">
+              <div className="mb-init6-text">
+                <h5 className="mb-init6-heading">{ps.heading}</h5>
+                <p className="mb-init6-desc">{ps.description}</p>
+              </div>
+              <div className="mb-init6-imgbox">
+                <div className="mb-init6-img">
+                  <Image
+                    src={PRODUCT_SHOWCASE_IMG}
+                    alt={ps.imageAlt}
+                    width={205}
+                    height={353}
+                    className="mb-init6-img-el"
+                    sizes="(max-width: 768px) 55vw, 205px"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 /* ─── Contact Section ─────────────────────────────── */
 const ContactSection = ({ t }) => {
@@ -497,26 +560,54 @@ const ContactSection = ({ t }) => {
 const FooterSection = ({ t }) => (
   <footer className="mb-footer">
     <div className="mb-container">
-      <div className="mb-footer-grid">
+      <div className="mb-footer-main">
         <div className="mb-footer-brand">
-          <Image src="/logo22.png" alt="MB Solar" className="mb-footer-logo" width={150} height={60} style={{ objectFit: 'contain' }} />
-          <p>{t.footer.tagline}</p>
+          <Link href="/" className="mb-footer-logo-link" aria-label="MB Solar — Home">
+            <Image
+              src="/mbsolarlogo.png"
+              alt="MB Solar Power"
+              className="mb-footer-logo"
+              width={200}
+              height={88}
+              style={{ objectFit: 'contain', width: 'auto', height: '72px', maxWidth: '100%' }}
+            />
+          </Link>
+          <p className="mb-footer-tagline">{t.footer.tagline}</p>
+          <a href="#contact" className="mb-footer-cta">{t.footer.contactLink}</a>
         </div>
-        {[
-          { title: t.footer.products, links: t.footer.productLinks },
-          { title: t.footer.solutions, links: t.footer.solutionLinks },
-          { title: t.footer.support, links: t.footer.supportLinks },
-          { title: t.footer.about, links: t.footer.aboutLinks }
-        ].map((col, i) => (
-          <div key={i} className="mb-footer-col">
-            <h4>{col.title}</h4>
-            <ul>
-              {col.links.map((link, j) => (
-                <li key={j}><a href={link.href}>{link.label}</a></li>
-              ))}
-            </ul>
-          </div>
-        ))}
+
+        <div className="mb-footer-col mb-footer-contact">
+          <h4>{t.footer.contactTitle}</h4>
+          <ul className="mb-footer-contact-list">
+            <li>
+              <span className="mb-footer-contact-label">{t.contact.emailLabel}</span>
+              <a href={`mailto:${t.contact.email}`} className="mb-footer-contact-value">
+                {t.contact.email}
+              </a>
+            </li>
+            <li>
+              <span className="mb-footer-contact-label">{t.contact.phoneLabel}</span>
+              <a href={`tel:${t.contact.phone.replace(/\s/g, '')}`} className="mb-footer-contact-value">
+                {t.contact.phone}
+              </a>
+            </li>
+            <li>
+              <span className="mb-footer-contact-label">{t.footer.locationTitle}</span>
+              <span className="mb-footer-contact-value">{t.contact.address}</span>
+            </li>
+          </ul>
+        </div>
+
+        <nav className="mb-footer-col mb-footer-support" aria-label={t.footer.support}>
+          <h4>{t.footer.support}</h4>
+          <ul>
+            {t.footer.supportLinks.map((link, j) => (
+              <li key={j}>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
       <div className="mb-footer-bottom">
         <p>{t.footer.copyright}</p>
@@ -541,11 +632,12 @@ const MainPage = () => {
       <div className="mb-page" dir={language === 'ar' ? 'rtl' : 'ltr'}>
         <Header />
         <HeroSlider t={t} />
+        <AboutSection t={t} />
         <NewsSection t={t} />
         <SolutionsSection t={t} />
-        <FeaturedSection t={t} />
-        <PlatformSection t={t} />
+        <HybridInverterSection t={t} />
         <TechSection t={t} />
+        <ProductShowcaseSection t={t} />
         <ContactSection t={t} />
         <FooterSection t={t} />
       </div>

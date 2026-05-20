@@ -111,11 +111,13 @@ const Header = () => {
     return activeSection === section ? 'active' : '';
   };
 
+  const nextLang = language === 'ar' ? 'en' : 'ar';
+
   return (
-    <header className={`shared-header${scrolled ? ' scrolled' : ''}`}>
+    <header className={`shared-header${scrolled ? ' scrolled' : ''}`} dir="ltr">
       <div className="shared-container header-container">
         <div className="logo">
-          <Link href="/">
+          <Link href="/" dir="ltr">
             <img src="/mbsolarlogo.png" alt="MB Solar Power Logo" className="logo-image" />
             <span className="logo-company-name">MB Solar</span>
           </Link>
@@ -132,22 +134,16 @@ const Header = () => {
         {languageContext && (
           <div className="language-switcher-header">
             <button
-              onClick={() => setLanguage('en')}
-              style={{
-                background: language === 'en' ? 'rgba(59, 130, 246, 0.8)' : 'rgba(255, 255, 255, 0.1)',
-                fontWeight: language === 'en' ? 'bold' : 'normal'
-              }}
+              type="button"
+              className="lang-switch-btn lang-switch-btn--solo"
+              onClick={() => setLanguage(nextLang)}
+              aria-label={
+                nextLang === 'en'
+                  ? (language === 'ar' ? 'التبديل إلى الإنجليزية' : 'Switch to English')
+                  : (language === 'ar' ? 'التبديل إلى العربية' : 'Switch to Arabic')
+              }
             >
-              EN
-            </button>
-            <button
-              onClick={() => setLanguage('ar')}
-              style={{
-                background: language === 'ar' ? 'rgba(59, 130, 246, 0.8)' : 'rgba(255, 255, 255, 0.1)',
-                fontWeight: language === 'ar' ? 'bold' : 'normal'
-              }}
-            >
-              AR
+              {nextLang.toUpperCase()}
             </button>
           </div>
         )}

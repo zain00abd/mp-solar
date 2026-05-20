@@ -104,7 +104,7 @@
   margin-top: clamp(1.75rem, 4vw, 3.2rem);
   font-size: 1.06rem;
   font-weight: 500;
-  color: var(--ab-text-80);
+  color: var(--ab-text);
   max-width: min(52ch, 100%);
   line-height: 1.78;
   overflow-wrap: anywhere;
@@ -165,11 +165,18 @@
 [dir="rtl"] .ab-sec-heading--label-only::before {
   font-family: 'Noto Sans Arabic', 'Segoe UI', Tahoma, Arial, sans-serif;
   font-weight: 800;
+  text-transform: none;
   letter-spacing: 0;
   text-shadow: none;
   color: #2b3648;
   overflow-wrap: normal;
   word-break: normal;
+  white-space: normal;
+  line-height: 1.1;
+}
+
+[dir="rtl"] .ab-sec-heading--label-only .ab-sec-sub {
+  color: var(--ab-text);
 }
 
 .ab-sr-only {
@@ -765,6 +772,13 @@
     letter-spacing: 0.035em;
     color: rgba(255,255,255,0.11);
   }
+
+  [dir="rtl"] .ab-sec-heading--label-only::before {
+    letter-spacing: 0;
+    text-transform: none;
+    text-shadow: none;
+    color: #2b3648;
+  }
   .ab-sec-heading--label-only .ab-sec-sub {
     margin-top: clamp(2.1rem, 9vw, 3.25rem);
     font-size: 0.92rem;
@@ -782,6 +796,11 @@
   .ab-sec-heading--label-only::before {
     font-size: clamp(1.45rem, 8.8vw, 2.15rem);
     letter-spacing: 0.02em;
+  }
+
+  [dir="rtl"] .ab-sec-heading--label-only::before {
+    letter-spacing: 0;
+    color: #2b3648;
   }
   .ab-sec-heading--label-only .ab-sec-sub {
     margin-top: clamp(2rem, 9vw, 2.95rem);

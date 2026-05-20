@@ -34,8 +34,9 @@ nav ul li a {
     padding: 0 15px;
 }
 
-/* Shared Header Styles */
+/* Shared Header Styles — layout stays LTR when page is Arabic (RTL) */
 .shared-header {
+    direction: ltr;
     background-color: transparent;
     box-shadow: none;
     position: fixed;
@@ -77,9 +78,11 @@ nav ul li a {
 
 .logo a {
     display: flex;
+    flex-direction: row;
     align-items: center;
     gap: 16px;
     text-decoration: none;
+    direction: ltr;
 }
 
 .logo-company-name {
@@ -94,6 +97,8 @@ nav ul li a {
     overflow: hidden;
     pointer-events: none;
     transition: opacity 0.35s ease, max-width 0.4s ease;
+    direction: ltr;
+    unicode-bidi: isolate;
 }
 
 .shared-header.scrolled .logo-company-name {
@@ -176,52 +181,88 @@ nav ul li a.active::after {
     background-color: rgba(251, 191, 50, 0.12);
 }
 
-/* Language Switcher in Header */
+/* Language Switcher — single toggle (shows target language only) */
 .language-switcher-header {
-    display: flex;
-    gap: 5px;
+    display: inline-flex;
     align-items: center;
-    margin-right: 20px;
+    margin-inline-end: 20px;
+    flex-shrink: 0;
 }
 
-.language-switcher-header button {
-    padding: 6px 12px;
-    border-radius: 20px;
+.lang-switch-btn {
+    position: relative;
+    min-width: 40px;
+    padding: 6px 14px;
     border: none;
-    color: white;
+    border-radius: 999px;
+    background: transparent;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
     cursor: pointer;
-    font-size: 13px;
-    font-weight: normal;
-    transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.1);
+    transition:
+        color 0.25s ease,
+        background 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.15s ease,
+        border-color 0.25s ease;
 }
 
-.language-switcher-header button:hover {
-    background: rgba(59, 130, 246, 0.6);
-    transform: scale(1.05);
+.lang-switch-btn--solo {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 4px 16px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
-.language-switcher-header button:active {
-    transform: scale(0.95);
+.shared-header.scrolled .lang-switch-btn--solo {
+    background: rgba(0, 0, 0, 0.25);
+    border-color: rgba(251, 191, 50, 0.22);
+}
+
+.lang-switch-btn--solo:hover {
+    color: var(--secondary);
+    background: var(--primary);
+    border-color: var(--primary);
+    box-shadow:
+        0 2px 10px rgba(251, 191, 50, 0.4),
+        0 0 0 1px rgba(251, 191, 50, 0.25);
+}
+
+.lang-switch-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.lang-switch-btn:active {
+    transform: scale(0.96);
 }
 
 /* RTL Support for Header */
-[dir="rtl"] .language-switcher-header {
-    margin-right: 0;
-    margin-left: 20px;
+/* Header keeps LTR layout when page is RTL */
+[dir="rtl"] .shared-header .header-container {
+    flex-direction: row;
 }
 
-[dir="rtl"] nav ul {
-    flex-direction: row-reverse;
+[dir="rtl"] .shared-header nav ul {
+    flex-direction: row;
 }
 
-[dir="rtl"] nav ul li a::after {
-    left: auto;
-    right: 0;
+[dir="rtl"] .shared-header .language-switcher-header {
+    margin-right: 20px;
+    margin-left: 0;
 }
 
-[dir="rtl"] .header-container {
-    flex-direction: row-reverse;
+[dir="rtl"] .shared-header nav ul li a::after {
+    left: 0;
+    right: auto;
 }
 
 /* Shared Footer Styles */
@@ -344,13 +385,14 @@ nav ul li a.active::after {
     }
     
     .language-switcher-header {
-        margin-right: 10px;
-        margin-left: 0;
+        margin-inline-end: 8px;
+        margin-inline-start: 0;
     }
-    
-    [dir="rtl"] .language-switcher-header {
-        margin-right: 0;
-        margin-left: 10px;
+
+    .lang-switch-btn--solo {
+        min-width: 36px;
+        padding: 5px 11px;
+        font-size: 10px;
     }
     
     .logo-image {
