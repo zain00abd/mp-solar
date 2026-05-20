@@ -41,12 +41,17 @@ export function firestoreSetupJsonResponse() {
 export function isFirebaseNotConfigured(error) {
   if (!error) return false;
   const msg = String(error.message || '');
+  const code = error.code;
   return (
     /Firebase Admin is not configured/i.test(msg) ||
     /service account file not found/i.test(msg) ||
     /FIREBASE_SERVICE_ACCOUNT_KEY/i.test(msg) ||
     /Could not load the default credentials/i.test(msg) ||
-    /Unable to detect a Project Id/i.test(msg)
+    /Unable to detect a Project Id/i.test(msg) ||
+    /invalid_grant/i.test(msg) ||
+    /invalid_client/i.test(msg) ||
+    code === 16 ||
+    /UNAUTHENTICATED/i.test(msg)
   );
 }
 
