@@ -1,0 +1,494 @@
+/* ============================================================
+   MB SOLAR — LIGHT THEME
+   Activated via <html data-theme="light">. Toggled from the header.
+   Strategy: remap each page's design tokens to a clean light palette,
+   then patch the few hard-coded (non-variable) surfaces so the whole
+   site reads cleanly in light mode. The brand gold + navy are kept.
+   ============================================================ */
+
+:root {
+  /* Shared light palette (referenced by the overrides below) */
+  --lt-canvas: #eef1f6;
+  --lt-surface: #ffffff;
+  --lt-surface-2: #f3f6fa;
+  --lt-surface-3: #e7ecf3;
+  --lt-ink: #1b2433;
+  --lt-ink-80: rgba(27, 36, 51, 0.82);
+  --lt-ink-55: rgba(27, 36, 51, 0.58);
+  --lt-ink-40: rgba(27, 36, 51, 0.42);
+  --lt-border: rgba(27, 36, 51, 0.12);
+  --lt-border-faint: rgba(27, 36, 51, 0.06);
+  --lt-gold: #c98a04;
+  --lt-gold-h: #e0a106;
+  --lt-navy: #202d42;
+}
+
+/* ------------------------------------------------------------
+   1. Token remaps — one block per page's variable group.
+   `html[data-theme="light"]` (0,1,1) beats each file's :root (0,1,0),
+   so these win regardless of stylesheet import order.
+   The "navy" tokens are intentionally NOT remapped: they stay dark so
+   gold buttons keep dark text and a few navy accent bands stay on-brand.
+   ------------------------------------------------------------ */
+html[data-theme='light'] {
+  /* shared.css — header / legacy footer */
+  --primary: var(--lt-gold);
+  --accent: var(--lt-gold-h);
+  --dark-bg: var(--lt-canvas);
+  --dark-surface: var(--lt-surface);
+  --dark-card: var(--lt-surface);
+  --text-light: var(--lt-ink);
+  --text-muted: var(--lt-ink-55);
+  --border: var(--lt-border);
+
+  /* (home)/style.css */
+  --mb-primary: var(--lt-gold);
+  --mb-primary-h: var(--lt-gold-h);
+  --mb-dark: var(--lt-surface);
+  --mb-dark-2: var(--lt-canvas);
+  --mb-dark-3: var(--lt-surface-3);
+  --mb-dark-4: var(--lt-surface);
+  --mb-text: var(--lt-ink);
+  --mb-text-80: var(--lt-ink-80);
+  --mb-text-50: var(--lt-ink-55);
+  --mb-text-30: var(--lt-ink-40);
+  --mb-border: var(--lt-border);
+  --mb-border-faint: var(--lt-border-faint);
+
+  /* products/style.css */
+  --phub-gold: var(--lt-gold);
+  --phub-gold-bg: rgba(201, 138, 4, 0.12);
+  --phub-canvas: var(--lt-canvas);
+  --phub-dark: var(--lt-surface);
+  --phub-dark2: var(--lt-canvas);
+  --phub-dark3: var(--lt-surface);
+  --phub-border: var(--lt-border);
+  --phub-text: var(--lt-ink);
+  --phub-muted: var(--lt-ink-55);
+
+  /* product-detail.css */
+  --pd-canvas: var(--lt-canvas);
+  --pd-gold: var(--lt-gold);
+  --pd-gold-dim: rgba(201, 138, 4, 0.42);
+  --pd-border: var(--lt-border);
+  --pd-text: var(--lt-ink);
+  --pd-muted: var(--lt-ink-55);
+
+  /* about/style.css */
+  --ab-primary: var(--lt-gold);
+  --ab-primary-h: var(--lt-gold-h);
+  --ab-dark: var(--lt-canvas);
+  --ab-dark-2: var(--lt-surface);
+  --ab-dark-3: var(--lt-surface-3);
+  --ab-dark-4: var(--lt-surface);
+  --ab-text: var(--lt-ink);
+  --ab-text-80: var(--lt-ink-80);
+  --ab-text-50: var(--lt-ink-55);
+  --ab-text-30: var(--lt-ink-40);
+  --ab-border: var(--lt-border);
+
+  /* panels / inverters / batteries (legacy listing pages) */
+  --card-bg: var(--lt-surface);
+  --card-bg-light: var(--lt-surface-2);
+  --text-primary: var(--lt-ink);
+  --text-secondary: var(--lt-ink-80);
+  --border-dark: var(--lt-border);
+}
+
+/* ------------------------------------------------------------
+   2. Base page surface
+   ------------------------------------------------------------ */
+html[data-theme='light'] body {
+  background: var(--lt-canvas);
+  color: var(--lt-ink);
+}
+
+/* Keep dark theme solid even on a light-preference OS */
+html[data-theme='dark'] body {
+  background: #0d1520;
+  color: #f8fafc;
+}
+
+/* ------------------------------------------------------------
+   3. Header
+   Default (inner pages with a light canvas, e.g. products / product
+   detail): a clean translucent white bar so nav text stays legible.
+   On the hero pages (home / about) the non-scrolled header floats
+   transparently over the dark hero — exactly like dark mode — and only
+   turns into the white bar once the user scrolls.
+   ------------------------------------------------------------ */
+html[data-theme='light'] .shared-header {
+  background: rgba(255, 255, 255, 0.86);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--lt-border-faint);
+  box-shadow: 0 2px 18px rgba(20, 30, 50, 0.06);
+}
+
+html[data-theme='light'] .shared-header.scrolled {
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 4px 22px rgba(20, 30, 50, 0.1);
+  border-bottom: 1px solid rgba(201, 138, 4, 0.22);
+}
+
+/* Hero pages: transparent floating header over the dark hero at the top.
+   Nav text + controls revert to the light (dark-mode) treatment so they
+   stay readable over the image; the white bar returns on scroll. */
+html[data-theme='light'] .mb-page > .shared-header:not(.scrolled),
+html[data-theme='light'] .about-page > .shared-header:not(.scrolled) {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom-color: transparent;
+  box-shadow: none;
+  --text-light: #f5f5f5;
+}
+
+html[data-theme='light'] .mb-page > .shared-header:not(.scrolled) .lang-switch-btn--solo,
+html[data-theme='light'] .about-page > .shared-header:not(.scrolled) .lang-switch-btn--solo {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.88);
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme='light'] .mb-page > .shared-header:not(.scrolled) .theme-toggle-track,
+html[data-theme='light'] .about-page > .shared-header:not(.scrolled) .theme-toggle-track {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+html[data-theme='light'] .logo-company-name {
+  color: var(--lt-navy);
+}
+
+/* Pill controls on the light header */
+html[data-theme='light'] .lang-switch-btn--solo {
+  background: rgba(27, 36, 51, 0.05);
+  color: var(--lt-ink);
+  border: 1px solid rgba(27, 36, 51, 0.14);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 2px 8px rgba(20, 30, 50, 0.05);
+}
+
+html[data-theme='light'] .shared-header.scrolled .lang-switch-btn--solo {
+  background: rgba(27, 36, 51, 0.06);
+  border-color: rgba(201, 138, 4, 0.3);
+}
+
+html[data-theme='light'] .lang-switch-btn--solo:hover {
+  color: #fff;
+  background: var(--lt-gold);
+  border-color: var(--lt-gold);
+}
+
+html[data-theme='light'] .theme-toggle-track {
+  background: rgba(27, 36, 51, 0.06);
+  border-color: rgba(27, 36, 51, 0.14);
+}
+
+html[data-theme='light'] .shared-header.scrolled .theme-toggle-track {
+  background: rgba(27, 36, 51, 0.07);
+  border-color: rgba(201, 138, 4, 0.25);
+}
+
+html[data-theme='light'] .theme-toggle-thumb {
+  color: #fff;
+}
+
+/* Brands dropdown (desktop flyout) */
+html[data-theme='light'] .nav-brands-panel {
+  border-color: rgba(201, 138, 4, 0.3);
+  box-shadow: 0 24px 56px rgba(20, 30, 50, 0.16), inset 0 0 0 1px rgba(27, 36, 51, 0.04);
+}
+
+html[data-theme='light'] .nav-brands-list {
+  border-inline-end-color: var(--lt-border);
+}
+
+html[data-theme='light'] .nav-brands-list-name,
+html[data-theme='light'] .nav-brands-cats-list a {
+  color: var(--lt-ink-80);
+}
+
+html[data-theme='light'] .nav-brands-list-row:hover,
+html[data-theme='light'] .nav-brands-list-row.is-active {
+  background: rgba(201, 138, 4, 0.1);
+}
+
+/* ------------------------------------------------------------
+   4. Mobile navigation drawer
+   ------------------------------------------------------------ */
+@media (max-width: 992px) {
+  html[data-theme='light'] nav {
+    background: linear-gradient(180deg, #ffffff 0%, #eef1f6 100%);
+    box-shadow: -8px 0 40px rgba(20, 30, 50, 0.18);
+    border-left: 1px solid var(--lt-border);
+  }
+
+  html[data-theme='light'] nav[dir='rtl'] {
+    border-right: 1px solid var(--lt-border);
+    box-shadow: 8px 0 40px rgba(20, 30, 50, 0.18);
+  }
+
+  html[data-theme='light'] .mobile-nav-drawer-head {
+    border-bottom-color: var(--lt-border);
+  }
+
+  html[data-theme='light'] .mobile-nav-close {
+    background: rgba(27, 36, 51, 0.05);
+    border-color: var(--lt-border);
+  }
+
+  html[data-theme='light'] nav ul li {
+    border-bottom-color: var(--lt-border-faint);
+  }
+
+  html[data-theme='light'] .nav-brands-list-row {
+    background: rgba(27, 36, 51, 0.03);
+    border-bottom-color: var(--lt-border-faint);
+  }
+
+  html[data-theme='light'] .nav-brands-list-sub {
+    background: rgba(27, 36, 51, 0.04);
+  }
+
+  html[data-theme='light'] .nav-brands-list-sub li {
+    border-bottom-color: var(--lt-border-faint);
+  }
+
+  html[data-theme='light'] .nav-brands-list-sub li a {
+    color: var(--lt-ink-55);
+  }
+
+  html[data-theme='light'] .nav-brands-list-toggle {
+    color: var(--lt-ink-40);
+  }
+
+  html[data-theme='light'] .mobile-nav-lang {
+    border-top-color: var(--lt-border);
+  }
+}
+
+/* ------------------------------------------------------------
+   5. Home page (mb-*)
+   ------------------------------------------------------------ */
+html[data-theme='light'] .mb-page {
+  background-image:
+    radial-gradient(ellipse 75% 50% at 88% 55%, rgba(201, 138, 4, 0.05) 0%, transparent 52%),
+    radial-gradient(ellipse 100% 45% at 50% 100%, rgba(27, 36, 51, 0.04) 0%, transparent 48%);
+}
+
+/* Hero image overlay — much lighter so the photo shows through; keeps a
+   gentle gradient (helped by the title text-shadow) for white-text contrast */
+html[data-theme='light'] .mb-hero-overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.04) 0%,
+    rgba(0, 0, 0, 0.12) 50%,
+    rgba(0, 0, 0, 0.24) 85%,
+    rgba(0, 0, 0, 0.32) 100%
+  );
+}
+
+/* Faded section watermarks */
+html[data-theme='light'] .mb-sec-heading::before {
+  color: rgba(27, 36, 51, 0.06);
+}
+
+html[data-theme='light'] .mb-sec-heading--label-only::before,
+html[data-theme='light'][dir='rtl'] .mb-sec-heading--label-only::before {
+  color: rgba(27, 36, 51, 0.1);
+  text-shadow: none;
+}
+
+/* Solution cards — light surfaces with dark copy */
+html[data-theme='light'] .mb-sol-card,
+html[data-theme='light'] .mb-sol-card--panels,
+html[data-theme='light'] .mb-sol-card--inverters,
+html[data-theme='light'] .mb-sol-card--batteries {
+  background: linear-gradient(165deg, #ffffff 0%, #eef2f7 100%);
+  box-shadow: inset 0 0 0 1px rgba(27, 36, 51, 0.08);
+}
+
+html[data-theme='light'] .mb-sol-card--panels:hover,
+html[data-theme='light'] .mb-sol-card--inverters:hover,
+html[data-theme='light'] .mb-sol-card--batteries:hover,
+html[data-theme='light'] .mb-sol-card:hover {
+  background: linear-gradient(165deg, #ffffff 0%, #e7edf5 100%);
+  box-shadow: inset 0 0 0 1px rgba(201, 138, 4, 0.4), 0 18px 40px rgba(20, 30, 50, 0.1);
+}
+
+html[data-theme='light'] .mb-sol-overlay,
+html[data-theme='light'] .mb-sol-card:hover .mb-sol-overlay {
+  background: linear-gradient(180deg, transparent 0%, rgba(27, 36, 51, 0.02) 60%, rgba(27, 36, 51, 0.06) 100%);
+}
+
+html[data-theme='light'] .mb-sol-title {
+  color: var(--lt-ink);
+}
+
+html[data-theme='light'] .mb-sol-desc {
+  color: var(--lt-ink-55);
+}
+
+/* Contact form fields */
+html[data-theme='light'] .mb-contact-form input,
+html[data-theme='light'] .mb-contact-form textarea {
+  background: #ffffff;
+  border-color: var(--lt-border);
+  color: var(--lt-ink);
+}
+
+html[data-theme='light'] .mb-contact-form input:focus,
+html[data-theme='light'] .mb-contact-form textarea:focus {
+  background: rgba(201, 138, 4, 0.05);
+  border-color: var(--lt-gold);
+}
+
+/* ------------------------------------------------------------
+   6. Footer (light surface for full cohesion)
+   ------------------------------------------------------------ */
+html[data-theme='light'] .mb-footer {
+  background: linear-gradient(180deg, #ffffff 0%, #eef1f6 100%);
+  border-top: 1px solid var(--lt-border);
+}
+
+html[data-theme='light'] .mb-footer::before {
+  background: linear-gradient(90deg, transparent, rgba(201, 138, 4, 0.55), transparent);
+}
+
+html[data-theme='light'] .mb-footer-bottom {
+  border-top-color: var(--lt-border-faint);
+}
+
+/* ------------------------------------------------------------
+   7. Products hub (phub-*)
+   ------------------------------------------------------------ */
+html[data-theme='light'] .phub-page {
+  background-image:
+    radial-gradient(ellipse 75% 50% at 88% 55%, rgba(201, 138, 4, 0.05) 0%, transparent 52%),
+    radial-gradient(ellipse 100% 45% at 50% 100%, rgba(27, 36, 51, 0.04) 0%, transparent 48%);
+}
+
+html[data-theme='light'] .phub-cat-count,
+html[data-theme='light'] .phub-count {
+  background: rgba(27, 36, 51, 0.06);
+}
+
+html[data-theme='light'] .phub-card:hover {
+  background-color: rgba(201, 138, 4, 0.07);
+  box-shadow: 0 0 0 1px rgba(201, 138, 4, 0.18), 0 14px 32px rgba(20, 30, 50, 0.1);
+}
+
+html[data-theme='light'] .phub-card-name {
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--lt-ink);
+  border: 1px solid var(--lt-border);
+}
+
+html[data-theme='light'] .phub-btn--ghost:hover {
+  background: rgba(27, 36, 51, 0.05);
+}
+
+/* ------------------------------------------------------------
+   8. Product detail (pd-*)
+   ------------------------------------------------------------ */
+html[data-theme='light'] .pd-page {
+  background-image:
+    radial-gradient(ellipse 75% 50% at 88% 55%, rgba(201, 138, 4, 0.05) 0%, transparent 52%),
+    radial-gradient(ellipse 100% 45% at 50% 100%, rgba(27, 36, 51, 0.04) 0%, transparent 48%);
+}
+
+html[data-theme='light'] .pd-head-rule {
+  box-shadow: 0 0 20px rgba(201, 138, 4, 0.16), 0 1px 0 rgba(27, 36, 51, 0.05);
+}
+
+html[data-theme='light'] .pd-gallery-placeholder {
+  background: rgba(27, 36, 51, 0.05);
+}
+
+html[data-theme='light'] .pd-gallery-arrow {
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--lt-border);
+}
+
+html[data-theme='light'] .pd-gallery-arrow:hover {
+  background: var(--lt-gold);
+  color: #fff;
+}
+
+html[data-theme='light'] .pd-gallery-dots button {
+  background: rgba(27, 36, 51, 0.2);
+}
+
+html[data-theme='light'] .pd-gallery-dots button:hover {
+  background: rgba(27, 36, 51, 0.35);
+}
+
+html[data-theme='light'] .prodet-3-features li {
+  color: var(--lt-ink-80);
+}
+
+/* ------------------------------------------------------------
+   9. About page (ab-*)
+   The hero, stats bar and CTA stay dark/navy as deliberate accent
+   bands — restore light text within them via scoped token values.
+   ------------------------------------------------------------ */
+html[data-theme='light'] .ab-hero,
+html[data-theme='light'] .ab-stats,
+html[data-theme='light'] .ab-cta {
+  /* Explicit color so headings that only inherit (no own color) stay light */
+  color: #ffffff;
+  --ab-text: #ffffff;
+  --ab-text-80: rgba(255, 255, 255, 0.82);
+  --ab-text-50: rgba(255, 255, 255, 0.6);
+  --ab-text-30: rgba(255, 255, 255, 0.45);
+  --ab-border: rgba(255, 255, 255, 0.14);
+}
+
+/* Hero image overlay — much lighter; content sits at the bottom so the
+   gradient is weighted there to keep the bottom text readable */
+html[data-theme='light'] .ab-hero-overlay {
+  background: linear-gradient(
+    160deg,
+    rgba(13, 21, 32, 0.1) 0%,
+    rgba(13, 21, 32, 0.26) 55%,
+    rgba(13, 21, 32, 0.55) 100%
+  );
+}
+
+html[data-theme='light'] .ab-sec-heading--label-only::before,
+html[data-theme='light'][dir='rtl'] .ab-sec-heading--label-only::before {
+  color: rgba(27, 36, 51, 0.1);
+  text-shadow: none;
+}
+
+html[data-theme='light'] .ab-sec-heading--outer::after {
+  background: linear-gradient(
+    180deg,
+    rgba(231, 236, 243, 0.95) 0%,
+    rgba(231, 236, 243, 0.5) 52%,
+    rgba(231, 236, 243, 0) 100%
+  );
+  box-shadow: 0 1px 0 rgba(27, 36, 51, 0.04), 0 18px 36px rgba(20, 30, 50, 0.06);
+}
+
+html[data-theme='light'] .ab-svc-grid,
+html[data-theme='light'] .ab-why-grid {
+  background: var(--lt-border);
+}
+
+html[data-theme='light'] .ab-btn-outline {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* ------------------------------------------------------------
+   10. Legacy category pages (panels / inverters / batteries)
+   ------------------------------------------------------------ */
+html[data-theme='light'] .product-card {
+  box-shadow: 0 8px 30px rgba(20, 30, 50, 0.1);
+}
+
+html[data-theme='light'] .product-card:hover {
+  box-shadow: 0 20px 40px rgba(20, 30, 50, 0.14);
+}

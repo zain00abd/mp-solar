@@ -13,12 +13,13 @@ import {
 import { MOCK_INVERTERS } from '@/lib/mockInverters';
 import { MOCK_PANELS }    from '@/lib/mockPanels';
 import { MOCK_BATTERIES } from '@/lib/mockBatteries';
+import { getBrandBySlug, brandLabel, productMatchesBrand, BRAND_SLUGS } from '@/lib/brands';
 import './style.css';
 
 /* ─── Translations ─────────────────────────────────────────── */
 const T = {
   en: {
-    header: { home:'Home', about:'About Us', products:'Products', projects:'Projects', contact:'Contact' },
+    header: { home:'Home', about:'About Us', products:'Products', brands:'Brands', allProducts:'All Products', panels:'Solar Panels', inverters:'Inverters', batteries:'Batteries', projects:'Projects', contact:'Contact' },
     title: 'Our Products',
     subtitle: 'Explore our full range of solar energy solutions — panels, inverters, and battery storage systems from leading manufacturers.',
     cats: [
@@ -36,7 +37,7 @@ const T = {
     unknownCompany: 'Other manufacturers',
   },
   ar: {
-    header: { home:'الرئيسية', about:'من نحن', products:'المنتجات', projects:'المشاريع', contact:'اتصل بنا' },
+    header: { home:'الرئيسية', about:'من نحن', products:'المنتجات', brands:'البراندات', allProducts:'كل المنتجات', panels:'الألواح الشمسية', inverters:'المحولات', batteries:'البطاريات', projects:'المشاريع', contact:'اتصل بنا' },
     title: 'منتجاتنا',
     subtitle: 'تصفح مجموعتنا الكاملة من حلول الطاقة الشمسية — الألواح والمحولات وأنظمة تخزين البطاريات من كبار المصنعين.',
     cats: [
@@ -156,6 +157,7 @@ function ProductsHubInner() {
   const searchParams = useSearchParams();
   const { language: lang } = useLanguage();
   const [activeCat, setActiveCat] = useState('all');
+  const [activeBrand, setActiveBrand] = useState('');
   const [panels,    setPanels]    = useState([]);
   const [inverters, setInverters] = useState([]);
   const [batteries, setBatteries] = useState([]);
@@ -167,10 +169,19 @@ function ProductsHubInner() {
 
   useEffect(() => {
     const cat = searchParams.get('cat');
+    const brand = searchParams.get('brand') || '';
     if (cat && VALID_CATS.has(cat)) {
       setActiveCat(cat);
     }
+    setActiveBrand(BRAND_SLUGS.has(brand) ? brand : '');
   }, [searchParams]);
+
+  const brandInfo = useMemo(() => getBrandBySlug(activeBrand), [activeBrand]);
+
+  const filterBrand = (list) => {
+    if (!brandInfo) return list;
+    return list.filter((p) => productMatchesBrand(p, brandInfo.slug));
+  };
 
   /* fetch all three product types in parallel, fall back to mock data */
   useEffect(() => {
@@ -191,18 +202,24 @@ function ProductsHubInner() {
   }, []);
 
   /* products to display based on active category */
-  const { items, catLabel } = useMemo(() => {
+  const { items, catLabel, sectionTitle } = useMemo(() => {
+    const fp = filterBrand(panels);
+    const fi = filterBrand(inverters);
+    const fb = filterBrand(batteries);
     let list = [];
-    if (activeCat === 'all' || activeCat === 'panels') list = [...list, ...panels.map((p) => ({ ...p, _cat: 'panels' }))];
-    if (activeCat === 'all' || activeCat === 'inverters') list = [...list, ...inverters.map((p) => ({ ...p, _cat: 'inverters' }))];
-    if (activeCat === 'all' || activeCat === 'batteries') list = [...list, ...batteries.map((p) => ({ ...p, _cat: 'batteries' }))];
+    if (activeCat === 'all' || activeCat === 'panels') list = [...list, ...fp.map((p) => ({ ...p, _cat: 'panels' }))];
+    if (activeCat === 'all' || activeCat === 'inverters') list = [...list, ...fi.map((p) => ({ ...p, _cat: 'inverters' }))];
+    if (activeCat === 'all' || activeCat === 'batteries') list = [...list, ...fb.map((p) => ({ ...p, _cat: 'batteries' }))];
     const label = t.cats.find((c) => c.id === activeCat)?.label || '';
-    return { items: list, catLabel: label };
-  }, [activeCat, panels, inverters, batteries, t]);
+    const title = brandInfo
+      ? `${brandLabel(brandInfo, lang)}${label ? ` — ${label}` : ''}`
+      : label;
+    return { items: list, catLabel: label, sectionTitle: title };
+  }, [activeCat, panels, inverters, batteries, t, brandInfo, lang]);
 
   const companyGroups = useMemo(
-    () => buildCompanyGroups(panels, inverters, batteries, activeCat, t.unknownCompany, lang),
-    [panels, inverters, batteries, activeCat, t.unknownCompany, lang]
+    () => buildCompanyGroups(filterBrand(panels), filterBrand(inverters), filterBrand(batteries), activeCat, t.unknownCompany, lang),
+    [panels, inverters, batteries, activeCat, t.unknownCompany, lang, brandInfo]
   );
 
   const subCatLabel = (catId) => t.cats.find((c) => c.id === catId)?.label || catId;
@@ -246,7 +263,7 @@ function ProductsHubInner() {
         {/* ── Products Grid ── */}
         <main className="phub-main phub-container">
           <div className="phub-section-header">
-            <h2 className="phub-section-title">{catLabel}</h2>
+            <h2 className="phub-section-title">{sectionTitle}</h2>
             <span className="phub-count">{items.length}</span>
           </div>
 

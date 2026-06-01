@@ -16,6 +16,11 @@ const translations = {
       home: "Home",
       about: "About",
       products: "Products",
+      brands: "Brands",
+      allProducts: "All Products",
+      panels: "Solar Panels",
+      inverters: "Inverters",
+      batteries: "Batteries",
       projects: "Projects",
       contact: "Contact"
     },
@@ -126,6 +131,11 @@ const translations = {
       home: "الرئيسية",
       about: "من نحن",
       products: "المنتجات",
+      brands: "البراندات",
+      allProducts: "كل المنتجات",
+      panels: "الألواح الشمسية",
+      inverters: "المحولات",
+      batteries: "البطاريات",
       projects: "المشاريع",
       contact: "اتصل بنا"
     },
@@ -448,23 +458,6 @@ const HybridInverterSection = ({ t }) => {
   );
 };
 
-/* ─── Tech Section ────────────────────────────────── */
-const TechSection = ({ t }) => (
-  <section className="mb-tech">
-    <SectionHeading label={t.tech.label} title={t.tech.heading} subtitle={t.tech.subheading} />
-    <div className="mb-container">
-      <div className="mb-tech-layout">
-        <div className="mb-tech-visual">
-          <Image src="/Solar Energy.jpg" alt="Smart Solar Technology" width={600} height={450} style={{ objectFit: 'cover', maxWidth: '100%', height: 'auto' }} />
-        </div>
-        <div className="mb-tech-copy">
-          <span className="mb-tech-badge">{t.tech.badge}</span>
-          <p className="mb-tech-desc">{t.tech.description}</p>
-        </div>
-      </div>
-    </div>
-  </section>
-);
 
 const PRODUCT_SHOWCASE_IMG =
   'https://www.deyeinverter.com/template/en/images/init-6-12.png';
@@ -575,7 +568,6 @@ const MainPageContent = () => {
       <NewsSection t={t} />
       <SolutionsSection t={t} />
       <HybridInverterSection t={t} />
-      <TechSection t={t} />
       <ProductShowcaseSection t={t} />
       <ContactSection t={t} />
         <Footer />

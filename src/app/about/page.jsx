@@ -30,7 +30,7 @@ const translations = {
     },
     stats: [
       { num: '2014', label: 'Founded' },
-      { num: '10+',  label: 'Years of Experience' },
+      { num: '12+',  label: 'Years of Experience' },
       { num: '24/7', label: 'Customer Support' },
       { num: '5+',   label: 'Service Sectors' },
     ],
@@ -120,10 +120,10 @@ const translations = {
       sub: 'تأسست شركة المحترف عام 2014 لتصبح علامة موثوقة في قطاع الطاقة الشمسية والمتجددة، تقدم حلولاً مبتكرة وموثوقة من أول استفسار وحتى ما بعد البيع.',
     },
     stats: [
-      { num: '٢٠١٤', label: 'سنة التأسيس' },
-      { num: '+١٠',  label: 'سنوات من الخبرة' },
-      { num: '٢٤/٧', label: 'دعم مستمر' },
-      { num: '+٥',   label: 'قطاعات خدمية' },
+      { num: '2014', label: 'سنة التأسيس' },
+      { num: '12+',  label: 'سنوات من الخبرة' },
+      { num: '24/7', label: 'دعم مستمر' },
+      { num: '5+',   label: 'قطاعات خدمية' },
     ],
     overview: {
       label: 'نبذة',

@@ -824,58 +824,6 @@ html.mb-home-snap {
   text-transform: uppercase;
 }
 
-/* ============================================================
-   TECH / VSG SECTION
-   ============================================================ */
-.mb-tech {
-  background: transparent;
-  padding: 0 0 110px;
-}
-
-.mb-tech-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
-  align-items: center;
-}
-
-.mb-tech-visual {
-  width: 100%;
-  min-width: 0;
-}
-
-.mb-tech-visual img {
-  width: 100%;
-  border-radius: 10px;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.60);
-  display: block;
-}
-
-.mb-tech-copy {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  align-items: flex-start;
-  min-width: 0;
-}
-
-.mb-tech-desc {
-  margin: 0;
-  font-size: 0.97rem;
-  color: var(--mb-text-50);
-  line-height: 1.9;
-  overflow-wrap: anywhere;
-}
-
-.mb-tech-badge {
-  display: block;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--mb-primary);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 0;
-}
 
 /* ============================================================
    PRODUCT SHOWCASE — Deye init-6 (title | text + image)
@@ -1202,14 +1150,6 @@ html.mb-home-snap {
   .mb-init4-img {
     width: min(222px, 60vw);
   }
-  /* Tech */
-  .mb-tech { padding: 0 0 70px; }
-  .mb-tech-layout {
-    grid-template-columns: 1fr;
-    gap: 28px;
-    align-items: stretch;
-  }
-
   /* Product showcase (init-6) */
   .mb-init6 { padding: 0 0 56px; }
   .mb-init6-grid {
@@ -1301,10 +1241,6 @@ html.mb-home-snap {
 }
 [dir="rtl"] .mb-contact-form button {
   align-self: flex-end;
-}
-[dir="rtl"] .mb-tech-copy {
-  align-items: flex-end;
-  text-align: right;
 }
 
 [dir="rtl"] .mb-init4-grid,

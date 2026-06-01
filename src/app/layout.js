@@ -1,4 +1,5 @@
 import './globals.css'
+import './theme-light.css'
 import Script from 'next/script'
 import { Inter, Noto_Sans_Arabic } from 'next/font/google'
 import Providers from './providers'
@@ -54,11 +55,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ar" suppressHydrationWarning className={`${inter.variable} ${notoSansArabic.variable}`}>
+    <html lang="ar" dir="rtl" data-theme="dark" suppressHydrationWarning className={`${inter.variable} ${notoSansArabic.variable}`}>
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var l=localStorage.getItem('mb-solar-lang');if(l==='en'||l==='ar'){document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';}}catch(e){}})();`,
+            __html: `(function(){try{var l=localStorage.getItem('mb-solar-lang');if(l==='en'||l==='ar'){document.documentElement.lang=l;document.documentElement.dir=l==='ar'?'rtl':'ltr';}var t=localStorage.getItem('mb-solar-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);document.documentElement.style.colorScheme=t;}}catch(e){}})();`,
           }}
         />
         <Script src="https://cdn.tailwindcss.com" strategy="beforeInteractive" />
