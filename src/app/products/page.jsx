@@ -10,9 +10,6 @@ import {
   LanguageTranslationsProvider,
   useLanguage,
 } from '@/app/contexts/LanguageContext';
-import { MOCK_INVERTERS } from '@/lib/mockInverters';
-import { MOCK_PANELS }    from '@/lib/mockPanels';
-import { MOCK_BATTERIES } from '@/lib/mockBatteries';
 import { getBrandBySlug, brandLabel, productMatchesBrand, BRAND_SLUGS } from '@/lib/brands';
 import './style.css';
 
@@ -96,6 +93,12 @@ function companyLabelFromProduct(p, unknownLabel) {
   return unknownLabel;
 }
 
+function companyLogoFromProduct(p) {
+  const c = p.company;
+  if (c && typeof c === 'object' && c.logo) return String(c.logo).trim();
+  return '';
+}
+
 /** تجميع المنتجات حسب الشركة ثم الفئة، مع احترام تبويب الفلترة النشط */
 function buildCompanyGroups(panels, inverters, batteries, activeCat, unknownLabel, lang) {
   const sources = [];
@@ -112,6 +115,7 @@ function buildCompanyGroups(panels, inverters, batteries, activeCat, unknownLabe
         map.set(cid, {
           id: cid,
           label: companyLabelFromProduct(p, unknownLabel),
+          logo: companyLogoFromProduct(p),
           panels: [],
           inverters: [],
           batteries: [],
@@ -120,6 +124,8 @@ function buildCompanyGroups(panels, inverters, batteries, activeCat, unknownLabe
       const g = map.get(cid);
       const nm = companyLabelFromProduct(p, unknownLabel);
       if (nm !== unknownLabel) g.label = nm;
+      const lg = companyLogoFromProduct(p);
+      if (lg) g.logo = lg;
       g[catKey].push(p);
     }
   }
@@ -183,7 +189,7 @@ function ProductsHubInner() {
     return list.filter((p) => productMatchesBrand(p, brandInfo.slug));
   };
 
-  /* fetch all three product types in parallel, fall back to mock data */
+  /* fetch all three product types in parallel */
   useEffect(() => {
     setLoading(true);
     Promise.all([
@@ -191,13 +197,13 @@ function ProductsHubInner() {
       loadCached('cache:inverters:list', '/api/inverters?limit=100'),
       loadCached('cache:batteries:list', '/api/batteries?limit=100'),
     ]).then(([p, inv, bat]) => {
-      setPanels(p.length    ? p   : MOCK_PANELS);
-      setInverters(inv.length ? inv : MOCK_INVERTERS);
-      setBatteries(bat.length ? bat : MOCK_BATTERIES);
+      setPanels(Array.isArray(p) ? p : []);
+      setInverters(Array.isArray(inv) ? inv : []);
+      setBatteries(Array.isArray(bat) ? bat : []);
     }).catch(() => {
-      setPanels(MOCK_PANELS);
-      setInverters(MOCK_INVERTERS);
-      setBatteries(MOCK_BATTERIES);
+      setPanels([]);
+      setInverters([]);
+      setBatteries([]);
     }).finally(() => setLoading(false));
   }, []);
 
@@ -274,6 +280,16 @@ function ProductsHubInner() {
               {companyGroups.map((group) => (
                 <section key={group.id} className="phub-company-block" aria-labelledby={`phub-co-${group.id}`}>
                   <header className="phub-company-head">
+                    {group.logo ? (
+                      <img
+                        src={group.logo}
+                        alt={group.label}
+                        className="phub-company-logo"
+                        loading="lazy"
+                        decoding="async"
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      />
+                    ) : null}
                     <h2 id={`phub-co-${group.id}`} className="phub-company-title">
                       {group.label}
                     </h2>
