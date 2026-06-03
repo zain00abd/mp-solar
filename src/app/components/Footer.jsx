@@ -20,10 +20,10 @@ const FOOTER_T = {
     contactLink: 'Send a message',
     copyright: '© 2026 MB Solar Power. All rights reserved.',
     emailLabel: 'Email (Sales):',
-    email: 'info@mbsolarpower.com',
+    email: 'almuhtarifsolar@gmail.com',
     phoneLabel: 'Phone (Sales):',
-    phone: '+966-XX-XXX-XXXX',
-    address: 'Riyadh, Saudi Arabia',
+    phone: '+963 949 338 788',
+    address: 'Damascus, Syria',
     homeAria: 'MB Solar — Home',
   },
   ar: {
@@ -39,10 +39,10 @@ const FOOTER_T = {
     contactLink: 'أرسل رسالة',
     copyright: '© 2026 MB Solar Power. جميع الحقوق محفوظة.',
     emailLabel: 'البريد الإلكتروني (المبيعات):',
-    email: 'info@mbsolarpower.com',
+    email: 'almuhtarifsolar@gmail.com',
     phoneLabel: 'هاتف (المبيعات):',
-    phone: '+966-XX-XXX-XXXX',
-    address: 'الرياض، المملكة العربية السعودية',
+    phone: '+963 949 338 788',
+    address: 'دمشق، سوريا',
     homeAria: 'MB Solar — الرئيسية',
   },
 };
@@ -79,13 +79,13 @@ export default function Footer() {
             <ul className="mb-footer-contact-list">
               <li>
                 <span className="mb-footer-contact-label">{t.emailLabel}</span>
-                <a href={`mailto:${t.email}`} className="mb-footer-contact-value">
+                <a href={`mailto:${t.email}`} className="mb-footer-contact-value mb-bidi-ltr" dir="ltr">
                   {t.email}
                 </a>
               </li>
               <li>
                 <span className="mb-footer-contact-label">{t.phoneLabel}</span>
-                <a href={phoneHref} className="mb-footer-contact-value">
+                <a href={phoneHref} className="mb-footer-contact-value mb-bidi-ltr" dir="ltr">
                   {t.phone}
                 </a>
               </li>

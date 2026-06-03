@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Brand accent as channels so every rgba(...) can be re-tinted per theme.
+   Dark mode resolves to the brand gold; light mode overrides this to the
+   navy-slate accent (see theme-light.css). */
+:root {
+  --mb-gold-rgb: 251, 191, 50;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -100,6 +107,13 @@ body {
     padding: 10px 20px;
     font-size: 14px;
   }
+}
+
+/* Phone, email — keep LTR in both ar/en so digits don't flip */
+.mb-bidi-ltr {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
 }
 
 /* Dark mode support */

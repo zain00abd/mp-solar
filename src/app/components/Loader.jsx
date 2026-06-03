@@ -3,7 +3,7 @@ export default function Loader({ label = "جاري التحميل...", full = fa
   return (
     <div className={`${wrapper} ${className}`}>
       <div className="flex flex-col items-center gap-3">
-        <div className="w-[50px] aspect-square rounded-full border-[8px] border-solid border-transparent animate-spin [border-right-color:#ffa50097]" />
+        <div className="w-[50px] aspect-square rounded-full border-[8px] border-solid border-transparent animate-spin [border-right-color:rgba(var(--mb-gold-rgb),0.6)]" />
         {label ? <p className="text-sm text-[var(--text-muted)]" suppressHydrationWarning>{label}</p> : null}
       </div>
     </div>

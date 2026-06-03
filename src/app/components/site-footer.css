@@ -13,7 +13,7 @@
 .mb-footer {
   position: relative;
   background: linear-gradient(180deg, var(--mb-navy) 0%, #121a28 42%, #0a0e14 100%);
-  border-top: 1px solid rgba(251, 191, 50, 0.14);
+  border-top: 1px solid rgba(var(--mb-gold-rgb), 0.14);
   padding: clamp(52px, 7vw, 72px) 0 28px;
   overflow: hidden;
   font-family: var(--font-inter), var(--font-noto-arabic), 'Inter', 'Noto Sans Arabic', system-ui,
@@ -29,7 +29,7 @@
   transform: translateX(-50%);
   width: min(640px, 85%);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(251, 191, 50, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(var(--mb-gold-rgb), 0.5), transparent);
   pointer-events: none;
 }
 
@@ -63,7 +63,7 @@
 
 .mb-footer-logo-link:hover {
   transform: translateY(-2px);
-  filter: drop-shadow(0 8px 24px rgba(251, 191, 50, 0.28));
+  filter: drop-shadow(0 8px 24px rgba(var(--mb-gold-rgb), 0.28));
 }
 
 .mb-footer-logo {
@@ -99,7 +99,7 @@
 .mb-footer-cta:hover {
   background: var(--mb-primary-h);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(251, 191, 50, 0.32);
+  box-shadow: 0 6px 20px rgba(var(--mb-gold-rgb), 0.32);
 }
 
 .mb-footer-contact-list {
@@ -151,7 +151,7 @@ a.mb-footer-contact-value:hover {
   color: var(--mb-primary);
   margin: 0 0 14px;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(251, 191, 50, 0.18);
+  border-bottom: 1px solid rgba(var(--mb-gold-rgb), 0.18);
   text-transform: uppercase;
   letter-spacing: 0.14em;
 }

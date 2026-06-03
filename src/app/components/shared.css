@@ -54,7 +54,7 @@ nav ul li a {
 .shared-header.scrolled {
     background-color: var(--dark-surface);
     box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    border-bottom: 1px solid rgba(251, 191, 50, 0.18);
+    border-bottom: 1px solid rgba(var(--mb-gold-rgb), 0.18);
 }
 
 .header-container {
@@ -111,14 +111,14 @@ nav ul li a {
     height: 140px;
     width: auto;
     object-fit: contain;
-    filter: drop-shadow(0 4px 20px rgba(251, 191, 50, 0.55));
+    filter: drop-shadow(0 4px 20px rgba(var(--mb-gold-rgb), 0.55));
     transition: height 0.4s ease, filter 0.4s ease, transform 0.3s ease;
     cursor: pointer;
 }
 
 .shared-header.scrolled .logo-image {
     height: 88px;
-    filter: drop-shadow(0 3px 10px rgba(251, 191, 50, 0.35));
+    filter: drop-shadow(0 3px 10px rgba(var(--mb-gold-rgb), 0.35));
 }
 
 .logo-image:hover {
@@ -127,6 +127,7 @@ nav ul li a {
 
 nav ul {
     display: flex;
+    align-items: center;
     list-style: none;
     gap: 25px;
     margin: 0;
@@ -241,7 +242,7 @@ nav ul li a.active::after {
     display: flex;
     flex-direction: row;
     background: var(--dark-surface);
-    border: 1px solid rgba(251, 191, 50, 0.22);
+    border: 1px solid rgba(var(--mb-gold-rgb), 0.22);
     border-radius: 14px;
     box-shadow:
         0 24px 56px rgba(0, 0, 0, 0.55),
@@ -285,7 +286,7 @@ nav ul li a.active::after {
 
 .nav-brands-list-row:hover,
 .nav-brands-list-row.is-active {
-    background: rgba(251, 191, 50, 0.1);
+    background: rgba(var(--mb-gold-rgb), 0.1);
 }
 
 .nav-brands-list-name {
@@ -338,7 +339,7 @@ nav ul li a.active::after {
 .nav-brands-cats-heading {
     margin: 0 0 10px;
     padding-bottom: 8px;
-    border-bottom: 1px solid rgba(251, 191, 50, 0.18);
+    border-bottom: 1px solid rgba(var(--mb-gold-rgb), 0.18);
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.08em;
@@ -367,7 +368,7 @@ nav ul li a.active::after {
 }
 
 .nav-brands-cats-list a:hover {
-    background: rgba(251, 191, 50, 0.12);
+    background: rgba(var(--mb-gold-rgb), 0.12);
     color: var(--primary);
 }
 
@@ -389,7 +390,7 @@ nav ul li a.active::after {
 
 .mobile-menu:hover {
     color: var(--primary);
-    background-color: rgba(251, 191, 50, 0.12);
+    background-color: rgba(var(--mb-gold-rgb), 0.12);
 }
 
 /* Header right-side actions (theme toggle + language switcher) */
@@ -429,7 +430,7 @@ nav ul li a.active::after {
 
 .shared-header.scrolled .theme-toggle-track {
     background: rgba(0, 0, 0, 0.25);
-    border-color: rgba(251, 191, 50, 0.22);
+    border-color: rgba(var(--mb-gold-rgb), 0.22);
 }
 
 .theme-toggle-thumb {
@@ -524,7 +525,7 @@ html[data-theme='light'] .theme-icon--moon { opacity: 0; transform: rotate(90deg
 
 .shared-header.scrolled .lang-switch-btn--solo {
     background: rgba(0, 0, 0, 0.25);
-    border-color: rgba(251, 191, 50, 0.22);
+    border-color: rgba(var(--mb-gold-rgb), 0.22);
 }
 
 .lang-switch-btn--solo:hover {
@@ -532,8 +533,8 @@ html[data-theme='light'] .theme-icon--moon { opacity: 0; transform: rotate(90deg
     background: var(--primary);
     border-color: var(--primary);
     box-shadow:
-        0 2px 10px rgba(251, 191, 50, 0.4),
-        0 0 0 1px rgba(251, 191, 50, 0.25);
+        0 2px 10px rgba(var(--mb-gold-rgb), 0.4),
+        0 0 0 1px rgba(var(--mb-gold-rgb), 0.25);
 }
 
 .lang-switch-btn:focus-visible {
@@ -551,7 +552,8 @@ html[data-theme='light'] .theme-icon--moon { opacity: 0; transform: rotate(90deg
     flex-direction: row;
 }
 
-[dir="rtl"] .shared-header nav ul {
+/* Only the top-level nav list stays row — NOT nested lists like nav-brands-list */
+[dir="rtl"] .shared-header nav > ul {
     flex-direction: row;
 }
 
@@ -560,9 +562,41 @@ html[data-theme='light'] .theme-icon--moon { opacity: 0; transform: rotate(90deg
     margin-left: 0;
 }
 
-[dir="rtl"] .shared-header nav ul li a::after {
+[dir="rtl"] .shared-header nav > ul > li > a::after {
     left: 0;
     right: auto;
+}
+
+/* Desktop brands flyout panel — RTL layout */
+[dir="rtl"] .nav-brands-panel {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .nav-brands-list {
+    border-inline-end: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[dir="rtl"] .nav-brands-list-name {
+    text-align: right;
+}
+
+[dir="rtl"] .nav-brands-list-row.is-active .nav-brands-list-name,
+[dir="rtl"] .nav-brands-list-row:hover .nav-brands-list-name {
+    padding-right: 16px;
+}
+
+[dir="rtl"] .nav-brands-cats-heading {
+    text-align: right;
+    border-top: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 8px;
+    margin-bottom: 4px;
+}
+
+[dir="rtl"] .nav-brands-cats-list li a {
+    text-align: right;
+    padding: 6px 12px 6px 8px;
 }
 
 /* Shared Footer Styles */
@@ -570,7 +604,7 @@ html[data-theme='light'] .theme-icon--moon { opacity: 0; transform: rotate(90deg
     background-color: var(--dark-surface);
     padding: 60px 0 30px;
     margin-top: 80px;
-    border-top: 1px solid rgba(251, 191, 50, 0.1);
+    border-top: 1px solid rgba(var(--mb-gold-rgb), 0.1);
 }
 
 .footer-content {
@@ -675,7 +709,7 @@ html[data-theme='light'] .theme-icon--moon { opacity: 0; transform: rotate(90deg
         display: flex;
         flex-direction: column;
         z-index: 1001;
-        border-left: 1px solid rgba(251, 191, 50, 0.22);
+        border-left: 1px solid rgba(var(--mb-gold-rgb), 0.22);
         border-right: none;
         transform: translateX(100%);
         opacity: 1;
@@ -695,7 +729,7 @@ html[data-theme='light'] .theme-icon--moon { opacity: 0; transform: rotate(90deg
         right: auto;
         left: 0;
         border-left: none;
-        border-right: 1px solid rgba(251, 191, 50, 0.22);
+        border-right: 1px solid rgba(var(--mb-gold-rgb), 0.22);
         box-shadow: 8px 0 40px rgba(0, 0, 0, 0.55);
         transform: translateX(-100%);
     }
@@ -737,7 +771,7 @@ html[data-theme='light'] .theme-icon--moon { opacity: 0; transform: rotate(90deg
     }
 
     .mobile-nav-close:hover {
-        background: rgba(251, 191, 50, 0.15);
+        background: rgba(var(--mb-gold-rgb), 0.15);
         color: var(--primary);
     }
     
@@ -774,7 +808,8 @@ html[data-theme='light'] .theme-icon--moon { opacity: 0; transform: rotate(90deg
         display: none;
     }
 
-    /* Override desktop RTL rule that sets flex-direction: row */
+    /* Override any RTL rule on nested uls — they stay column on mobile */
+    [dir="rtl"] .shared-header nav > ul,
     [dir="rtl"] .shared-header nav ul {
         flex-direction: column;
     }
@@ -815,7 +850,7 @@ html[data-theme='light'] .theme-icon--moon { opacity: 0; transform: rotate(90deg
     }
 
     .nav-brands-dropdown.is-open .nav-brands-trigger {
-        background: rgba(251, 191, 50, 0.08);
+        background: rgba(var(--mb-gold-rgb), 0.08);
         color: var(--primary);
     }
 
@@ -871,7 +906,7 @@ html[data-theme='light'] .theme-icon--moon { opacity: 0; transform: rotate(90deg
 
     .nav-brands-list-row:hover,
     .nav-brands-list-row.is-active {
-        background: rgba(251, 191, 50, 0.07);
+        background: rgba(var(--mb-gold-rgb), 0.07);
     }
 
     .nav-brands-list-name {
@@ -947,7 +982,7 @@ html[data-theme='light'] .theme-icon--moon { opacity: 0; transform: rotate(90deg
 
     .nav-brands-list-sub li a:hover {
         color: var(--primary);
-        background: rgba(251, 191, 50, 0.08);
+        background: rgba(var(--mb-gold-rgb), 0.08);
     }
 
     /* Hide desktop-only right column */

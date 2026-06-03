@@ -18,8 +18,15 @@
   --lt-ink-40: rgba(27, 36, 51, 0.42);
   --lt-border: rgba(27, 36, 51, 0.12);
   --lt-border-faint: rgba(27, 36, 51, 0.06);
-  --lt-gold: #c98a04;
-  --lt-gold-h: #e0a106;
+  /* Light-mode accent: navy-slate replaces the brand gold entirely.
+     `--lt-accent`   → on light surfaces (text, bars, borders, fills)
+     `--lt-accent-h` → hover (a touch lighter)
+     `--lt-on-dark`  → a light tint used over the dark hero / navy bands so
+                       accents stay visible where #2a3d58 would vanish. */
+  --lt-gold: #2a3d58;
+  --lt-gold-h: #34496b;
+  --lt-on-dark: #aebfd6;
+  --lt-on-dark-h: #c6d2e3;
   --lt-navy: #202d42;
 }
 
@@ -31,6 +38,10 @@
    gold buttons keep dark text and a few navy accent bands stay on-brand.
    ------------------------------------------------------------ */
 html[data-theme='light'] {
+  /* Re-tint every hard-coded rgba(var(--mb-gold-rgb), …) accent to the
+     navy-slate channels — kills all gold borders / glows / fills at once. */
+  --mb-gold-rgb: 42, 61, 88;
+
   /* shared.css — header / legacy footer */
   --primary: var(--lt-gold);
   --accent: var(--lt-gold-h);
@@ -57,7 +68,7 @@ html[data-theme='light'] {
 
   /* products/style.css */
   --phub-gold: var(--lt-gold);
-  --phub-gold-bg: rgba(201, 138, 4, 0.12);
+  --phub-gold-bg: rgba(42, 61, 88, 0.12);
   --phub-canvas: var(--lt-canvas);
   --phub-dark: var(--lt-surface);
   --phub-dark2: var(--lt-canvas);
@@ -69,7 +80,7 @@ html[data-theme='light'] {
   /* product-detail.css */
   --pd-canvas: var(--lt-canvas);
   --pd-gold: var(--lt-gold);
-  --pd-gold-dim: rgba(201, 138, 4, 0.42);
+  --pd-gold-dim: rgba(42, 61, 88, 0.42);
   --pd-border: var(--lt-border);
   --pd-text: var(--lt-ink);
   --pd-muted: var(--lt-ink-55);
@@ -93,6 +104,8 @@ html[data-theme='light'] {
   --text-primary: var(--lt-ink);
   --text-secondary: var(--lt-ink-80);
   --border-dark: var(--lt-border);
+  --detail-primary: var(--lt-gold);
+  --detail-accent: var(--lt-gold);
 }
 
 /* ------------------------------------------------------------
@@ -128,7 +141,7 @@ html[data-theme='light'] .shared-header {
 html[data-theme='light'] .shared-header.scrolled {
   background: rgba(255, 255, 255, 0.96);
   box-shadow: 0 4px 22px rgba(20, 30, 50, 0.1);
-  border-bottom: 1px solid rgba(201, 138, 4, 0.22);
+  border-bottom: 1px solid rgba(42, 61, 88, 0.22);
 }
 
 /* Hero pages: transparent floating header over the dark hero at the top.
@@ -172,7 +185,7 @@ html[data-theme='light'] .lang-switch-btn--solo {
 
 html[data-theme='light'] .shared-header.scrolled .lang-switch-btn--solo {
   background: rgba(27, 36, 51, 0.06);
-  border-color: rgba(201, 138, 4, 0.3);
+  border-color: rgba(42, 61, 88, 0.3);
 }
 
 html[data-theme='light'] .lang-switch-btn--solo:hover {
@@ -188,7 +201,7 @@ html[data-theme='light'] .theme-toggle-track {
 
 html[data-theme='light'] .shared-header.scrolled .theme-toggle-track {
   background: rgba(27, 36, 51, 0.07);
-  border-color: rgba(201, 138, 4, 0.25);
+  border-color: rgba(42, 61, 88, 0.25);
 }
 
 html[data-theme='light'] .theme-toggle-thumb {
@@ -197,7 +210,7 @@ html[data-theme='light'] .theme-toggle-thumb {
 
 /* Brands dropdown (desktop flyout) */
 html[data-theme='light'] .nav-brands-panel {
-  border-color: rgba(201, 138, 4, 0.3);
+  border-color: rgba(42, 61, 88, 0.3);
   box-shadow: 0 24px 56px rgba(20, 30, 50, 0.16), inset 0 0 0 1px rgba(27, 36, 51, 0.04);
 }
 
@@ -212,7 +225,7 @@ html[data-theme='light'] .nav-brands-cats-list a {
 
 html[data-theme='light'] .nav-brands-list-row:hover,
 html[data-theme='light'] .nav-brands-list-row.is-active {
-  background: rgba(201, 138, 4, 0.1);
+  background: rgba(42, 61, 88, 0.1);
 }
 
 /* ------------------------------------------------------------
@@ -274,7 +287,7 @@ html[data-theme='light'] .nav-brands-list-row.is-active {
    ------------------------------------------------------------ */
 html[data-theme='light'] .mb-page {
   background-image:
-    radial-gradient(ellipse 75% 50% at 88% 55%, rgba(201, 138, 4, 0.05) 0%, transparent 52%),
+    radial-gradient(ellipse 75% 50% at 88% 55%, rgba(42, 61, 88, 0.05) 0%, transparent 52%),
     radial-gradient(ellipse 100% 45% at 50% 100%, rgba(27, 36, 51, 0.04) 0%, transparent 48%);
 }
 
@@ -290,14 +303,14 @@ html[data-theme='light'] .mb-hero-overlay {
   );
 }
 
-/* Faded section watermarks */
+/* Faded section watermarks — solid equivalents to avoid transparency "cuts" in Arabic glyphs */
 html[data-theme='light'] .mb-sec-heading::before {
-  color: rgba(27, 36, 51, 0.06);
+  color: #f0f1f2;
 }
 
 html[data-theme='light'] .mb-sec-heading--label-only::before,
 html[data-theme='light'][dir='rtl'] .mb-sec-heading--label-only::before {
-  color: rgba(27, 36, 51, 0.1);
+  color: #dde0e6;
   text-shadow: none;
 }
 
@@ -315,7 +328,7 @@ html[data-theme='light'] .mb-sol-card--inverters:hover,
 html[data-theme='light'] .mb-sol-card--batteries:hover,
 html[data-theme='light'] .mb-sol-card:hover {
   background: linear-gradient(165deg, #ffffff 0%, #e7edf5 100%);
-  box-shadow: inset 0 0 0 1px rgba(201, 138, 4, 0.4), 0 18px 40px rgba(20, 30, 50, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(42, 61, 88, 0.4), 0 18px 40px rgba(20, 30, 50, 0.1);
 }
 
 html[data-theme='light'] .mb-sol-overlay,
@@ -341,7 +354,7 @@ html[data-theme='light'] .mb-contact-form textarea {
 
 html[data-theme='light'] .mb-contact-form input:focus,
 html[data-theme='light'] .mb-contact-form textarea:focus {
-  background: rgba(201, 138, 4, 0.05);
+  background: rgba(42, 61, 88, 0.05);
   border-color: var(--lt-gold);
 }
 
@@ -354,7 +367,7 @@ html[data-theme='light'] .mb-footer {
 }
 
 html[data-theme='light'] .mb-footer::before {
-  background: linear-gradient(90deg, transparent, rgba(201, 138, 4, 0.55), transparent);
+  background: linear-gradient(90deg, transparent, rgba(42, 61, 88, 0.55), transparent);
 }
 
 html[data-theme='light'] .mb-footer-bottom {
@@ -366,7 +379,7 @@ html[data-theme='light'] .mb-footer-bottom {
    ------------------------------------------------------------ */
 html[data-theme='light'] .phub-page {
   background-image:
-    radial-gradient(ellipse 75% 50% at 88% 55%, rgba(201, 138, 4, 0.05) 0%, transparent 52%),
+    radial-gradient(ellipse 75% 50% at 88% 55%, rgba(42, 61, 88, 0.05) 0%, transparent 52%),
     radial-gradient(ellipse 100% 45% at 50% 100%, rgba(27, 36, 51, 0.04) 0%, transparent 48%);
 }
 
@@ -376,8 +389,8 @@ html[data-theme='light'] .phub-count {
 }
 
 html[data-theme='light'] .phub-card:hover {
-  background-color: rgba(201, 138, 4, 0.07);
-  box-shadow: 0 0 0 1px rgba(201, 138, 4, 0.18), 0 14px 32px rgba(20, 30, 50, 0.1);
+  background-color: rgba(42, 61, 88, 0.07);
+  box-shadow: 0 0 0 1px rgba(42, 61, 88, 0.18), 0 14px 32px rgba(20, 30, 50, 0.1);
 }
 
 html[data-theme='light'] .phub-card-name {
@@ -395,12 +408,12 @@ html[data-theme='light'] .phub-btn--ghost:hover {
    ------------------------------------------------------------ */
 html[data-theme='light'] .pd-page {
   background-image:
-    radial-gradient(ellipse 75% 50% at 88% 55%, rgba(201, 138, 4, 0.05) 0%, transparent 52%),
+    radial-gradient(ellipse 75% 50% at 88% 55%, rgba(42, 61, 88, 0.05) 0%, transparent 52%),
     radial-gradient(ellipse 100% 45% at 50% 100%, rgba(27, 36, 51, 0.04) 0%, transparent 48%);
 }
 
 html[data-theme='light'] .pd-head-rule {
-  box-shadow: 0 0 20px rgba(201, 138, 4, 0.16), 0 1px 0 rgba(27, 36, 51, 0.05);
+  box-shadow: 0 0 20px rgba(42, 61, 88, 0.16), 0 1px 0 rgba(27, 36, 51, 0.05);
 }
 
 html[data-theme='light'] .pd-gallery-placeholder {
@@ -444,6 +457,17 @@ html[data-theme='light'] .ab-cta {
   --ab-text-50: rgba(255, 255, 255, 0.6);
   --ab-text-30: rgba(255, 255, 255, 0.45);
   --ab-border: rgba(255, 255, 255, 0.14);
+  /* Over these dark bands #2a3d58 would vanish — use the light slate tint
+     for accent text (labels, stat numbers), fills and borders instead. */
+  --ab-primary: var(--lt-on-dark);
+  --ab-primary-h: var(--lt-on-dark-h);
+  --mb-gold-rgb: 174, 191, 214;
+}
+
+/* The primary CTA sits inside the navy CTA band: its background is now the
+   light slate tint, so its text must go dark to read. */
+html[data-theme='light'] .ab-btn-primary {
+  color: var(--lt-navy);
 }
 
 /* Hero image overlay — much lighter; content sits at the bottom so the
@@ -483,7 +507,22 @@ html[data-theme='light'] .ab-btn-outline {
 }
 
 /* ------------------------------------------------------------
-   10. Legacy category pages (panels / inverters / batteries)
+   10. Solid-accent CTAs & badges
+   The brand gold buttons carried dark text. Now the accent is a dark
+   navy-slate, so any solid-accent button/badge needs light text to read.
+   ------------------------------------------------------------ */
+html[data-theme='light'] .mb-hero-cta,
+html[data-theme='light'] .mb-contact-form button,
+html[data-theme='light'] .mb-footer-cta,
+html[data-theme='light'] .phub-btn--gold,
+html[data-theme='light'] .pd-btn--gold,
+html[data-theme='light'] .ab-img-badge,
+html[data-theme='light'] .ab-map-tag {
+  color: #ffffff;
+}
+
+/* ------------------------------------------------------------
+   11. Legacy category pages (panels / inverters / batteries)
    ------------------------------------------------------------ */
 html[data-theme='light'] .product-card {
   box-shadow: 0 8px 30px rgba(20, 30, 50, 0.1);
@@ -491,4 +530,17 @@ html[data-theme='light'] .product-card {
 
 html[data-theme='light'] .product-card:hover {
   box-shadow: 0 20px 40px rgba(20, 30, 50, 0.14);
+}
+
+/* Hard-coded gold accents on the legacy pages */
+html[data-theme='light'] .breadcrumb-link {
+  color: var(--lt-on-dark);
+}
+
+html[data-theme='light'] .breadcrumb-link:hover {
+  color: #ffffff;
+}
+
+html[data-theme='light'] .product-title {
+  color: var(--lt-gold);
 }
