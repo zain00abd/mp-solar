@@ -12,6 +12,7 @@ import React, {
 export const LanguageContext = createContext(null);
 
 const STORAGE_KEY = 'mb-solar-lang';
+const DEFAULT_LANGUAGE = 'en';
 
 function readStoredLanguage() {
   if (typeof window === 'undefined') return null;
@@ -24,7 +25,7 @@ function readStoredLanguage() {
 }
 
 export function LanguageProvider({ children }) {
-  const [language, setLanguageState] = useState('ar');
+  const [language, setLanguageState] = useState(DEFAULT_LANGUAGE);
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -52,7 +53,7 @@ export function LanguageProvider({ children }) {
   }, [language, hydrated]);
 
   const value = useMemo(
-    () => ({ language: hydrated ? language : 'ar', setLanguage, hydrated }),
+    () => ({ language: hydrated ? language : DEFAULT_LANGUAGE, setLanguage, hydrated }),
     [language, setLanguage, hydrated]
   );
 

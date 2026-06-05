@@ -59,7 +59,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="ar" dir="rtl" data-theme="dark" suppressHydrationWarning className={`${inter.variable} ${notoSansArabic.variable}`}>
+    <html lang="en" dir="ltr" data-theme="dark" suppressHydrationWarning className={`${inter.variable} ${notoSansArabic.variable}`}>
       <head>
         <script
           dangerouslySetInnerHTML={{

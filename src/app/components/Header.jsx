@@ -110,7 +110,7 @@ const Header = () => {
   const closeTimerRef = useRef(null);
 
   const languageContext = useContext(LanguageContext);
-  const language = languageContext?.language || 'ar';
+  const language = languageContext?.language || 'en';
   const setLanguage = languageContext?.setLanguage;
   const translations = languageContext?.translations;
 
